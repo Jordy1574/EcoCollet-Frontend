@@ -1,7 +1,12 @@
-IMPORTANTE!!
+## IMPORTANTE!!
+
 Instalar NODE 22.20.0
+
 Instalar Angular 20.0.3
+
 Instalar en la terminal del proyecto: npm install zone.js
+
+
 # Frontend
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.3.
