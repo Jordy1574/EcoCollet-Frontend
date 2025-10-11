@@ -1,632 +1,104 @@
-<html lang="es" class="h-full"><script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/libs/extend-native-history-api.js"></script><script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/libs/requests.js"></script><head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoCollet - Plataforma de Reciclaje Inteligente</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-    <style>
-        body {
-            box-sizing: border-box;
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <title>EcoCollet - Plataforma de Reciclaje Inteligente</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta name="description" content="Conectamos ciudadanos, empresas y centros de acopio para crear un Perú más sostenible">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'eco-green': '#3EB489',
+            'eco-dark': '#1E5631',
+            'eco-yellow': '#FFD60A',
+            'eco-beige': '#F5F5DC'
+          },
+          fontFamily: {
+            'poppins': ['Poppins', 'sans-serif'],
+            'inter': ['Inter', 'sans-serif']
+          },
+          boxShadow: {
+            'eco': '0 10px 25px rgba(62, 180, 137, 0.15)'
+          }
         }
-        .font-poppins { font-family: 'Poppins', sans-serif; }
-        .font-inter { font-family: 'Inter', sans-serif; }
-        .bg-eco-green { background-color: #3EB489; }
-        .bg-eco-dark { background-color: #1E5631; }
-        .bg-eco-yellow { background-color: #FFD60A; }
-        .text-eco-green { color: #3EB489; }
-        .text-eco-dark { color: #1E5631; }
-        .text-eco-yellow { color: #FFD60A; }
-        .border-eco-green { border-color: #3EB489; }
-        .hover\:bg-eco-green:hover { background-color: #3EB489; }
-        .hover\:bg-eco-dark:hover { background-color: #1E5631; }
-        .gradient-eco { background: linear-gradient(135deg, #3EB489 0%, #1E5631 100%); }
-        .shadow-eco { box-shadow: 0 10px 25px rgba(62, 180, 137, 0.15); }
-    </style>
-<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.right-4{right:1rem}.top-0{top:0px}.top-4{top:1rem}.z-50{z-index:50}.col-span-1{grid-column:span 1 / span 1}.mx-4{margin-left:1rem;margin-right:1rem}.mx-auto{margin-left:auto;margin-right:auto}.mb-12{margin-bottom:3rem}.mb-16{margin-bottom:4rem}.mb-2{margin-bottom:0.5rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.ml-10{margin-left:2.5rem}.mr-3{margin-right:0.75rem}.mr-4{margin-right:1rem}.mt-1{margin-top:0.25rem}.mt-12{margin-top:3rem}.block{display:block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-full{height:100%}.h-10{height:2.5rem}.h-12{height:3rem}.h-16{height:4rem}.h-20{height:5rem}.h-4{height:1rem}.h-5{height:1.25rem}.h-6{height:1.5rem}.h-7{height:1.75rem}.h-8{height:2rem}.h-96{height:24rem}.w-10{width:2.5rem}.w-12{width:3rem}.w-16{width:4rem}.w-20{width:5rem}.w-4{width:1rem}.w-5{width:1.25rem}.w-6{width:1.5rem}.w-7{width:1.75rem}.w-8{width:2rem}.w-96{width:24rem}.w-full{width:100%}.max-w-3xl{max-width:48rem}.max-w-7xl{max-width:80rem}.max-w-md{max-width:28rem}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}@keyframes bounce{0%, 100%{transform:translateY(-25%);animation-timing-function:cubic-bezier(0.8,0,1,1)}50%{transform:none;animation-timing-function:cubic-bezier(0,0,0.2,1)}}.animate-bounce{animation:bounce 1s infinite}.cursor-pointer{cursor:pointer}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-center{align-items:center}.items-baseline{align-items:baseline}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-12{gap:3rem}.gap-2{gap:0.5rem}.gap-4{gap:1rem}.gap-8{gap:2rem}.space-x-4 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(1rem * var(--tw-space-x-reverse));margin-left:calc(1rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-8 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(2rem * var(--tw-space-x-reverse));margin-left:calc(2rem * calc(1 - var(--tw-space-x-reverse)))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-gray-100{--tw-border-opacity:1;border-color:rgb(243 244 246 / var(--tw-border-opacity, 1))}.border-gray-200{--tw-border-opacity:1;border-color:rgb(229 231 235 / var(--tw-border-opacity, 1))}.border-gray-300{--tw-border-opacity:1;border-color:rgb(209 213 219 / var(--tw-border-opacity, 1))}.border-green-700{--tw-border-opacity:1;border-color:rgb(21 128 61 / var(--tw-border-opacity, 1))}.border-white{--tw-border-opacity:1;border-color:rgb(255 255 255 / var(--tw-border-opacity, 1))}.bg-gray-50{--tw-bg-opacity:1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.bg-black{--tw-bg-opacity:1;background-color:rgb(0 0 0 / var(--tw-bg-opacity, 1))}.bg-gray-200{--tw-bg-opacity:1;background-color:rgb(229 231 235 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-opacity-50{--tw-bg-opacity:0.5}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.from-green-100{--tw-gradient-from:#dcfce7 var(--tw-gradient-from-position);--tw-gradient-to:rgb(220 252 231 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-blue-100{--tw-gradient-to:#dbeafe var(--tw-gradient-to-position)}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-8{padding-left:2rem;padding-right:2rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-20{padding-top:5rem;padding-bottom:5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pt-8{padding-top:2rem}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-5xl{font-size:3rem;line-height:1}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity, 1))}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.text-gray-700{--tw-text-opacity:1;color:rgb(55 65 81 / var(--tw-text-opacity, 1))}.text-green-100{--tw-text-opacity:1;color:rgb(220 252 231 / var(--tw-text-opacity, 1))}.text-green-200{--tw-text-opacity:1;color:rgb(187 247 208 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-shadow{transition-property:box-shadow;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:scale-110:hover{--tw-scale-x:1.1;--tw-scale-y:1.1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.hover\:bg-white:hover{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.hover\:bg-yellow-400:hover{--tw-bg-opacity:1;background-color:rgb(250 204 21 / var(--tw-bg-opacity, 1))}.hover\:text-gray-600:hover{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.hover\:shadow-xl:hover{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.focus\:border-transparent:focus{border-color:transparent}.focus\:ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}@media (min-width: 640px){.sm\:flex-row{flex-direction:row}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}}@media (min-width: 768px){.md\:col-span-2{grid-column:span 2 / span 2}.md\:block{display:block}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:px-8{padding-left:2rem;padding-right:2rem}.lg\:text-6xl{font-size:3.75rem;line-height:1}}</style></head>
-<body class="h-full bg-gray-50 font-inter" __processed_27926318-ef26-47c8-bc99-773fc8be9b0a__="true">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center">
-                        <div class="w-10 h-10 bg-eco-green rounded-full flex items-center justify-center mr-3">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                            </svg>
-                        </div>
-                        <span class="font-poppins font-bold text-2xl text-eco-dark">EcoCollet</span>
-                    </div>
-                </div>
-                
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-8">
-                        <a href="#inicio" class="text-eco-dark hover:text-eco-green px-3 py-2 text-sm font-medium transition-colors">Inicio</a>
-                        <a href="#servicios" class="text-gray-600 hover:text-eco-green px-3 py-2 text-sm font-medium transition-colors">Servicios</a>
-                        <a href="#puntos" class="text-gray-600 hover:text-eco-green px-3 py-2 text-sm font-medium transition-colors">Puntos de Reciclaje</a>
-                        <a href="#contacto" class="text-gray-600 hover:text-eco-green px-3 py-2 text-sm font-medium transition-colors">Contacto</a>
-                    </div>
-                </div>
-                
-                <div class="flex items-center space-x-4">
-                    <button onclick="showLoginModal()" class="text-eco-green hover:text-eco-dark px-4 py-2 text-sm font-medium transition-colors">
-                        Iniciar Sesión
-                    </button>
-                    <button onclick="showRegisterModal()" class="bg-eco-green hover:bg-eco-dark text-white px-6 py-2 rounded-full text-sm font-medium transition-colors shadow-eco">
-                        Registrarse
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="inicio" class="gradient-eco text-white py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div>
-                    <h1 class="font-poppins font-bold text-5xl lg:text-6xl mb-6 leading-tight">
-                        Recicla Inteligente con 
-                        <span class="text-eco-yellow">EcoCollet</span>
-                    </h1>
-                    <p class="text-xl mb-8 text-green-100 leading-relaxed">
-                        Conectamos ciudadanos, empresas y centros de acopio para crear un Perú más sostenible. 
-                        Agenda recolecciones, gana recompensas y contribuye al cuidado del medio ambiente.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <button onclick="showRegisterModal()" class="bg-eco-yellow hover:bg-yellow-400 text-eco-dark px-8 py-4 rounded-full font-semibold text-lg transition-colors shadow-lg">
-                            Comenzar Ahora
-                        </button>
-                        <button onclick="scrollToMap()" class="border-2 border-white text-white hover:bg-white hover:text-eco-green px-8 py-4 rounded-full font-semibold text-lg transition-colors">
-                            Ver Puntos de Reciclaje
-                        </button>
-                    </div>
-                </div>
-                <div class="flex justify-center">
-                    <div class="relative">
-                        <svg class="w-96 h-96" viewBox="0 0 400 400" fill="none">
-                            <!-- Planeta Tierra -->
-                            <circle cx="200" cy="200" r="120" fill="#4ADE80" opacity="0.8"></circle>
-                            <circle cx="200" cy="200" r="120" fill="none" stroke="#FFD60A" stroke-width="3" stroke-dasharray="10,5"></circle>
-                            
-                            <!-- Continentes -->
-                            <path d="M150 160 Q180 140 220 160 Q240 180 220 200 Q180 220 150 200 Z" fill="#1E5631"></path>
-                            <path d="M180 220 Q200 210 230 220 Q250 240 230 260 Q200 270 180 260 Z" fill="#1E5631"></path>
-                            
-                            <!-- Iconos de reciclaje flotantes -->
-                            <g class="animate-bounce" style="animation-delay: 0s;">
-                                <circle cx="120" cy="120" r="25" fill="white" opacity="0.9"></circle>
-                                <path d="M110 110 L130 110 L125 125 L115 125 Z" fill="#3EB489"></path>
-                                <path d="M120 115 L120 120" stroke="#3EB489" stroke-width="2"></path>
-                            </g>
-                            
-                            <g class="animate-bounce" style="animation-delay: 0.5s;">
-                                <circle cx="300" cy="150" r="25" fill="white" opacity="0.9"></circle>
-                                <path d="M290 140 Q300 135 310 140 Q315 150 310 160 Q300 165 290 160 Q285 150 290 140 Z" fill="#FFD60A"></path>
-                            </g>
-                            
-                            <g class="animate-bounce" style="animation-delay: 1s;">
-                                <circle cx="320" cy="280" r="25" fill="white" opacity="0.9"></circle>
-                                <rect x="310" y="270" width="20" height="20" rx="3" fill="#3EB489"></rect>
-                                <path d="M315 275 L325 275 M315 280 L325 280 M315 285 L325 285" stroke="white" stroke-width="1"></path>
-                            </g>
-                            
-                            <g class="animate-bounce" style="animation-delay: 1.5s;">
-                                <circle cx="80" cy="280" r="25" fill="white" opacity="0.9"></circle>
-                                <circle cx="80" cy="280" r="8" fill="none" stroke="#3EB489" stroke-width="2"></circle>
-                                <path d="M75 275 L85 285 M85 275 L75 285" stroke="#3EB489" stroke-width="2"></path>
-                            </g>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Beneficios -->
-    <section id="servicios" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="font-poppins font-bold text-4xl text-eco-dark mb-4">¿Por qué elegir EcoCollet?</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Nuestra plataforma hace que reciclar sea fácil, conveniente y gratificante para todos
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Beneficio 1 -->
-                <div class="bg-white rounded-2xl p-8 shadow-eco hover:shadow-xl transition-shadow border border-gray-100">
-                    <div class="w-16 h-16 bg-eco-green rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="font-poppins font-semibold text-xl text-eco-dark mb-4">Recolección Programada</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Agenda la recolección de tus materiales reciclables desde casa. Nosotros nos encargamos del resto.
-                    </p>
-                </div>
-                
-                <!-- Beneficio 2 -->
-                <div class="bg-white rounded-2xl p-8 shadow-eco hover:shadow-xl transition-shadow border border-gray-100">
-                    <div class="w-16 h-16 bg-eco-yellow rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-eco-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                        </svg>
-                    </div>
-                    <h3 class="font-poppins font-semibold text-xl text-eco-dark mb-4">Gana Recompensas</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Acumula puntos por cada kilogramo reciclado y canjéalos por productos ecológicos y descuentos.
-                    </p>
-                </div>
-                
-                <!-- Beneficio 3 -->
-                <div class="bg-white rounded-2xl p-8 shadow-eco hover:shadow-xl transition-shadow border border-gray-100">
-                    <div class="w-16 h-16 bg-eco-dark rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="font-poppins font-semibold text-xl text-eco-dark mb-4">Puntos Cercanos</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Encuentra centros de acopio cerca de ti con nuestro mapa interactivo y filtros por tipo de material.
-                    </p>
-                </div>
-                
-                <!-- Beneficio 4 -->
-                <div class="bg-white rounded-2xl p-8 shadow-eco hover:shadow-xl transition-shadow border border-gray-100">
-                    <div class="w-16 h-16 bg-eco-green rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="font-poppins font-semibold text-xl text-eco-dark mb-4">Seguimiento Completo</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Monitorea tu impacto ambiental con estadísticas detalladas de tus actividades de reciclaje.
-                    </p>
-                </div>
-                
-                <!-- Beneficio 5 -->
-                <div class="bg-white rounded-2xl p-8 shadow-eco hover:shadow-xl transition-shadow border border-gray-100">
-                    <div class="w-16 h-16 bg-eco-yellow rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-eco-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="font-poppins font-semibold text-xl text-eco-dark mb-4">Comunidad Activa</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Únete a una comunidad comprometida con el medio ambiente y compite en rankings de reciclaje.
-                    </p>
-                </div>
-                
-                <!-- Beneficio 6 -->
-                <div class="bg-white rounded-2xl p-8 shadow-eco hover:shadow-xl transition-shadow border border-gray-100">
-                    <div class="w-16 h-16 bg-eco-dark rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="font-poppins font-semibold text-xl text-eco-dark mb-4">Fácil de Usar</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Interfaz intuitiva y moderna que hace que reciclar sea tan fácil como pedir comida a domicilio.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Mapa de Puntos -->
-    <section id="puntos" class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="font-poppins font-bold text-4xl text-eco-dark mb-4">Puntos de Reciclaje en Lima</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Encuentra el centro de acopio más cercano a tu ubicación
-                </p>
-            </div>
-            
-            <div class="bg-white rounded-2xl shadow-eco overflow-hidden">
-                <div class="p-6 border-b border-gray-200">
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <div class="flex-1">
-                            <input type="text" placeholder="Buscar por distrito..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-green focus:border-transparent">
-                        </div>
-                        <div class="flex gap-2">
-                            <button class="px-4 py-3 bg-eco-green text-white rounded-lg hover:bg-eco-dark transition-colors flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                                </svg>
-                                Plástico
-                            </button>
-                            <button class="px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-eco-green hover:text-white transition-colors flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                Papel
-                            </button>
-                            <button class="px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-eco-green hover:text-white transition-colors flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                                </svg>
-                                Vidrio
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="relative h-96 bg-gradient-to-br from-green-100 to-blue-100">
-                    <!-- Mapa simulado -->
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="text-center">
-                            <div class="grid grid-cols-3 gap-8 mb-8">
-                                <!-- Punto 1 -->
-                                <div class="flex flex-col items-center">
-                                    <div class="w-12 h-12 bg-eco-green rounded-full flex items-center justify-center shadow-lg mb-2 cursor-pointer hover:scale-110 transition-transform" onclick="showPointInfo('Miraflores')">
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                        </svg>
-                                    </div>
-                                    <span class="text-sm font-medium text-eco-dark">Miraflores</span>
-                                </div>
-                                
-                                <!-- Punto 2 -->
-                                <div class="flex flex-col items-center">
-                                    <div class="w-12 h-12 bg-eco-yellow rounded-full flex items-center justify-center shadow-lg mb-2 cursor-pointer hover:scale-110 transition-transform" onclick="showPointInfo('San Isidro')">
-                                        <svg class="w-6 h-6 text-eco-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                        </svg>
-                                    </div>
-                                    <span class="text-sm font-medium text-eco-dark">San Isidro</span>
-                                </div>
-                                
-                                <!-- Punto 3 -->
-                                <div class="flex flex-col items-center">
-                                    <div class="w-12 h-12 bg-eco-dark rounded-full flex items-center justify-center shadow-lg mb-2 cursor-pointer hover:scale-110 transition-transform" onclick="showPointInfo('Surco')">
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                        </svg>
-                                    </div>
-                                    <span class="text-sm font-medium text-eco-dark">Surco</span>
-                                </div>
-                                
-                                <!-- Punto 4 -->
-                                <div class="flex flex-col items-center">
-                                    <div class="w-12 h-12 bg-eco-green rounded-full flex items-center justify-center shadow-lg mb-2 cursor-pointer hover:scale-110 transition-transform" onclick="showPointInfo('La Molina')">
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                        </svg>
-                                    </div>
-                                    <span class="text-sm font-medium text-eco-dark">La Molina</span>
-                                </div>
-                                
-                                <!-- Punto 5 -->
-                                <div class="flex flex-col items-center">
-                                    <div class="w-12 h-12 bg-eco-yellow rounded-full flex items-center justify-center shadow-lg mb-2 cursor-pointer hover:scale-110 transition-transform" onclick="showPointInfo('Barranco')">
-                                        <svg class="w-6 h-6 text-eco-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                        </svg>
-                                    </div>
-                                    <span class="text-sm font-medium text-eco-dark">Barranco</span>
-                                </div>
-                                
-                                <!-- Punto 6 -->
-                                <div class="flex flex-col items-center">
-                                    <div class="w-12 h-12 bg-eco-dark rounded-full flex items-center justify-center shadow-lg mb-2 cursor-pointer hover:scale-110 transition-transform" onclick="showPointInfo('Pueblo Libre')">
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                        </svg>
-                                    </div>
-                                    <span class="text-sm font-medium text-eco-dark">Pueblo Libre</span>
-                                </div>
-                            </div>
-                            
-                            <button onclick="showRegisterModal()" class="bg-eco-green hover:bg-eco-dark text-white px-8 py-3 rounded-full font-semibold transition-colors shadow-lg">
-                                Ver Mapa Completo
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Estadísticas -->
-    <section class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="font-poppins font-bold text-4xl text-eco-dark mb-4">Nuestro Impacto</h2>
-                <p class="text-xl text-gray-600">Juntos estamos construyendo un Perú más sostenible</p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-eco-green rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                    </div>
-                    <div class="font-poppins font-bold text-3xl text-eco-dark mb-2">15,420</div>
-                    <div class="text-gray-600">Usuarios Activos</div>
-                </div>
-                
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-eco-yellow rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-10 h-10 text-eco-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path>
-                        </svg>
-                    </div>
-                    <div class="font-poppins font-bold text-3xl text-eco-dark mb-2">2,847</div>
-                    <div class="text-gray-600">Toneladas Recicladas</div>
-                </div>
-                
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-eco-dark rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                    </div>
-                    <div class="font-poppins font-bold text-3xl text-eco-dark mb-2">156</div>
-                    <div class="text-gray-600">Puntos de Acopio</div>
-                </div>
-                
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-eco-green rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                        </svg>
-                    </div>
-                    <div class="font-poppins font-bold text-3xl text-eco-dark mb-2">89,340</div>
-                    <div class="text-gray-600">Kg CO₂ Evitados</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="contacto" class="bg-eco-dark text-white py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="col-span-1 md:col-span-2">
-                    <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 bg-eco-green rounded-full flex items-center justify-center mr-4">
-                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                            </svg>
-                        </div>
-                        <span class="font-poppins font-bold text-3xl">EcoCollet</span>
-                    </div>
-                    <p class="text-green-200 mb-6 leading-relaxed">
-                        Conectamos ciudadanos, empresas y centros de acopio para crear un Perú más sostenible. 
-                        Únete a la revolución del reciclaje inteligente.
-                    </p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="w-10 h-10 bg-eco-green rounded-full flex items-center justify-center hover:bg-eco-yellow hover:text-eco-dark transition-colors">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path>
-                            </svg>
-                        </a>
-                        <a href="#" class="w-10 h-10 bg-eco-green rounded-full flex items-center justify-center hover:bg-eco-yellow hover:text-eco-dark transition-colors">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"></path>
-                            </svg>
-                        </a>
-                        <a href="#" class="w-10 h-10 bg-eco-green rounded-full flex items-center justify-center hover:bg-eco-yellow hover:text-eco-dark transition-colors">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001.012.001z"></path>
-                            </svg>
-                        </a>
-                        <a href="#" class="w-10 h-10 bg-eco-green rounded-full flex items-center justify-center hover:bg-eco-yellow hover:text-eco-dark transition-colors">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12.5.75C6.146.75 1 5.896 1 12.25c0 5.089 3.292 9.387 7.863 10.91-.11-.937-.227-2.482.025-3.566.217-.932 1.405-5.956 1.405-5.956s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.653 2.567-.99 3.99-.284 1.194.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146 1.124.347 2.317.535 3.554.535 6.624 0 11.99-5.367 11.99-11.988C24.5 5.896 19.354.75 12.5.75z"></path>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                
-                <div>
-                    <h3 class="font-poppins font-semibold text-lg mb-6">Enlaces Rápidos</h3>
-                    <ul class="space-y-3">
-                        <li><a href="#inicio" class="text-green-200 hover:text-eco-yellow transition-colors">Inicio</a></li>
-                        <li><a href="#servicios" class="text-green-200 hover:text-eco-yellow transition-colors">Servicios</a></li>
-                        <li><a href="#puntos" class="text-green-200 hover:text-eco-yellow transition-colors">Puntos de Reciclaje</a></li>
-                        <li><a href="#" class="text-green-200 hover:text-eco-yellow transition-colors">Preguntas Frecuentes</a></li>
-                        <li><a href="#" class="text-green-200 hover:text-eco-yellow transition-colors">Blog</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 class="font-poppins font-semibold text-lg mb-6">Contacto</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-center text-green-200">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                            </svg>
-                            info@ecocollet.pe
-                        </li>
-                        <li class="flex items-center text-green-200">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                            </svg>
-                            +51 1 234-5678
-                        </li>
-                        <li class="flex items-start text-green-200">
-                            <svg class="w-5 h-5 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                            Av. Javier Prado Este 4200, San Isidro, Lima
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="border-t border-green-700 mt-12 pt-8 text-center">
-                <p class="text-green-200">
-                    © 2024 EcoCollet. Todos los derechos reservados. | 
-                    <a href="#" class="hover:text-eco-yellow transition-colors">Política de Privacidad</a> | 
-                    <a href="#" class="hover:text-eco-yellow transition-colors">Términos de Servicio</a>
-                </p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Modal de Login -->
-    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
-            <div class="text-center mb-6">
-                <h2 class="font-poppins font-bold text-2xl text-eco-dark mb-2">Iniciar Sesión</h2>
-                <p class="text-gray-600">Accede a tu cuenta EcoCollet</p>
-            </div>
-            
-            <form onsubmit="handleLogin(event)">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input type="email" required="" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-green focus:border-transparent" placeholder="tu@email.com">
-                </div>
-                
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
-                    <input type="password" required="" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-green focus:border-transparent" placeholder="••••••••">
-                </div>
-                
-                <button type="submit" class="w-full bg-eco-green hover:bg-eco-dark text-white py-3 rounded-lg font-semibold transition-colors mb-4">
-                    Iniciar Sesión
-                </button>
-                
-                <div class="text-center">
-                    <a href="#" class="text-eco-green hover:text-eco-dark text-sm">¿Olvidaste tu contraseña?</a>
-                </div>
-            </form>
-            
-            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-    </div>
-
-    <!-- Modal de Registro -->
-    <div id="registerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
-            <div class="text-center mb-6">
-                <h2 class="font-poppins font-bold text-2xl text-eco-dark mb-2">Crear Cuenta</h2>
-                <p class="text-gray-600">Únete a la comunidad EcoCollet</p>
-            </div>
-            
-            <form onsubmit="handleRegister(event)">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Usuario</label>
-                    <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-green focus:border-transparent">
-                        <option value="usuario">Usuario Individual</option>
-                        <option value="empresa">Empresa</option>
-                    </select>
-                </div>
-                
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Nombre Completo</label>
-                    <input type="text" required="" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-green focus:border-transparent" placeholder="Juan Pérez">
-                </div>
-                
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input type="email" required="" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-green focus:border-transparent" placeholder="tu@email.com">
-                </div>
-                
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
-                    <input type="password" required="" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-green focus:border-transparent" placeholder="••••••••">
-                </div>
-                
-                <button type="submit" class="w-full bg-eco-green hover:bg-eco-dark text-white py-3 rounded-lg font-semibold transition-colors mb-4">
-                    Crear Cuenta
-                </button>
-                
-                <div class="text-center text-sm text-gray-600">
-                    Al registrarte, aceptas nuestros 
-                    <a href="#" class="text-eco-green hover:text-eco-dark">Términos de Servicio</a>
-                </div>
-            </form>
-            
-            <button onclick="closeRegisterModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-    </div>
-
-    <script>
-        // Funciones para modales
-        function showLoginModal() {
-            document.getElementById('loginModal').classList.remove('hidden');
-        }
-
-        function closeLoginModal() {
-            document.getElementById('loginModal').classList.add('hidden');
-        }
-
-        function showRegisterModal() {
-            document.getElementById('registerModal').classList.remove('hidden');
-        }
-
-        function closeRegisterModal() {
-            document.getElementById('registerModal').classList.add('hidden');
-        }
-
-        // Manejar login
-        function handleLogin(event) {
-            event.preventDefault();
-            alert('¡Bienvenido a EcoCollet! Redirigiendo al dashboard...');
-            closeLoginModal();
-        }
-
-        // Manejar registro
-        function handleRegister(event) {
-            event.preventDefault();
-            alert('¡Cuenta creada exitosamente! Bienvenido a EcoCollet.');
-            closeRegisterModal();
-        }
-
-        // Scroll suave al mapa
-        function scrollToMap() {
-            document.getElementById('puntos').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Mostrar información de punto
-        function showPointInfo(distrito) {
-            alert(`Centro de Reciclaje en ${distrito}\n\nMateriales aceptados: Plástico, Papel, Vidrio\nHorario: Lunes a Sábado 8:00 AM - 6:00 PM\nTeléfono: +51 1 234-5678`);
-        }
-
-        // Cerrar modales al hacer clic fuera
-        window.onclick = function(event) {
-            const loginModal = document.getElementById('loginModal');
-            const registerModal = document.getElementById('registerModal');
-            
-            if (event.target === loginModal) {
-                closeLoginModal();
-            }
-            if (event.target === registerModal) {
-                closeRegisterModal();
-            }
-        }
-
-        // Navegación suave
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-    </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98befeb314063c1b',t:'MTc2MDAyNDYyMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
-
-</body></html>
+      }
+    }
+  </script>
+  <style>
+    .gradient-eco {
+      background: linear-gradient(135deg, #3EB489 0%, #1E5631 100%);
+    }
+    
+    /* Colores personalizados para EcoCollet */
+    .bg-eco-green {
+      background-color: #3EB489 !important;
+    }
+    
+    .text-eco-green {
+      color: #3EB489 !important;
+    }
+    
+    .border-eco-green {
+      border-color: #3EB489 !important;
+    }
+    
+    .hover\:bg-eco-dark:hover {
+      background-color: #1E5631 !important;
+    }
+    
+    .hover\:text-eco-green:hover {
+      color: #3EB489 !important;
+    }
+    
+    .hover\:text-eco-dark:hover {
+      color: #1E5631 !important;
+    }
+    
+    .focus\:ring-eco-green:focus {
+      --tw-ring-color: #3EB489 !important;
+    }
+    
+    .focus\:border-eco-green:focus {
+      border-color: #3EB489 !important;
+    }
+    
+    /* Scroll personalizado elegante */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3EB489;
+    }
+    
+    /* Scroll suave */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #c1c1c1 #f1f1f1;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body class="h-full bg-gray-50 font-inter">
+  <app-root></app-root>
+</body>
+</html>

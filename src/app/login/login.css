@@ -1,0 +1,227 @@
+/* Estilos específicos del componente Login */
+:host {
+  display: block;
+  width: 100%;
+  height: 100vh;
+}
+
+/* Contenedor principal de dos columnas */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+}
+
+/* Columna izquierda - Formulario */
+.form-column {
+  flex: 1;
+  background-color: #F5F5DC; /* Color beige como en la imagen */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Columna derecha - Mensaje verde */
+.message-column {
+  flex: 1;
+  background-color: #3EB489;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Formulario */
+.login-form {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Inputs personalizados */
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px #3EB489;
+  border-color: #3EB489;
+}
+
+/* Botón principal */
+.login-button {
+  width: 100%;
+  background-color: #3EB489;
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-button:hover {
+  background-color: #1E5631;
+}
+
+.login-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Botón de Google */
+.google-button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  background-color: white;
+  color: #374151;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.google-button:hover {
+  background-color: #f9fafb;
+}
+
+/* Icono de hoja en la sección verde */
+.leaf-icon {
+  width: 4rem;
+  height: 4rem;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem;
+}
+
+/* Títulos y texto */
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+.green-title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.green-description {
+  color: white;
+  font-size: 1.125rem;
+  line-height: 1.625;
+  opacity: 0.9;
+  text-align: center;
+}
+
+/* Labels */
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+/* Links */
+.link {
+  color: #6b7280;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: inherit;
+}
+
+.link:hover {
+  color: #3EB489;
+}
+
+.register-link {
+  color: #111827;
+  font-weight: 500;
+}
+
+.register-link:hover {
+  color: #3EB489;
+}
+
+/* Separador */
+.separator {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+}
+
+.separator-line {
+  flex: 1;
+  height: 1px;
+  background-color: #d1d5db;
+}
+
+.separator-text {
+  margin: 0 1rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Animación de loading */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+  
+  .form-column,
+  .message-column {
+    flex: none;
+    min-height: 50vh;
+  }
+  
+  .form-column {
+    padding: 1rem;
+  }
+  
+  .message-column {
+    padding: 2rem 1rem;
+  }
+}

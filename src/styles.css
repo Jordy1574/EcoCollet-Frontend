@@ -1,1 +1,10 @@
-/* You can add global styles to this file, and also import other style files */
+/* Scroll suave */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Estilos básicos para el body */
+body {
+  font-family: 'Inter', sans-serif;
+}
+

@@ -1,0 +1,231 @@
+/* Estilos para el componente Register */
+
+/* Colores personalizados para EcoCollet */
+:root {
+  --eco-green: #3EB489;
+  --eco-dark: #1E5631;
+  --eco-yellow: #FFD60A;
+  --eco-beige: #F5F5DC;
+}
+
+/* Clase personalizada para Tailwind */
+.bg-eco-green {
+  background-color: var(--eco-green);
+}
+
+.text-eco-green {
+  color: var(--eco-green);
+}
+
+.border-eco-green {
+  border-color: var(--eco-green);
+}
+
+.hover\:bg-eco-dark:hover {
+  background-color: var(--eco-dark);
+}
+
+.hover\:text-eco-green:hover {
+  color: var(--eco-green);
+}
+
+.focus\:ring-eco-green:focus {
+  --tw-ring-color: var(--eco-green);
+}
+
+.focus\:border-eco-green:focus {
+  border-color: var(--eco-green);
+}
+
+/* Indicador de fortaleza de contraseña */
+.password-strength-weak {
+  background-color: #ef4444;
+}
+
+.password-strength-fair {
+  background-color: #f97316;
+}
+
+.password-strength-good {
+  background-color: #eab308;
+}
+
+.password-strength-strong {
+  background-color: #22c55e;
+}
+
+.password-strength-very-strong {
+  background-color: #16a34a;
+}
+
+/* Animaciones personalizadas */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Transiciones suaves para inputs */
+input, select, textarea {
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+/* Estilos mejorados para validación */
+.validation-message {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos responsivos para diseño de dos columnas */
+@media (max-width: 1024px) {
+  .register-container {
+    flex-direction: column;
+  }
+  
+  .register-form {
+    min-height: auto;
+    padding: 2rem 1rem;
+  }
+  
+  .register-message {
+    min-height: auto;
+    padding: 2rem 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .register-form {
+    padding: 1rem;
+  }
+  
+  .register-message {
+    padding: 1rem;
+  }
+}
+
+/* Estilos para inputs con validación */
+.input-error {
+  border-color: #ef4444 !important;
+}
+
+.input-success {
+  border-color: #22c55e !important;
+}
+
+/* Efectos hover para botones */
+.btn-primary {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(62, 180, 137, 0.3);
+}
+
+/* Estilo para checkbox personalizado */
+input[type="checkbox"]:checked {
+  background-color: var(--eco-green);
+  border-color: var(--eco-green);
+}
+
+/* Estilo para select personalizado */
+select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+/* Mejoras de accesibilidad */
+.focus\:ring-1:focus {
+  --tw-ring-width: 1px;
+}
+
+/* Animación del spinner de carga */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Estilos para mensajes de error */
+.error-message {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Mejoras visuales para el diseño */
+.register-form-container {
+  background: linear-gradient(135deg, #F5F5DC 0%, #F0F0E6 100%);
+}
+
+.register-message-container {
+  background: linear-gradient(135deg, var(--eco-green) 0%, #35A074 100%);
+}
+
+/* Estilos para enlaces */
+a, button.link {
+  transition: color 0.2s ease-in-out;
+}
+
+/* Mejoras para dispositivos móviles */
+@media (max-width: 480px) {
+  .register-title {
+    font-size: 1.5rem;
+  }
+  
+  .register-subtitle {
+    font-size: 0.875rem;
+  }
+  
+  .register-input {
+    padding: 0.75rem;
+  }
+  
+  .register-button {
+    padding: 0.875rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Estados de focus mejorados */
+.register-input:focus {
+  box-shadow: 0 0 0 1px var(--eco-green), 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Estilos para la barra de progreso de contraseña */
+.password-progress-bar {
+  transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
