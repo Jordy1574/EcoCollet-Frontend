@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -23,10 +24,10 @@ export class LoginComponent {
   showPassword = false;
   errorMessage = '';
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private authService: AuthService) { }
 
   // Manejar envío del formulario
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (!this.loginForm.email || !this.loginForm.password) {
       this.errorMessage = 'Por favor, completa todos los campos';
       return;
@@ -35,19 +36,20 @@ export class LoginComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
-    // Simular autenticación (aquí irá la lógica real)
-    setTimeout(() => {
-      this.isLoading = false;
+    try {
+      const result = await this.authService.login(this.loginForm.email, this.loginForm.password);
       
-      // Simulación de login exitoso
-      if (this.loginForm.email && this.loginForm.password) {
-        alert('¡Bienvenido a EcoCollet! Redirigiendo al dashboard...');
-        // Aquí puedes redirigir a donde necesites, por ejemplo:
-        this.router.navigate(['/']); // Vuelve al home por ahora
+      if (result.success && result.user) {
+        // Login exitoso - redirigir según el rol
+        this.authService.redirectBasedOnRole(result.user.role);
       } else {
-        this.errorMessage = 'Credenciales incorrectas';
+        this.errorMessage = result.error || 'Error en el login';
       }
-    }, 1500);
+    } catch (error) {
+      this.errorMessage = 'Error de conexión. Intenta nuevamente.';
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   // Toggle para mostrar/ocultar contraseña
