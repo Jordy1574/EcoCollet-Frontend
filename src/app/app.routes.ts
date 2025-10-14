@@ -1,15 +1,19 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './recolector/dashboard/dashboard.component';
-import { HomeComponent } from './home/home';
-import { LoginComponent } from './login/login';
-import { RegisterComponent } from './register/register';
-import { ForgotPasswordComponent } from './forgot-password/forgot-password';
+import { HomeComponent } from './pages/home/home';
+import { LoginComponent } from './pages/login/login';
+import { RegisterComponent } from './pages/register/register';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password';
+import { AdminDashboardComponent } from './pages/admin/dashboard/admin-dashboard.component';
+import { RecolectorDashboardComponent } from './pages/recolector/dashboard/recolector-dashboard.component';
+import { UsuarioDashboardComponent } from './pages/usuario/dashboard/usuario-dashboard.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent }, // ← esta será tu página principal
-  { path: 'login', component: LoginComponent }, // ← nueva ruta para login
-  { path: 'register', component: RegisterComponent }, // ← nueva ruta para registro
-  { path: 'forgot-password', component: ForgotPasswordComponent }, // ← nueva ruta para restablecer contraseña
-  { path: 'recolector', component: DashboardComponent },
-  { path: '**', redirectTo: '' } // ← cualquier ruta desconocida vuelve al inicio
+  { path: '', component: HomeComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'admin/dashboard', component: AdminDashboardComponent },
+  { path: 'recolector/dashboard', component: RecolectorDashboardComponent },
+  { path: 'usuario/dashboard', component: UsuarioDashboardComponent },
+  { path: '**', redirectTo: '' }
 ];
