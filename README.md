@@ -4,7 +4,13 @@ Instalar NODE 22.20.0
 
 Instalar Angular 20.0.3
 
-Instalar en la terminal del proyecto: npm install zone.js
+## Instalar en la terminal del proyecto:
+
+npm install zone.js
+
+npm install jwt-decode
+
+npm install --save-dev @types/jwt-decode
 
 
 # Frontend
