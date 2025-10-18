@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home';
-import { LoginComponent } from './pages/login/login';
-import { RegisterComponent } from './pages/register/register';
-import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password';
-import { AdminDashboardComponent } from './pages/admin/dashboard/admin-dashboard.component';
-import { RecolectorDashboardComponent } from './pages/recolector/dashboard/recolector-dashboard.component';
-import { UsuarioDashboardComponent } from './pages/usuario/dashboard/usuario-dashboard.component';
+import { HomeComponent } from './adapters/ui/pages/home/home';
+import { LoginComponent } from './adapters/ui/pages/login/login';
+import { RegisterComponent } from './adapters/ui/pages/register/register';
+import { ForgotPasswordComponent } from './adapters/ui/pages/forgot-password/forgot-password';
+import { AdminDashboardComponent } from './adapters/ui/pages/admin/dasboard/admin-dashboard.component';
+import { RecolectorDashboardComponent } from './adapters/ui/pages/recolector/dasboard/recolector-dashboard.component';
+import { UsuarioDashboardComponent } from './adapters/ui/pages/dashboard/usuario-dashboard.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },

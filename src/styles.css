@@ -8,3 +8,128 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
+
+/* Recolector */
+/* -------------------------------------------------------- */
+/* TIPOGRAFÍA Y UTILIDADES DE COLOR */
+.font-poppins { font-family: 'Poppins', sans-serif; }
+.font-inter { font-family: 'Inter', sans-serif; }
+
+/* Colores Directos y Hover */
+.bg-eco-green { background-color: #3EB489; }
+.bg-eco-dark { background-color: #1E5631; }
+.bg-eco-light { background-color: #F5F8F5; }
+.text-eco-green { color: #3EB489; }
+.text-eco-dark { color: #1E5631; }
+.border-eco-green { border-color: #3EB489; }
+.hover\:bg-eco-green:hover { background-color: #3EB489; }
+.hover\:bg-eco-dark:hover { background-color: #1E5631; }
+
+/* Sidebar animations */
+.sidebar-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sidebar-item:hover {
+    background-color: rgba(62, 180, 137, 0.1);
+    transform: translateX(4px);
+}
+.sidebar-item.active {
+    background-color: #3EB489;
+    color: white;
+    border-radius: 12px;
+}
+
+/* Card animations */
+.eco-card {
+    transition: all 0.3s ease;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.eco-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #3EB489;
+    border-radius: 10px;
+}
+
+/* Badge styles (¡MODIFICADO PARA USAR CSS PURO!) */
+.badge-pending { 
+    background-color: #FFF7ED; /* bg-orange-100 */
+    color: #9A3412; /* text-orange-800 */
+    padding: 4px 12px; /* px-3 py-1 */
+    border-radius: 9999px; /* rounded-full */
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500; /* font-medium */
+}
+.badge-progress { 
+    background-color: #EFF6FF; /* bg-blue-100 */
+    color: #1E40AF; /* text-blue-800 */
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+.badge-completed { 
+    background-color: #ECFDF5; /* bg-green-100 */
+    color: #065F46; /* text-green-800 */
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Map simulation */
+.map-container {
+    background: linear-gradient(135deg, #e8f5e8 0%, #f0f9ff 100%);
+    position: relative;
+    overflow: hidden;
+}
+.map-marker {
+    position: absolute;
+    animation: bounce 2s infinite;
+}
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+/* Route line simulation */
+.route-line {
+    position: absolute;
+    height: 3px;
+    background: linear-gradient(90deg, #3EB489, #1E5631);
+    border-radius: 2px;
+    animation: drawLine 3s ease-in-out infinite;
+}
+@keyframes drawLine {
+    0% { width: 0; opacity: 0; }
+    50% { opacity: 1; }
+    100% { width: 100%; opacity: 0.7; }
+}
+
+/* Truck icon animation */
+.truck-moving {
+    animation: moveAlongRoute 4s linear infinite;
+}
+@keyframes moveAlongRoute {
+    0% { transform: translateX(0) translateY(0); }
+    25% { transform: translateX(100px) translateY(-20px); }
+    50% { transform: translateX(200px) translateY(30px); }
+    75% { transform: translateX(300px) translateY(-10px); }
+    100% { transform: translateX(400px) translateY(0); }
+}
+
+/* -------------------------------------------------------- */

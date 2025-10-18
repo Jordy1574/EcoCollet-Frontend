@@ -1,22 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-
-export interface User {
-  id: string;
-  email: string;
-  role: 'admin' | 'recolector' | 'usuario';
-  name: string;
-}
+import { User } from '../../core/models/user.model'; // <-- IMPORTADO DESDE EL NÚCLEO
+import { delay } from 'rxjs/operators';
+import { of } from 'rxjs'; // Necesario para simular la promesa con delay
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+// RENOMBRADO: Clase final para el Adaptador de Autenticación
+export class AuthApiService {
   private currentUser: User | null = null;
-  
-  constructor(private router: Router) {}
 
-  // Simular login (aquí conectarías con tu backend)
+  // CONSTRUCTOR LIMPIO: Ya no inyecta Router (¡Principio Hexagonal!)
+  constructor() { }
+
+  // Simular login (listo para cambiar a llamada HTTP en el futuro)
   async login(email: string, password: string): Promise<{ success: boolean; user?: User; error?: string }> {
     // Simulación de usuarios para testing
     const mockUsers: User[] = [
@@ -29,31 +26,13 @@ export class AuthService {
     await new Promise(resolve => setTimeout(resolve, 1500));
 
     const user = mockUsers.find(u => u.email === email);
-    
-    if (user && password === '123456') { // Contraseña simple para demo
+
+    if (user && password === '123456') {
       this.currentUser = user;
       localStorage.setItem('user', JSON.stringify(user));
       return { success: true, user };
     } else {
       return { success: false, error: 'Credenciales incorrectas' };
-    }
-  }
-
-  // Redirigir según el rol
-  redirectBasedOnRole(role: string): void {
-    switch (role) {
-      case 'admin':
-        this.router.navigate(['/admin/dashboard']);
-        break;
-      case 'recolector':
-        this.router.navigate(['/recolector/dashboard']);
-        break;
-      case 'usuario':
-        this.router.navigate(['/usuario/dashboard']);
-        break;
-      default:
-        this.router.navigate(['/']);
-        break;
     }
   }
 
@@ -72,9 +51,8 @@ export class AuthService {
   logout(): void {
     this.currentUser = null;
     localStorage.removeItem('user');
-    this.router.navigate(['/']);
+    // NOTA: La redirección a /login la hace el Componente.
   }
-
   // Verificar si está autenticado
   isAuthenticated(): boolean {
     return this.getCurrentUser() !== null;
@@ -85,4 +63,8 @@ export class AuthService {
     const user = this.getCurrentUser();
     return user?.role === role;
   }
+
 }
+
+
+
