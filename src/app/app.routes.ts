@@ -5,7 +5,8 @@ import { RegisterComponent } from './adapters/ui/pages/register/register';
 import { ForgotPasswordComponent } from './adapters/ui/pages/forgot-password/forgot-password';
 import { AdminDashboardComponent } from './adapters/ui/pages/admin/dasboard/admin-dashboard.component';
 import { RecolectorDashboardComponent } from './adapters/ui/pages/recolector/dasboard/recolector-dashboard.component';
-import { UsuarioDashboardComponent } from './adapters/ui/pages/dashboard/usuario-dashboard.component';
+import { UsuarioDashboardComponent } from './adapters/ui/pages/usuario/dashboard/usuario-dashboard.component';
+import { TestBackendComponent } from './test-backend.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -15,5 +16,6 @@ export const routes: Routes = [
   { path: 'admin/dashboard', component: AdminDashboardComponent },
   { path: 'recolector/dashboard', component: RecolectorDashboardComponent },
   { path: 'usuario/dashboard', component: UsuarioDashboardComponent },
+  { path: 'test-backend', component: TestBackendComponent }, // Página de testing
   { path: '**', redirectTo: '' }
 ];
