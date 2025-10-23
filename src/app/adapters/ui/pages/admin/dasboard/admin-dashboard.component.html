@@ -299,6 +299,10 @@
                 </div>
             }
 
+            <app-usuarios-crud [hidden]="currentSection !== 'usuarios'"></app-usuarios-crud>
+            <app-puntos-reciclaje-crud [hidden]="currentSection !== 'puntos'"></app-puntos-reciclaje-crud>
+            <app-materiales-crud [hidden]="currentSection !== 'materiales'"></app-materiales-crud>
+
             @if (currentSection === 'configuracion') {
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <!-- Configuración General -->

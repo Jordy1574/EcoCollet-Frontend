@@ -9,11 +9,14 @@ import { User } from '../../../../../core/models/user.model';
 import { Usuario, Cita, PuntoReciclaje, Material, TrendPoint, TopUser, RolPermiso, ConfiguracionSistema } from '../../../../../core/models/admin.models'; 
 import { AuthApiService } from '../../../../api/auth.api.service'; 
 import { AdminApiService } from '../../../../api/admin.api.service'; 
+import { UsuariosCrudComponent } from '../usuarios/usuarios-crud.component';
+import { PuntosReciclajeCrudComponent } from '../puntos/puntos-reciclaje-crud.component';
+import { MaterialesCrudComponent } from '../materiales/materiales-crud.component';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, UsuariosCrudComponent, PuntosReciclajeCrudComponent, MaterialesCrudComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: [],
 })
