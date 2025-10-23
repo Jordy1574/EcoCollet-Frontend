@@ -1,14 +1,18 @@
 import { Injectable } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
 import { of, Observable } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { delay, map, catchError, switchMap } from 'rxjs/operators';
 // IMPORTANTE: Asegúrate que estas interfaces estén en src/app/core/models/admin.models.ts
 import { Usuario, Cita, PuntoReciclaje, Material, TrendPoint, TopUser, RolPermiso, ConfiguracionSistema } from '../../core/models/admin.models';
+import { BaseHttpService, ApiResponse } from '../../core/services/base-http.service';
 
 @Injectable({
     providedIn: 'root'
 })
 // Esta clase es el Adaptador de API que provee toda la data al AdminDashboard
 export class AdminApiService {
+
+    constructor(private http: BaseHttpService) {}
 
     // ====================================================================
     // 1. DATA SIMULADA (MOCK ARRAYS)
@@ -131,20 +135,130 @@ export class AdminApiService {
     // 2. MÉTODOS (CONTRATO DE LA API) - Devuelven los datos simulados
     // ====================================================================
 
+    // ============ MAPEO BACKEND -> UI (helpers) ============
+    private toUiRol(apiRol: string | undefined): string {
+        switch ((apiRol || '').toUpperCase()) {
+            case 'ADMIN': return 'Admin';
+            case 'RECOLECTOR': return 'Recolector';
+            case 'CLIENTE': return 'Usuario';
+            default: return 'Usuario';
+        }
+    }
+
+    private toApiRol(uiRol: string | undefined): 'ADMIN' | 'RECOLECTOR' | 'CLIENTE' {
+        switch ((uiRol || '').toLowerCase()) {
+            case 'admin': return 'ADMIN';
+            case 'recolector': return 'RECOLECTOR';
+            default: return 'CLIENTE';
+        }
+    }
+
+    private normalizeTipo(nombre: string | undefined): string {
+        const n = (nombre || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+        // map nombres comunes a tipos conocidos
+        if (n.includes('plast')) return 'plastico';
+        if (n.includes('papel') || n.includes('carton')) return 'papel';
+        if (n.includes('vidri')) return 'vidrio';
+        if (n.includes('metal') || n.includes('alumin') || n.includes('acero')) return 'metal';
+        return n || 'otros';
+    }
+
+    private precioLabel(precio: number | undefined): string {
+        if (precio == null || isNaN(precio)) return 'S/. 0.00/kg';
+        return `S/. ${precio.toFixed(2)}/kg`;
+    }
+
+    private parsePrecioLabel(label: string | undefined): number {
+        if (!label) return 0;
+        const m = label.replace(/[^0-9.,]/g, '').replace(',', '.');
+        const val = parseFloat(m);
+        return isNaN(val) ? 0 : val;
+    }
+
+    private capitalizeEstado(estado: string | undefined): string {
+        const e = (estado || '').toLowerCase();
+        if (e === 'activo') return 'Activo';
+        if (e === 'inactivo') return 'Inactivo';
+        if (e === 'mantenimiento') return 'Mantenimiento';
+        return estado || 'Activo';
+    }
+
+    private toApiEstado(uiEstado: string | undefined): 'activo' | 'inactivo' | 'mantenimiento' {
+        const e = (uiEstado || '').toLowerCase();
+        if (e.includes('manten')) return 'mantenimiento';
+        if (e.includes('inac')) return 'inactivo';
+        return 'activo';
+    }
+
+    private mapBackendUsuario(u: any): Usuario {
+        return {
+            id: String(u.id),
+            nombre: u.nombre ?? '',
+            email: u.email ?? '',
+            rol: this.toUiRol(u.rol),
+            distrito: u.direccion ?? '',
+            estado: 'Activo',
+            fechaRegistro: new Date().toLocaleDateString()
+        };
+    }
+
+    private mapBackendMaterial(m: any): Material {
+        return {
+            id: String(m.id),
+            nombre: m.nombre ?? '',
+            tipo: this.normalizeTipo(m.nombre),
+            cantidad: '0 kg',
+            periodo: 'Este mes',
+            info: {
+                precioPromedio: this.precioLabel(m.precioPorKg),
+                puntosActivos: '0',
+                ultimaActualizacion: 'Hoy'
+            }
+        };
+    }
+
+    private mapBackendPunto(p: any): PuntoReciclaje {
+        return {
+            id: String(p.id),
+            nombre: p.nombre ?? '',
+            tipo: 'principal',
+            tipoTexto: 'Centro Principal',
+            direccion: p.direccion ?? '',
+            horario: '',
+            materiales: (p.materialesAceptados || []).map((mat: any) => mat?.nombre ?? '').filter((n: string) => !!n),
+            estado: this.capitalizeEstado(p.estado)
+        };
+    }
+
+    // ============ USUARIOS (Backend) ============
     getUsuarios(): Observable<Usuario[]> {
-        return of(this.mockUsuarios).pipe(delay(200));
+        return this.http.get<any[]>('admin/usuarios')
+            .pipe(
+                map(resp => (resp.data || []).map(u => this.mapBackendUsuario(u))),
+                catchError(() => of([]))
+            );
     }
     
     getCitas(): Observable<Cita[]> {
         return of(this.mockCitas).pipe(delay(200));
     }
 
+    // ============ PUNTOS DE RECICLAJE (Backend) ============
     getPuntosReciclaje(): Observable<PuntoReciclaje[]> {
-        return of(this.mockPuntosReciclaje).pipe(delay(200));
+        return this.http.get<any[]>('admin/puntos')
+            .pipe(
+                map(resp => (resp.data || []).map(p => this.mapBackendPunto(p))),
+                catchError(() => of([]))
+            );
     }
 
+    // ============ MATERIALES (Backend) ============
     getMateriales(): Observable<Material[]> {
-        return of(this.mockMateriales).pipe(delay(200));
+        return this.http.get<any[]>('admin/materiales')
+            .pipe(
+                map(resp => (resp.data || []).map(m => this.mapBackendMaterial(m))),
+                catchError(() => of([]))
+            );
     }
 
     getTrendPoints(): Observable<TrendPoint[]> {
@@ -168,101 +282,123 @@ export class AdminApiService {
     // ====================================================================
 
     // Usuarios
-    createUsuario(usuario: Partial<Usuario>): Observable<Usuario> {
-        const newUsuario: Usuario = {
-            id: (this.mockUsuarios.length + 1).toString(),
-            nombre: usuario.nombre || 'Nuevo Usuario',
-            email: usuario.email || 'nuevo@dominio.com',
-            rol: usuario.rol || 'Usuario',
-            distrito: usuario.distrito || '',
-            estado: usuario.estado || 'Activo',
-            fechaRegistro: usuario.fechaRegistro || new Date().toLocaleDateString()
+    createUsuario(usuario: Partial<Usuario> & { password?: string }): Observable<Usuario> {
+        const body = {
+            nombre: usuario.nombre ?? '',
+            email: usuario.email ?? '',
+            password: usuario['password'] ?? 'Temporal123*',
+            rol: this.toApiRol(usuario.rol),
+            telefono: undefined,
+            direccion: usuario.distrito ?? ''
         };
-        this.mockUsuarios.push(newUsuario);
-        return of(newUsuario).pipe(delay(300));
+        return this.http.post<any>('admin/usuarios', body)
+            .pipe(map(resp => this.mapBackendUsuario((resp as any).data)));
     }
 
-    updateUsuario(id: string, usuario: Partial<Usuario>): Observable<Usuario> {
-        const idx = this.mockUsuarios.findIndex(u => u.id === id);
-        if (idx !== -1) {
-            this.mockUsuarios[idx] = { ...this.mockUsuarios[idx], ...usuario };
-            return of(this.mockUsuarios[idx]).pipe(delay(300));
+    updateUsuario(id: string, usuario: Partial<Usuario> & { password?: string }): Observable<Usuario> {
+        const body: any = {
+            nombre: usuario.nombre ?? '',
+            email: usuario.email ?? '',
+            rol: this.toApiRol(usuario.rol),
+            telefono: undefined,
+            direccion: usuario.distrito ?? ''
+        };
+        if (usuario['password']) {
+            body.password = usuario['password'];
         }
-        throw new Error('Usuario no encontrado');
+        return this.http.put<any>(`admin/usuarios/${id}`, body)
+            .pipe(map(resp => this.mapBackendUsuario((resp as any).data)));
     }
 
     deleteUsuario(id: string): Observable<void> {
-        const idx = this.mockUsuarios.findIndex(u => u.id === id);
-        if (idx !== -1) {
-            this.mockUsuarios.splice(idx, 1);
-            return of(void 0).pipe(delay(300));
-        }
-        throw new Error('Usuario no encontrado');
+        return this.http.delete<void>(`admin/usuarios/${id}`)
+            .pipe(map(() => void 0));
     }
 
     // Materiales
     createMaterial(material: Partial<Material>): Observable<Material> {
-        const newMaterial: Material = {
-            id: (this.mockMateriales.length + 1).toString(),
-            nombre: material.nombre || 'Nuevo Material',
-            tipo: material.tipo || 'otro',
-            cantidad: material.cantidad || '0',
-            periodo: material.periodo || 'Hoy',
-            info: material.info
-        } as Material;
-        this.mockMateriales.push(newMaterial);
-        return of(newMaterial).pipe(delay(300));
+        const body = {
+            nombre: material.nombre ?? '',
+            precioPorKg: this.parsePrecioLabel(material.info?.precioPromedio)
+        };
+        return this.http.post<any>('admin/materiales', body)
+            .pipe(map(resp => this.mapBackendMaterial((resp as any).data)));
     }
 
     updateMaterial(id: string, material: Partial<Material>): Observable<Material> {
-        const idx = this.mockMateriales.findIndex(m => m.id === id);
-        if (idx !== -1) {
-            this.mockMateriales[idx] = { ...this.mockMateriales[idx], ...material };
-            return of(this.mockMateriales[idx]).pipe(delay(300));
-        }
-        throw new Error('Material no encontrado');
+        const body = {
+            nombre: material.nombre ?? '',
+            precioPorKg: this.parsePrecioLabel(material.info?.precioPromedio)
+        };
+        return this.http.put<any>(`admin/materiales/${id}`, body)
+            .pipe(map(resp => this.mapBackendMaterial((resp as any).data)));
     }
 
     deleteMaterial(id: string): Observable<void> {
-        const idx = this.mockMateriales.findIndex(m => m.id === id);
-        if (idx !== -1) {
-            this.mockMateriales.splice(idx, 1);
-            return of(void 0).pipe(delay(300));
-        }
-        throw new Error('Material no encontrado');
+        return this.http.delete<void>(`admin/materiales/${id}`)
+            .pipe(map(() => void 0));
     }
 
     // Puntos de reciclaje
+    private buildPuntoRequest(punto: Partial<PuntoReciclaje>, backendMateriales: any[]): any {
+        const nombres = (punto.materiales || []) as string[];
+        const idMap = new Map<string, number>();
+        const norm = (s: string) => s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+        backendMateriales.forEach(m => idMap.set(norm((m.nombre || '').toString()), m.id));
+        const materialesAceptadosIds: number[] = nombres
+            .map(n => idMap.get(norm(n)))
+            .filter((v): v is number => typeof v === 'number');
+
+        return {
+            nombre: punto.nombre ?? '',
+            direccion: punto.direccion ?? '',
+            telefono: undefined,
+            estado: this.toApiEstado(punto.estado),
+            materialesAceptadosIds
+        };
+    }
+
     createPuntoReciclaje(punto: Partial<PuntoReciclaje>): Observable<PuntoReciclaje> {
-        const newPunto: PuntoReciclaje = {
-            id: (this.mockPuntosReciclaje.length + 1).toString(),
-            nombre: punto.nombre || 'Nuevo Punto',
-            tipo: punto.tipo || 'comunitario',
-            tipoTexto: punto.tipoTexto || 'Centro',
-            direccion: punto.direccion || '',
-            horario: punto.horario || '',
-            materiales: punto.materiales || [],
-            estado: punto.estado || 'Activo'
-        } as PuntoReciclaje;
-        this.mockPuntosReciclaje.push(newPunto);
-        return of(newPunto).pipe(delay(300));
+        // Obtener materiales del backend para mapear nombres -> IDs
+        return this.http.get<any[]>('admin/materiales').pipe(
+            switchMap(resp => {
+                const body = this.buildPuntoRequest(punto, (resp as any).data || []);
+                return this.http.post<any>('admin/puntos', body);
+            }),
+            map(resp => this.mapBackendPunto((resp as any).data))
+        );
     }
 
     updatePuntoReciclaje(id: string, punto: Partial<PuntoReciclaje>): Observable<PuntoReciclaje> {
-        const idx = this.mockPuntosReciclaje.findIndex(p => p.id === id);
-        if (idx !== -1) {
-            this.mockPuntosReciclaje[idx] = { ...this.mockPuntosReciclaje[idx], ...punto };
-            return of(this.mockPuntosReciclaje[idx]).pipe(delay(300));
-        }
-        throw new Error('Punto de reciclaje no encontrado');
+        return this.http.get<any[]>('admin/materiales').pipe(
+            switchMap(resp => {
+                const body = this.buildPuntoRequest(punto, (resp as any).data || []);
+                return this.http.put<any>(`admin/puntos/${id}`, body);
+            }),
+            map(resp => this.mapBackendPunto((resp as any).data))
+        );
     }
 
     deletePuntoReciclaje(id: string): Observable<void> {
-        const idx = this.mockPuntosReciclaje.findIndex(p => p.id === id);
-        if (idx !== -1) {
-            this.mockPuntosReciclaje.splice(idx, 1);
-            return of(void 0).pipe(delay(300));
-        }
-        throw new Error('Punto de reciclaje no encontrado');
+        return this.http.delete<void>(`admin/puntos/${id}`)
+            .pipe(map(() => void 0));
+    }
+
+    // ====== Búsquedas específicas (no usadas aún por la UI pero listas) ======
+    searchMateriales(query: string): Observable<Material[]> {
+        const params = new HttpParams().set('query', query);
+        return this.http.get<any[]>('admin/materiales/search', params)
+            .pipe(map(resp => (resp.data || []).map(m => this.mapBackendMaterial(m))));
+    }
+
+    searchPuntos(query: string): Observable<PuntoReciclaje[]> {
+        const params = new HttpParams().set('query', query);
+        return this.http.get<any[]>('admin/puntos/search', params)
+            .pipe(map(resp => (resp.data || []).map(p => this.mapBackendPunto(p))));
+    }
+
+    getPuntosPorEstado(estado: 'activo' | 'inactivo' | 'mantenimiento'): Observable<PuntoReciclaje[]> {
+        return this.http.get<any[]>(`admin/puntos/estado/${estado}`)
+            .pipe(map(resp => (resp.data || []).map(p => this.mapBackendPunto(p))));
     }
 }
