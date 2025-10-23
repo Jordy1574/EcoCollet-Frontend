@@ -1,7 +1,5 @@
 <div class="flex h-full bg-eco-light font-inter">
-    <!-- Sidebar -->
     <div class="w-64 bg-white shadow-lg flex flex-col">
-        <!-- Header del usuario -->
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-center">
                 <div class="w-12 h-12 bg-eco-green rounded-full flex items-center justify-center mr-3">
@@ -16,7 +14,6 @@
             </div>
         </div>
 
-        <!-- Navegación -->
         <nav class="flex-1 p-4 overflow-y-auto">
             <ul class="space-y-2">
                 <li>
@@ -24,23 +21,34 @@
                         class="sidebar-item flex items-center px-4 py-3 text-sm font-medium rounded-xl"
                         [class.active]="currentSection === 'dashboard'">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                         </svg>
-                        Inicio
+                        <span>Inicio</span>
                     </a>
                 </li>
-                
                 <li>
                     <a href="#" (click)="loadSection('citas'); $event.preventDefault()" 
                         class="sidebar-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 rounded-xl"
                         [class.active]="currentSection === 'citas'">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 012-2h4a2 2 0 012 2v1m-6 0h8m-8 0l1 12a2 2 0 002 2h4a2 2 0 002-2l1-12m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v0"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0h8m-8 0l1 12a2 2 0 002 2h4a2 2 0 002-2l1-12m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v0"></path>
                         </svg>
-                        Mis Citas
+                        <span>Mis Citas</span>
                         @if (citasPendientes.length > 0) {
-                            <span class="ml-auto bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">{{ citasPendientes.length }}</span>
+                            <span class="ml-auto bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+                                {{ citasPendientes.length }}
+                            </span>
                         }
+                    </a>
+                </li>
+                <li>
+                    <a href="#" (click)="loadSection('recompensas'); $event.preventDefault()" 
+                        class="sidebar-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 rounded-xl"
+                        [class.active]="currentSection === 'recompensas'">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                        </svg>
+                        <span>Recompensas</span>
                     </a>
                 </li>
                 <li>
@@ -51,17 +59,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
-                        Puntos de Reciclaje
-                    </a>
-                </li>
-                <li>
-                    <a href="#" (click)="loadSection('recompensas'); $event.preventDefault()" 
-                        class="sidebar-item flex items-center px-4 py-3 text-sm font-medium text-gray-700 rounded-xl"
-                        [class.active]="currentSection === 'recompensas'">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                        </svg>
-                        Recompensas
+                        <span>Puntos de Reciclaje</span>
                     </a>
                 </li>
                 <li>
@@ -71,13 +69,12 @@
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
-                        Mi Perfil
+                        <span>Mi Perfil</span>
                     </a>
                 </li>
             </ul>
         </nav>
 
-        <!-- Usuario y logout -->
         <div class="p-4 border-t border-gray-200">
             <div class="flex items-center mb-4">
                 <div class="w-10 h-10 bg-eco-green rounded-full flex items-center justify-center mr-3">
@@ -94,26 +91,21 @@
         </div>
     </div>
 
-    <!-- Contenido principal -->
     <div class="flex-1 flex flex-col overflow-hidden">
-        <!-- Header -->
         <header class="bg-white shadow-sm border-b border-gray-200">
             <div class="flex items-center justify-between px-6 py-4">
                 <div>
-                    <h2 class="font-poppins font-semibold text-xl text-gray-800">
-                        {{ pageTitle }}
-                    </h2>
+                    <h2 class="font-poppins font-semibold text-xl text-gray-800">{{ pageTitle }}</h2>
                     <p class="text-sm text-gray-600">{{ pageSubtitle }}</p>
                 </div>
-                
                 <div class="flex items-center space-x-4">
-                    <button (click)="solicitarNuevaCita()" class="bg-eco-green hover:bg-eco-dark text-white px-4 py-2 rounded-xl font-medium transition-colors flex items-center">
+                    <button (click)="solicitarNuevaCita()" 
+                        class="bg-eco-green hover:bg-eco-dark text-white px-4 py-2 rounded-xl font-medium transition-colors flex items-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
                         Agendar Recolección
                     </button>
-                    
                     <div class="relative">
                         <button class="p-2 text-gray-400 hover:text-gray-600 relative">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,989 +118,751 @@
             </div>
         </header>
 
-        
-
-        <!-- Contenido de las secciones -->
         <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
 
-
-
-            <!-- Dashboard Principal -->
-            @if (currentSection === 'dashboard') {
-                <div id="dashboard-section" class="p-6">
-                <div class="eco-card p-6 mb-6 bg-eco-green text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="font-poppins font-bold text-2xl mb-2">¡Excelente trabajo, {{ (user?.name?.split(' ') || [])[0] || 'Alexander' }}! 🌱</h3>
-                            <p class="text-green-100 mb-4">Has reciclado {{ estadisticas.materialReciclado }} kg este mes y has ayudado a reducir {{ estadisticas.impactoAmbiental }} kg de CO2.</p>
-                            <div class="flex items-center space-x-6">
-                                <span [class]="getCrecimientoClass()" class="text-sm">{{ calcularPorcentajeCrecimiento() }} vs mes anterior</span>
-                                <span class="text-sm">{{ estadisticas.citasCompletadas }} citas completadas</span>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-6xl mb-2">🚛</div>
-                            <p class="text-sm text-green-100">Camión ECO-001</p>
-                        </div>
-                    </div>
+            @if (isLoading) {
+                <div class="flex items-center justify-center h-full">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-eco-green"></div>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <!-- Kilos Reciclados -->
-                    <div class="eco-card p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-eco-green rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-600 mb-1">Kilos Reciclados</p>
-                            <p class="text-3xl font-bold text-gray-900 mb-1">{{ estadisticas.materialReciclado }}</p>
-                            <p [class]="getCrecimientoClass()" class="text-sm">{{ calcularPorcentajeCrecimiento() }} este mes</p>
-                        </div>
-                    </div>
-
-                    <!-- Citas Completadas -->
-                    <div class="eco-card p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-600 mb-1">Citas Completadas</p>
-                            <p class="text-3xl font-bold text-gray-900 mb-1">{{ estadisticas.citasCompletadas }}</p>
-                            <p [class]="getCrecimientoCitasClass()" class="text-sm">{{ calcularCrecimientoCitas() }} vs mes anterior</p>
-                        </div>
-                    </div>
-
-                    <!-- Puntos EcoCollet -->
-                    <div class="eco-card p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-600 mb-1">Puntos EcoCollet</p>
-                            <p class="text-3xl font-bold text-gray-900 mb-1">{{ estadisticas.puntosGanados.toLocaleString() }}</p>
-                            <p [class]="getCrecimientoPuntosClass()" class="text-sm">{{ calcularCrecimientoPuntos() }} vs mes anterior</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Progreso Mensual y Gráfico -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                    <!-- Progreso Mensual -->
-                    <div class="eco-card p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-semibold text-lg text-gray-900">Progreso Mensual</h3>
-                            <span class="text-sm text-gray-500">Meta: 50 kg</span>
-                        </div>
-                        <div class="mb-4">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-sm font-medium text-gray-600">{{ estadisticas.materialReciclado }} kg reciclados</span>
-                                <span class="text-sm font-medium text-gray-900">{{ ((estadisticas.materialReciclado / 50) * 100).toFixed(0) }}%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-3">
-                                <div class="bg-eco-green h-3 rounded-full transition-all duration-500" [style.width.%]="(estadisticas.materialReciclado / 50) * 100"></div>
-                            </div>
-                        </div>
-                        <p class="text-sm text-gray-600 flex items-center">
-                            ¡Solo te faltan {{ (50 - estadisticas.materialReciclado).toFixed(1) }} kg para alcanzar tu meta mensual! 🎯
-                        </p>
-                    </div>
-
-                    <!-- Materiales Reciclados -->
-                    <div class="eco-card p-6">
-                        <h3 class="font-semibold text-lg text-gray-900 mb-6">Materiales Reciclados</h3>
-                        <div class="flex items-center justify-center">
-                            <!-- Aquí iría un gráfico circular, por ahora simulamos con estadísticas -->
-                            <div class="w-48 h-48 relative">
-                                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                                    <!-- Fondo del círculo -->
-                                    <circle cx="50" cy="50" r="35" stroke="#e5e7eb" stroke-width="8" fill="none"></circle>
-                                    <!-- Plástico - 40% -->
-                                    <circle cx="50" cy="50" r="35" stroke="#3b82f6" stroke-width="8" fill="none" 
-                                            stroke-dasharray="87.96" stroke-dashoffset="52.78" class="transition-all duration-1000"></circle>
-                                    <!-- Papel - 25% -->
-                                    <circle cx="50" cy="50" r="35" stroke="#f59e0b" stroke-width="8" fill="none" 
-                                            stroke-dasharray="54.98" stroke-dashoffset="87.96" class="transition-all duration-1000"></circle>
-                                    <!-- Vidrio - 20% -->
-                                    <circle cx="50" cy="50" r="35" stroke="#10b981" stroke-width="8" fill="none" 
-                                            stroke-dasharray="43.98" stroke-dashoffset="54.98" class="transition-all duration-1000"></circle>
-                                    <!-- Metal - 15% -->
-                                    <circle cx="50" cy="50" r="35" stroke="#6b7280" stroke-width="8" fill="none" 
-                                            stroke-dasharray="32.99" stroke-dashoffset="43.98" class="transition-all duration-1000"></circle>
-                                </svg>
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <div class="text-center">
-                                        <p class="text-2xl font-bold text-gray-900">{{ estadisticas.materialReciclado }}</p>
-                                        <p class="text-sm text-gray-500">kg total</p>
+            } @else {
+                @if (currentSection === 'dashboard') {
+                    <div id="dashboard-section" class="p-6">
+                        <div class="eco-card p-6 mb-6 bg-eco-green text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-poppins font-bold text-2xl mb-2">¡Excelente trabajo, {{ (user?.name?.split(' ') || [])[0] || 'Alexander' }}! 🌱</h3>
+                                    <p class="text-green-100 mb-4">Has reciclado {{ estadisticas.materialReciclado }} kg este mes y has ayudado a reducir {{ estadisticas.impactoAmbiental }} kg de CO2.</p>
+                                    <div class="flex items-center space-x-6">
+                                        <span [class]="getCrecimientoClass()" class="text-sm">{{ calcularPorcentajeCrecimiento() }} vs mes anterior</span>
+                                        <span class="text-sm">{{ estadisticas.citasCompletadas }} citas completadas</span>
                                     </div>
                                 </div>
+                                <div class="text-right">
+                                    <div class="text-6xl mb-2">🚛</div>
+                                    <p class="text-sm text-green-100">Camión ECO-001</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-4 mt-6">
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-                                <span class="text-sm text-gray-600">Plástico</span>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
-                                <span class="text-sm text-gray-600">Papel</span>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                                <span class="text-sm text-gray-600">Vidrio</span>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-gray-500 rounded-full mr-2"></div>
-                                <span class="text-sm text-gray-600">Metal</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Botones de acceso rápido -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <button (click)="solicitarNuevaCita()" class="eco-card p-6 text-center hover:shadow-lg transition-all group">
-                        <div class="w-12 h-12 bg-eco-green rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-105 transition-transform">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                            </svg>
-                        </div>
-                        <h4 class="font-medium text-gray-900 mb-1">Nueva Recolección</h4>
-                        <p class="text-sm text-gray-500">Agenda tu próxima cita</p>
-                    </button>
-
-                    <button (click)="loadSection('puntos')" class="eco-card p-6 text-center hover:shadow-lg transition-all group">
-                        <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-105 transition-transform">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                        </div>
-                        <h4 class="font-medium text-gray-900 mb-1">Puntos Cercanos</h4>
-                        <p class="text-sm text-gray-500">Encuentra centros</p>
-                    </button>
-
-                    <button (click)="loadSection('recompensas')" class="eco-card p-6 text-center hover:shadow-lg transition-all group">
-                        <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-105 transition-transform">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                            </svg>
-                        </div>
-                        <h4 class="font-medium text-gray-900 mb-1">Mis Recompensas</h4>
-                        <p class="text-sm text-gray-500">Canjea tus puntos</p>
-                    </button>
-
-                    <button (click)="loadSection('citas')" class="eco-card p-6 text-center hover:shadow-lg transition-all group">
-                        <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-105 transition-transform">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 012-2h4a2 2 0 012 2v1m-6 0h8m-8 0l1 12a2 2 0 002 2h4a2 2 0 002-2l1-12m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v0"></path>
-                            </svg>
-                        </div>
-                        <h4 class="font-medium text-gray-900 mb-1">Mis Citas</h4>
-                        <p class="text-sm text-gray-500">Ver historial</p>
-                    </button>
-                </div>
-
-                <!-- Actividad Reciente -->
-                <div class="eco-card p-6">
-                    <h3 class="font-semibold text-lg text-gray-900 mb-6">Actividad Reciente</h3>
-                    <div class="space-y-4">
-                        <!-- Recolección completada -->
-                        <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg">
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-4">
-                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
-                                    </svg>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div class="eco-card p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="w-12 h-12 bg-eco-green rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <div>
-                                    <p class="font-medium text-gray-900">Recolección completada</p>
-                                    <p class="text-sm text-gray-600">12 kg de plástico • +120 puntos • Hace 2 días</p>
+                                    <p class="text-sm font-medium text-gray-600 mb-1">Kilos Reciclados</p>
+                                    <p class="text-3xl font-bold text-gray-900 mb-1">{{ estadisticas.materialReciclado }}</p>
+                                    <p [class]="getCrecimientoClass()" class="text-sm">{{ calcularPorcentajeCrecimiento() }} este mes</p>
                                 </div>
                             </div>
-                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">Completada</span>
-                        </div>
 
-                        <!-- Recompensa canjeada -->
-                        <div class="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-4">
-                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2"></path>
-                                    </svg>
+                            <div class="eco-card p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <div>
-                                    <p class="font-medium text-gray-900">Recompensa canjeada</p>
-                                    <p class="text-sm text-gray-600">Bolsa ecológica • -500 puntos • Hace 5 días</p>
+                                    <p class="text-sm font-medium text-gray-600 mb-1">Citas Completadas</p>
+                                    <p class="text-3xl font-bold text-gray-900 mb-1">{{ estadisticas.citasCompletadas }}</p>
+                                    <p [class]="getCrecimientoCitasClass()" class="text-sm">{{ calcularCrecimientoCitas() }} vs mes anterior</p>
                                 </div>
                             </div>
-                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">Canjeada</span>
-                        </div>
 
-                        <!-- Nueva cita agendada -->
-                        <div class="flex items-center justify-between p-4 bg-yellow-50 rounded-lg">
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center mr-4">
-                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 012-2h4a2 2 0 012 2v1"></path>
-                                    </svg>
+                            <div class="eco-card p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <div>
-                                    <p class="font-medium text-gray-900">Nueva cita agendada</p>
-                                    <p class="text-sm text-gray-600">8 kg de papel • 25 Mar, 10:00 AM • Hace 1 semana</p>
+                                    <p class="text-sm font-medium text-gray-600 mb-1">Puntos EcoCollet</p>
+                                    <p class="text-3xl font-bold text-gray-900 mb-1">{{ estadisticas.puntosGanados.toLocaleString() }}</p>
+                                    <p [class]="getCrecimientoPuntosClass()" class="text-sm">{{ calcularCrecimientoPuntos() }} vs mes anterior</p>
                                 </div>
                             </div>
-                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">Programada</span>
                         </div>
-                    </div>
-                </div>
-                </div>
-            }
 
-            <!-- Modal/Formulario de Agendar Recolección -->
-            @if (showAgendarForm) {
-                <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-                    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                        <!-- Header del Modal -->
-                        <div class="flex items-center justify-between p-6 border-b border-gray-200">
-                            <div>
-                                <h3 class="text-xl font-poppins font-semibold text-gray-900">Agendar Nueva Recolección</h3>
-                                <p class="text-sm text-gray-600">Completa el formulario para programar tu recolección</p>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                            <div class="eco-card p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="font-semibold text-lg text-gray-900">Progreso Mensual</h3>
+                                    <span class="text-sm text-gray-500">Meta: 50 kg</span>
+                                </div>
+                                <div class="mb-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm font-medium text-gray-600">{{ estadisticas.materialReciclado }} kg reciclados</span>
+                                        <span class="text-sm font-medium text-gray-900">{{ ((estadisticas.materialReciclado / 50) * 100).toFixed(0) }}%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-eco-green h-3 rounded-full transition-all duration-500" [style.width.%]="(estadisticas.materialReciclado / 50) * 100"></div>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600 flex items-center">
+                                    ¡Solo te faltan {{ (50 - estadisticas.materialReciclado).toFixed(1) }} kg para alcanzar tu meta mensual! 🎯
+                                </p>
                             </div>
-                            <button (click)="cancelarAgendamiento()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
+
+                            <div class="eco-card p-6">
+                                <h3 class="font-semibold text-lg text-gray-900 mb-6">Materiales Reciclados</h3>
+                                <div class="flex items-center justify-center">
+                                    <div class="w-48 h-48 relative">
+                                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                            <circle cx="50" cy="50" r="35" stroke="#e5e7eb" stroke-width="8" fill="none"></circle>
+                                            <circle cx="50" cy="50" r="35" stroke="#3b82f6" stroke-width="8" fill="none" stroke-dasharray="87.96" stroke-dashoffset="52.78" class="transition-all duration-1000"></circle>
+                                            <circle cx="50" cy="50" r="35" stroke="#f59e0b" stroke-width="8" fill="none" stroke-dasharray="54.98" stroke-dashoffset="87.96" class="transition-all duration-1000"></circle>
+                                            <circle cx="50" cy="50" r="35" stroke="#10b981" stroke-width="8" fill="none" stroke-dasharray="43.98" stroke-dashoffset="54.98" class="transition-all duration-1000"></circle>
+                                            <circle cx="50" cy="50" r="35" stroke="#6b7280" stroke-width="8" fill="none" stroke-dasharray="32.99" stroke-dashoffset="43.98" class="transition-all duration-1000"></circle>
+                                        </svg>
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <div class="text-center">
+                                                <p class="text-2xl font-bold text-gray-900">{{ estadisticas.materialReciclado }}</p>
+                                                <p class="text-sm text-gray-500">kg total</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 mt-6">
+                                    <div class="flex items-center"><div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div><span class="text-sm text-gray-600">Plástico</span></div>
+                                    <div class="flex items-center"><div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div><span class="text-sm text-gray-600">Papel</span></div>
+                                    <div class="flex items-center"><div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div><span class="text-sm text-gray-600">Vidrio</span></div>
+                                    <div class="flex items-center"><div class="w-3 h-3 bg-gray-500 rounded-full mr-2"></div><span class="text-sm text-gray-600">Metal</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                            <button (click)="solicitarNuevaCita()" class="eco-card p-6 text-center hover:shadow-lg transition-all group">
+                                <div class="w-12 h-12 bg-eco-green rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-105 transition-transform">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                </div>
+                                <h4 class="font-medium text-gray-900 mb-1">Nueva Recolección</h4>
+                                <p class="text-sm text-gray-500">Agenda tu próxima cita</p>
+                            </button>
+                            <button (click)="loadSection('puntos')" class="eco-card p-6 text-center hover:shadow-lg transition-all group">
+                                <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-105 transition-transform">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                </div>
+                                <h4 class="font-medium text-gray-900 mb-1">Puntos Cercanos</h4>
+                                <p class="text-sm text-gray-500">Encuentra centros</p>
+                            </button>
+                            <button (click)="loadSection('recompensas')" class="eco-card p-6 text-center hover:shadow-lg transition-all group">
+                                <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-105 transition-transform">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path></svg>
+                                </div>
+                                <h4 class="font-medium text-gray-900 mb-1">Mis Recompensas</h4>
+                                <p class="text-sm text-gray-500">Canjea tus puntos</p>
+                            </button>
+                            <button (click)="loadSection('citas')" class="eco-card p-6 text-center hover:shadow-lg transition-all group">
+                                <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-105 transition-transform">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0h8m-8 0l1 12a2 2 0 002 2h4a2 2 0 002-2l1-12m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v0"></path></svg>
+                                </div>
+                                <h4 class="font-medium text-gray-900 mb-1">Mis Citas</h4>
+                                <p class="text-sm text-gray-500">Ver historial</p>
                             </button>
                         </div>
 
-                        <!-- Indicador de pasos -->
-                        <div class="px-6 py-4 bg-gray-50">
-                            <div class="flex items-center justify-center space-x-4">
-                                <div class="flex items-center">
-                                    <div [class]="agendarStep >= 1 ? 'w-8 h-8 bg-eco-green text-white rounded-full flex items-center justify-center text-sm font-medium' : 'w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium'">1</div>
-                                    <span [class]="agendarStep >= 1 ? 'ml-2 text-sm font-medium text-eco-green' : 'ml-2 text-sm text-gray-500'">Tipo de Material</span>
+                        <div class="eco-card p-6">
+                            <h3 class="font-semibold text-lg text-gray-900 mb-6">Próximas Recolecciones</h3>
+                            
+                            @if (citasPendientesDashboard.length === 0) {
+                                <div class="bg-white rounded-xl p-6 text-center">
+                                    <p class="text-gray-500">No tienes recolecciones programadas</p>
+                                    <button (click)="solicitarNuevaCita()" 
+                                            class="mt-4 bg-eco-green hover:bg-eco-dark text-white px-4 py-2 rounded-xl font-medium transition-colors">
+                                        Agendar una recolección
+                                    </button>
                                 </div>
-                                <div class="w-8 h-px bg-gray-300"></div>
-                                <div class="flex items-center">
-                                    <div [class]="agendarStep >= 2 ? 'w-8 h-8 bg-eco-green text-white rounded-full flex items-center justify-center text-sm font-medium' : 'w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium'">2</div>
-                                    <span [class]="agendarStep >= 2 ? 'ml-2 text-sm font-medium text-eco-green' : 'ml-2 text-sm text-gray-500'">Fecha y Hora</span>
+                            } @else {
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    @for (cita of citasPendientesDashboard; track cita.id) {
+                                        <div class="bg-white rounded-xl p-6 shadow-sm">
+                                            <div class="flex items-center justify-between mb-4">
+                                                <div class="flex items-center">
+                                                    <div class="w-10 h-10 bg-eco-green/20 rounded-full flex items-center justify-center mr-3">
+                                                        <svg class="w-6 h-6 text-eco-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0h8m-8 0l1 12a2 2 0 002 2h4a2 2 0 002-2l1-12m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v0"></path></svg>
+                                                    </div>
+                                                    <div>
+                                                        <h4 class="font-medium text-gray-900">Recolección #{{ cita.id }}</h4>
+                                                        <p class="text-sm text-gray-500">{{ cita.fecha | date:'shortDate' }} - {{ cita.hora }}</p>
+                                                    </div>
+                                                </div>
+                                                <span class="px-3 py-1 text-xs font-medium rounded-full" [class]="getCitaStatusClass(cita.estado)">
+                                                    {{ cita.estado }}
+                                                </span>
+                                            </div>
+                                            <div class="space-y-2">
+                                                <div class="text-sm"><span class="text-gray-500">Dirección:</span><span class="ml-2 text-gray-900">{{ cita.direccion }}</span></div>
+                                                <div class="text-sm"><span class="text-gray-500">Material:</span><span class="ml-2 text-gray-900">{{ cita.tipoMaterial }}</span></div>
+                                                <div class="text-sm"><span class="text-gray-500">Cantidad:</span><span class="ml-2 text-gray-900">{{ cita.cantidadEstimada }} kg</span></div>
+                                            </div>
+                                            <div class="mt-4 flex justify-end space-x-3">
+                                                <button (click)="cancelarCita(cita.id)" class="text-red-600 hover:text-red-700 text-sm font-medium">Cancelar</button>
+                                                <button (click)="editarCita(cita.id)" class="text-eco-green hover:text-eco-dark text-sm font-medium">Editar</button>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
-                                <div class="w-8 h-px bg-gray-300"></div>
-                                <div class="flex items-center">
-                                    <div [class]="agendarStep >= 3 ? 'w-8 h-8 bg-eco-green text-white rounded-full flex items-center justify-center text-sm font-medium' : 'w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium'">3</div>
-                                    <span [class]="agendarStep >= 3 ? 'ml-2 text-sm font-medium text-eco-green' : 'ml-2 text-sm text-gray-500'">Dirección</span>
-                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                @if (currentSection === 'citas') {
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-xl font-poppins font-semibold text-gray-900">Mis Citas de Recolección</h3>
+                                <p class="text-sm text-gray-600">Gestiona y revisa el estado de tus citas</p>
                             </div>
+                            <button (click)="solicitarNuevaCita()" class="bg-eco-green hover:bg-eco-dark text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                Nueva Cita
+                            </button>
                         </div>
 
-                        <!-- Contenido del formulario -->
-                        <div class="p-6">
-                            <!-- Paso 1: Tipo de Material -->
-                            @if (agendarStep === 1) {
-                                <div class="space-y-6">
-                                    <div>
-                                        <h4 class="text-lg font-medium text-gray-900 mb-4">Tipo de Material</h4>
-                                        <div class="grid grid-cols-2 gap-4">
-                                            @for (material of materialesDisponibles; track material.tipo) {
-                                                <button (click)="toggleMaterial(material)" [class]="getMaterialClass(material)">
-                                                    <div class="text-2xl mb-2">{{ material.icono }}</div>
-                                                    <div class="font-medium">{{ material.nombre }}</div>
-                                                </button>
-                                            }
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Cantidad (kg)</label>
-                                        <input 
-                                            type="number" 
-                                            [(ngModel)]="agendarForm.cantidad" 
-                                            min="1" 
-                                            max="100"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-green focus:border-transparent"
-                                            placeholder="Cantidad aproximada en kilogramos"
-                                        >
-                                        <p class="text-xs text-gray-500 mt-1">Cantidad aproximada en kilogramos</p>
-                                    </div>
+                        <div class="eco-card overflow-hidden">
+                            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                                <div class="grid grid-cols-6 gap-4 text-sm font-medium text-gray-700 uppercase tracking-wide">
+                                    <div>Fecha</div>
+                                    <div>Material</div>
+                                    <div>Cantidad</div>
+                                    <div>Estado</div>
+                                    <div>Puntos</div>
+                                    <div>Acciones</div>
                                 </div>
-                            }
-
-                            <!-- Paso 2: Fecha y Hora -->
-                            @if (agendarStep === 2) {
-                                <div class="space-y-6">
-                                    <div>
-                                        <h4 class="text-lg font-medium text-gray-900 mb-4">Fecha y Hora</h4>
-                                        
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            </div>
+                            
+                            <div class="divide-y divide-gray-200">
+                                @for (cita of citasPendientes; track cita.id) {
+                                    <div class="px-6 py-4 hover:bg-gray-50 transition-colors">
+                                        <div class="grid grid-cols-6 gap-4 items-center">
                                             <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-2">Fecha</label>
-                                                <input 
-                                                    type="date" 
-                                                    [(ngModel)]="agendarForm.fecha"
-                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-green focus:border-transparent"
-                                                >
+                                                <p class="text-sm font-medium text-gray-900">{{ cita.fecha | date:'dd MMM' }}</p>
+                                                <p class="text-xs text-gray-500">{{ cita.hora }}</p>
+                                            </div>
+                                            
+                                            <div class="flex items-center">
+                                                <div [class]="getMaterialIconClass(cita.tipoMaterial)" class="w-8 h-8 rounded-lg flex items-center justify-center mr-2">
+                                                    <span class="text-lg">{{ getMaterialIcon(cita.tipoMaterial) }}</span>
+                                                </div>
+                                                <span class="text-sm font-medium text-gray-900">{{ cita.tipoMaterial }}</span>
                                             </div>
                                             
                                             <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-2">Hora</label>
-                                                <select 
-                                                    [(ngModel)]="agendarForm.hora"
-                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-green focus:border-transparent"
-                                                >
-                                                    @for (hora of horasDisponibles; track hora) {
-                                                        <option [value]="hora">{{ hora }}</option>
-                                                    }
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-
-                            <!-- Paso 3: Dirección -->
-                            @if (agendarStep === 3) {
-                                <div class="space-y-6">
-                                    <div>
-                                        <h4 class="text-lg font-medium text-gray-900 mb-4">Dirección de Recolección</h4>
-                                        
-                                        <div class="space-y-4">
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-2">Dirección</label>
-                                                <input 
-                                                    type="text" 
-                                                    [(ngModel)]="agendarForm.direccion"
-                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-green focus:border-transparent"
-                                                    placeholder="Av. Larco 123, Miraflores"
-                                                >
+                                                <span class="text-sm font-medium text-gray-900">{{ cita.cantidadEstimada }} kg</span>
                                             </div>
                                             
                                             <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-2">Distrito</label>
-                                                <select 
-                                                    [(ngModel)]="agendarForm.distrito"
-                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-green focus:border-transparent"
-                                                >
-                                                    @for (distrito of distritos; track distrito) {
-                                                        <option [value]="distrito">{{ distrito }}</option>
-                                                    }
-                                                </select>
+                                                <span [class]="getCitaStatusClass(cita.estado)" class="px-3 py-1 rounded-full text-xs font-medium">
+                                                    {{ cita.estado }}
+                                                </span>
                                             </div>
                                             
                                             <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-2">Referencia (opcional)</label>
-                                                <textarea 
-                                                    [(ngModel)]="agendarForm.referencia"
-                                                    rows="3"
-                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-green focus:border-transparent"
-                                                    placeholder="Casa verde, portón negro, al lado del parque..."
-                                                ></textarea>
+                                                <span class="text-sm font-medium text-eco-green">{{ getPuntosPorCita(cita) }} pts</span>
                                             </div>
-                                        </div>
-
-                                        <!-- Resumen de la cita -->
-                                        <div class="mt-6 p-4 bg-eco-light rounded-lg">
-                                            <h5 class="font-medium text-gray-900 mb-2">Resumen de tu recolección:</h5>
-                                            <div class="text-sm text-gray-600 space-y-1">
-                                                <p><strong>Materiales:</strong> {{ agendarForm.materiales.join(', ') }}</p>
-                                                <p><strong>Cantidad:</strong> {{ agendarForm.cantidad }} kg</p>
-                                                <p><strong>Fecha:</strong> {{ formatearFecha(agendarForm.fecha) }}</p>
-                                                <p><strong>Hora:</strong> {{ agendarForm.hora }}</p>
-                                                <p><strong>Dirección:</strong> {{ agendarForm.direccion }}, {{ agendarForm.distrito }}</p>
-                                                @if (agendarForm.referencia) {
-                                                    <p><strong>Referencia:</strong> {{ agendarForm.referencia }}</p>
+                                            
+                                            <div class="flex space-x-2">
+                                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors">Ver Detalles</button>
+                                                @if (cita.estado === 'Pendiente') {
+                                                    <button (click)="cancelarCita(cita.id)" class="text-red-600 hover:text-red-800 text-sm font-medium transition-colors">Cancelar</button>
+                                                }
+                                                @if (cita.estado === 'Completada') {
+                                                    <button (click)="solicitarNuevaCita()" class="text-eco-green hover:text-eco-dark text-sm font-medium transition-colors">Repetir</button>
                                                 }
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            }
-                        </div>
-
-                        <!-- Footer con botones -->
-                        <div class="flex items-center justify-between p-6 border-t border-gray-200">
-                            <div class="flex space-x-3">
-                                @if (agendarStep > 1) {
-                                    <button (click)="prevAgendarStep()" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
-                                        ← Anterior
-                                    </button>
                                 }
-                            </div>
-                            
-                            <div class="flex space-x-3">
-                                <button (click)="cancelarAgendamiento()" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
-                                    Cancelar
-                                </button>
                                 
-                                @if (agendarStep < 3) {
-                                    <button 
-                                        (click)="nextAgendarStep()" 
-                                        [disabled]="!canProceedToNext()"
-                                        [class]="canProceedToNext() ? 'bg-eco-green hover:bg-eco-dark text-white px-6 py-2 rounded-lg font-medium transition-colors' : 'bg-gray-300 text-gray-500 px-6 py-2 rounded-lg font-medium cursor-not-allowed'"
-                                    >
-                                        Siguiente →
-                                    </button>
-                                } @else {
-                                    <button 
-                                        (click)="confirmarRecoleccion()" 
-                                        [disabled]="!canProceedToNext() || isLoading"
-                                        [class]="canProceedToNext() && !isLoading ? 'bg-eco-green hover:bg-eco-dark text-white px-6 py-2 rounded-lg font-medium transition-colors flex items-center' : 'bg-gray-300 text-gray-500 px-6 py-2 rounded-lg font-medium cursor-not-allowed flex items-center'"
-                                    >
-                                        @if (isLoading) {
-                                            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                            </svg>
-                                            Confirmando...
-                                        } @else {
-                                            Confirmar Recolección
-                                        }
-                                    </button>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-
-            <!-- Otras secciones -->
-            @if (currentSection === 'citas') {
-                <!-- Header de Mis Citas -->
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h3 class="text-xl font-poppins font-semibold text-gray-900">Mis Citas de Recolección</h3>
-                        <p class="text-sm text-gray-600">Gestiona y revisa el estado de tus citas</p>
-                    </div>
-                    <button (click)="solicitarNuevaCita()" class="bg-eco-green hover:bg-eco-dark text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                        </svg>
-                        Nueva Cita
-                    </button>
-                </div>
-
-                <!-- Tabla de Citas -->
-                <div class="eco-card overflow-hidden">
-                    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                        <div class="grid grid-cols-6 gap-4 text-sm font-medium text-gray-700 uppercase tracking-wide">
-                            <div>Fecha</div>
-                            <div>Material</div>
-                            <div>Cantidad</div>
-                            <div>Estado</div>
-                            <div>Puntos</div>
-                            <div>Acciones</div>
-                        </div>
-                    </div>
-                    
-                    <div class="divide-y divide-gray-200">
-                        @for (cita of citasPendientes; track cita.id) {
-                            <div class="px-6 py-4 hover:bg-gray-50 transition-colors">
-                                <div class="grid grid-cols-6 gap-4 items-center">
-                                    <!-- Fecha y Hora -->
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-900">{{ formatFechaCorta(cita.fecha) }}</p>
-                                        <p class="text-xs text-gray-500">{{ cita.hora }}</p>
-                                    </div>
-                                    
-                                    <!-- Material -->
-                                    <div class="flex items-center">
-                                        <div [class]="getMaterialIconClass(cita.material)" class="w-8 h-8 rounded-lg flex items-center justify-center mr-2">
-                                            <span class="text-lg">{{ getMaterialIcon(cita.material) }}</span>
+                                @if (citasPendientes.length === 0) {
+                                    <div class="px-6 py-12 text-center">
+                                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0h8m-8 0l1 12a2 2 0 002 2h4a2 2 0 002-2l1-12m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v0"></path></svg>
                                         </div>
-                                        <span class="text-sm font-medium text-gray-900">{{ cita.material }}</span>
-                                    </div>
-                                    
-                                    <!-- Cantidad -->
-                                    <div>
-                                        <span class="text-sm font-medium text-gray-900">{{ cita.cantidad }}</span>
-                                    </div>
-                                    
-                                    <!-- Estado -->
-                                    <div>
-                                        <span [class]="getEstadoCitaClass(cita.estado)" class="px-3 py-1 rounded-full text-xs font-medium">
-                                            {{ cita.estado }}
-                                        </span>
-                                    </div>
-                                    
-                                    <!-- Puntos -->
-                                    <div>
-                                        <span class="text-sm font-medium text-eco-green">{{ getPuntosPorCita(cita) }} pts</span>
-                                    </div>
-                                    
-                                    <!-- Acciones -->
-                                    <div class="flex space-x-2">
-                                        <button class="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors">
-                                            Ver Detalles
+                                        <h3 class="text-lg font-medium text-gray-900 mb-2">No tienes citas programadas</h3>
+                                        <p class="text-gray-600 mb-4">¡Agenda tu primera recolección y comienza a reciclar!</p>
+                                        <button (click)="solicitarNuevaCita()" class="bg-eco-green hover:bg-eco-dark text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                                            Agendar Primera Cita
                                         </button>
-                                        @if (cita.estado === 'Pendiente') {
-                                            <button (click)="cancelarCita(cita.id)" class="text-red-600 hover:text-red-800 text-sm font-medium transition-colors">
-                                                Cancelar
-                                            </button>
-                                        }
-                                        @if (cita.estado === 'Completada') {
-                                            <button class="text-eco-green hover:text-eco-dark text-sm font-medium transition-colors">
-                                                Repetir
-                                            </button>
-                                        }
                                     </div>
-                                </div>
-                            </div>
-                        }
-                        
-                        @if (citasPendientes.length === 0) {
-                            <div class="px-6 py-12 text-center">
-                                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 012-2h4a2 2 0 012 2v1m-6 0h8m-8 0l1 12a2 2 0 002 2h4a2 2 0 002-2l1-12m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v0"></path>
-                                    </svg>
-                                </div>
-                                <h3 class="text-lg font-medium text-gray-900 mb-2">No tienes citas programadas</h3>
-                                <p class="text-gray-600 mb-4">¡Agenda tu primera recolección y comienza a reciclar!</p>
-                                <button (click)="solicitarNuevaCita()" class="bg-eco-green hover:bg-eco-dark text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                                    Agendar Primera Cita
-                                </button>
-                            </div>
-                        }
-                    </div>
-                </div>
-            }
-
-            @if (currentSection === 'puntos') {
-                <!-- Filtros -->
-                <div class="filtros-container">
-                    <div class="filtro-grupo">
-                        <label for="distritoFiltro" class="filtro-label">Distrito:</label>
-                        <select id="distritoFiltro" [(ngModel)]="distritoSeleccionado" class="filtro-select">
-                            @for (distrito of distritos; track distrito) {
-                                <option [value]="distrito">{{ distrito }}</option>
-                            }
-                        </select>
-                    </div>
-                    
-                    <div class="filtro-grupo">
-                        <label for="materialFiltro" class="filtro-label">Material:</label>
-                        <select id="materialFiltro" [(ngModel)]="materialSeleccionado" class="filtro-select">
-                            @for (material of materialesFiltro; track material) {
-                                <option [value]="material">{{ material }}</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Mapa -->
-                <div class="mapa-container">
-                    <div class="mapa-placeholder">
-                        <div class="mapa-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#5EA362" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                        </div>
-                        <p class="mapa-texto">Mapa Interactivo de Puntos de Reciclaje</p>
-                        <small class="mapa-subtexto">Los puntos marcados corresponden a los centros de reciclaje cercanos a tu ubicación</small>
-                    </div>
-                </div>
-
-                <!-- Lista de Puntos -->
-                <div class="puntos-grid">
-                    @for (punto of getPuntosFiltrados(); track punto.id) {
-                        <div class="punto-card">
-                            <!-- Header del punto -->
-                            <div class="punto-header">
-                                <div class="punto-tipo" [ngClass]="getTipoColor(punto)"></div>
-                                <div class="punto-info-header">
-                                    <h3 class="punto-nombre">{{ punto.nombre }}</h3>
-                                    <span class="punto-estado" [ngClass]="getEstadoPuntoClass(punto.estado)">{{ punto.estado }}</span>
-                                </div>
-                            </div>
-
-                            <!-- Información del punto -->
-                            <div class="punto-body">
-                                <div class="punto-detalle">
-                                    <div class="detalle-item">
-                                        <svg class="detalle-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                            <circle cx="12" cy="10" r="3"></circle>
-                                        </svg>
-                                        <span>{{ punto.direccion }}</span>
-                                    </div>
-                                    
-                                    <div class="detalle-item">
-                                        <svg class="detalle-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <polyline points="12,6 12,12 16,14"></polyline>
-                                        </svg>
-                                        <span>{{ punto.horario }}</span>
-                                    </div>
-                                    
-                                    <div class="detalle-item">
-                                        <svg class="detalle-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                                        </svg>
-                                        <span>{{ punto.materiales.join(', ') }}</span>
-                                    </div>
-                                    
-                                    <div class="detalle-item">
-                                        <svg class="detalle-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
-                                            <path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"></path>
-                                        </svg>
-                                        <span>{{ punto.distancia }}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Acciones del punto -->
-                            <div class="punto-actions">
-                                <button class="action-btn primary" (click)="verRutaHacia(punto)">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M3 11l19-9-9 19-2-8-8-2z"></path>
-                                    </svg>
-                                    Ver Ruta
-                                </button>
-                                
-                                <button class="action-btn secondary" (click)="llamarPunto(punto)">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                                    </svg>
-                                    Llamar
-                                </button>
+                                }
                             </div>
                         </div>
-                    }
-                </div>
-
-                <!-- Mensaje si no hay puntos -->
-                @if (getPuntosFiltrados().length === 0) {
-                    <div class="no-puntos">
-                        <div class="no-puntos-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <path d="m9 9 6 6"></path>
-                                <path d="m15 9-6 6"></path>
-                            </svg>
-                        </div>
-                        <p class="no-puntos-texto">No se encontraron puntos de reciclaje con los filtros seleccionados</p>
-                        <small class="no-puntos-subtexto">Intenta cambiar los filtros de distrito o material</small>
                     </div>
                 }
-            }
 
-            @if (currentSection === 'recompensas') {
-                <!-- Header con puntos disponibles -->
-                <div class="recompensas-header">
-                    <div class="puntos-disponibles-card">
-                        <div class="puntos-info">
-                            <p class="puntos-label">Tus puntos disponibles</p>
-                            <h2 class="puntos-valor">{{ puntosDisponibles }}</h2>
-                        </div>
-                        <div class="puntos-icono">
-                            🏆
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ranking Mensual -->
-                <div class="ranking-section">
-                    <div class="ranking-header">
-                        <div class="ranking-title">
-                            <h3>🏅 Ranking Mensual - Miraflores</h3>
-                            <p>Canjea tus puntos y compite con otros usuarios</p>
-                        </div>
-                    </div>
-
-                    <div class="ranking-list">
-                        @for (usuario of rankingUsuarios; track usuario.id) {
-                            <div class="ranking-item" [class.current-user]="usuario.nombre.includes('(Tú)')">
-                                <div class="ranking-posicion">
-                                    <span class="ranking-numero">{{ getRankingIcon(usuario.posicion) }}</span>
-                                </div>
-                                <div class="ranking-avatar">
-                                    <div class="avatar-circle" [class.current-user-avatar]="usuario.nombre.includes('(Tú)')">
-                                        {{ usuario.avatar }}
-                                    </div>
-                                </div>
-                                <div class="ranking-info">
-                                    <h4 class="usuario-nombre">{{ usuario.nombre }}</h4>
-                                    <p class="usuario-titulo">{{ usuario.titulo }}</p>
-                                </div>
-                                <div class="ranking-stats">
-                                    <div class="stat-puntos">
-                                        <span class="stat-value">{{ usuario.puntos }}</span>
-                                        <span class="stat-label">pts</span>
-                                    </div>
-                                    <div class="stat-kilos">
-                                        <span class="stat-value">{{ usuario.kilos }}</span>
-                                        <span class="stat-label">kg</span>
-                                    </div>
-                                </div>
+                @if (currentSection === 'puntos') {
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="font-poppins font-semibold text-xl text-gray-900">Puntos de Reciclaje</h3>
+                                <p class="text-sm text-gray-600">Encuentra centros cercanos para dejar tus materiales</p>
                             </div>
-                        }
-                    </div>
+                        </div>
 
-                    <div class="ranking-footer">
-                        <p class="ranking-mensaje">¡Solo necesitas 165 puntos más para alcanzar el 2do lugar! 🚀</p>
-                    </div>
-                </div>
-
-                <!-- Recompensas Disponibles -->
-                <div class="recompensas-section">
-                    <div class="recompensas-title">
-                        <h3>🎁 Recompensas Disponibles</h3>
-                    </div>
-
-                    <div class="recompensas-grid">
-                        @for (recompensa of recompensasDisponibles; track recompensa.id) {
-                            <div class="recompensa-card" [class.no-disponible]="!recompensa.disponible">
-                                <div class="recompensa-icon" [ngClass]="recompensa.colorFondo">
-                                    <span class="recompensa-emoji">{{ recompensa.imagen }}</span>
-                                </div>
-                                
-                                <div class="recompensa-content">
-                                    <h4 class="recompensa-nombre">{{ recompensa.nombre }}</h4>
-                                    <p class="recompensa-descripcion">{{ recompensa.descripcion }}</p>
-                                    
-                                    <div class="recompensa-precio">
-                                        <span class="precio-numero" 
-                                              [class.insuficiente]="!puedesCanjear(recompensa)">
-                                            {{ recompensa.puntos }}
-                                        </span>
-                                        <span class="precio-label">puntos</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="recompensa-action">
-                                    <button class="canjear-btn"
-                                            [class.btn-primary]="puedesCanjear(recompensa)"
-                                            [class.btn-disabled]="!puedesCanjear(recompensa)"
-                                            [disabled]="!puedesCanjear(recompensa)"
-                                            (click)="canjearRecompensa(recompensa)">
-                                        @if (!recompensa.disponible) {
-                                            <span>Puntos Insuficientes</span>
-                                        } @else if (puedesCanjear(recompensa)) {
-                                            <span>Canjear</span>
-                                        } @else {
-                                            <span>Puntos Insuficientes</span>
+                        <div class="filtros-container mb-6 bg-white p-4 rounded-xl shadow-sm">
+                            <div class="flex space-x-4">
+                                <div class="filtro-grupo">
+                                    <label for="distritoFiltro" class="block text-sm font-medium text-gray-700 mb-2">Distrito:</label>
+                                    <select id="distritoFiltro" [(ngModel)]="distritoSeleccionado" class="form-input">
+                                        <option value="">Todos los Distritos</option>
+                                        @for (distrito of distritos; track distrito) {
+                                            <option [value]="distrito">{{ distrito }}</option>
                                         }
-                                    </button>
+                                    </select>
                                 </div>
+                                
+                                <div class="filtro-grupo">
+                                    <label for="materialFiltro" class="block text-sm font-medium text-gray-700 mb-2">Material:</label>
+                                    <select id="materialFiltro" [(ngModel)]="materialSeleccionado" class="form-input">
+                                        @for (material of materialesFiltro; track material) {
+                                            <option [value]="material">{{ material }}</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mapa-container mb-6 bg-white p-6 rounded-xl shadow-sm text-center">
+                            <div class="mapa-icon mx-auto mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#5EA362" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                            </div>
+                            <p class="text-lg font-medium text-gray-900">Mapa Interactivo de Puntos de Reciclaje</p>
+                            <small class="text-sm text-gray-500">Los puntos marcados corresponden a los centros de reciclaje cercanos a tu ubicación</small>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            @for (punto of getPuntosFiltrados(); track punto.id) {
+                                <div class="punto-card bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                    <div class="flex items-start justify-between mb-4">
+                                        <div class="flex items-center">
+                                            <div class="w-3 h-3 rounded-full mr-3" [ngClass]="getTipoColor(punto)"></div>
+                                            <h3 class="text-lg font-semibold text-gray-900">{{ punto.nombre }}</h3>
+                                        </div>
+                                        <span class="px-2 py-1 text-xs font-semibold rounded-full" [ngClass]="getEstadoPuntoClass(punto.estado)">{{ punto.estado }}</span>
+                                    </div>
+
+                                    <div class="space-y-3 text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-gray-400 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                            <span>{{ punto.direccion }}</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-gray-400 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12,6 12,12 16,14"></polyline></svg>
+                                            <span>{{ punto.horario }}</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-gray-400 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                                            <span>{{ punto.materiales.join(', ') }}</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-gray-400 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"></path></svg>
+                                            <span>{{ punto.distancia }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex space-x-3 mt-4 pt-4 border-t border-gray-100">
+                                        <button class="flex-1 bg-eco-green hover:bg-eco-dark text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center" (click)="verRutaHacia(punto)">
+                                            <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"></path></svg>
+                                            Ver Ruta
+                                        </button>
+                                        <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center" (click)="llamarPunto(punto)">
+                                            <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                            Llamar
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        @if (getPuntosFiltrados().length === 0) {
+                            <div class="no-puntos text-center p-12 bg-white rounded-xl shadow-sm mt-6">
+                                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <svg class="w-8 h-8 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m9 9 6 6"></path><path d="m15 9-6 6"></path></svg>
+                                </div>
+                                <p class="text-lg font-medium text-gray-900 mb-2">No se encontraron puntos de reciclaje</p>
+                                <small class="text-gray-600">Intenta cambiar los filtros de distrito o material</small>
                             </div>
                         }
                     </div>
-                </div>
-            }
+                }
 
-            @if (currentSection === 'perfil') {
-                <div class="perfil-container">
-                    <!-- Header con botón Cerrar Sesión -->
-                    <div class="perfil-header-actions">
-                        <button class="cerrar-sesion-btn" (click)="cerrarSesion()">
-                            Cerrar Sesión
-                        </button>
+                @if (currentSection === 'recompensas') {
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-poppins font-semibold text-gray-900">🎁 Recompensas Disponibles</h3>
+                            <div class="puntos-disponibles-card bg-yellow-500 text-white p-4 rounded-xl flex items-center space-x-3 shadow-md">
+                                <h2 class="text-2xl font-bold">{{ puntosDisponibles }}</h2>
+                                <p class="text-sm">puntos disponibles 🏆</p>
+                            </div>
+                        </div>
+
+                        <div class="eco-card p-6 mb-8">
+                            <h3 class="font-semibold text-lg text-gray-900 mb-4">🏅 Ranking Mensual - Miraflores</h3>
+                            <div class="space-y-3">
+                                @for (usuario of rankingUsuarios; track usuario.id) {
+                                    <div class="flex items-center justify-between p-3 rounded-lg" [class.bg-green-50]="usuario.nombre.includes('(Tú)')">
+                                        <div class="flex items-center space-x-3">
+                                            <span class="text-xl w-6 text-center">{{ getRankingIcon(usuario.posicion) }}</span>
+                                            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-sm font-semibold">{{ usuario.avatar }}</div>
+                                            <div>
+                                                <h4 class="font-medium text-gray-900">{{ usuario.nombre }}</h4>
+                                                <p class="text-xs text-gray-500">{{ usuario.titulo }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-lg font-bold text-eco-green">{{ usuario.puntos }} <span class="text-sm font-medium text-gray-500">pts</span></div>
+                                            <p class="text-xs text-gray-500">{{ usuario.kilos }} kg</p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <p class="text-sm text-gray-600 mt-4 text-center">¡Solo necesitas 165 puntos más para alcanzar el 2do lugar! 🚀</p>
+                        </div>
+
+                        <div class="recompensas-section">
+                            <h3 class="font-semibold text-lg text-gray-900 mb-4">Catálogo de Recompensas</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                @for (recompensa of recompensasDisponibles; track recompensa.id) {
+                                    <div class="recompensa-card bg-white rounded-xl shadow-sm overflow-hidden" [class.opacity-60]="!puedesCanjear(recompensa)">
+                                        <div class="p-4 flex flex-col items-center">
+                                            <div class="w-16 h-16 rounded-full flex items-center justify-center text-3xl mb-3" [ngClass]="recompensa.colorFondo">
+                                                <span class="recompensa-emoji">{{ recompensa.imagen }}</span>
+                                            </div>
+                                            <h4 class="font-medium text-gray-900 text-center">{{ recompensa.nombre }}</h4>
+                                            <p class="text-xs text-gray-500 text-center">{{ recompensa.descripcion }}</p>
+                                            
+                                            <div class="recompensa-precio mt-3">
+                                                <span class="text-xl font-bold" [class.text-red-600]="!puedesCanjear(recompensa)" [class.text-purple-600]="puedesCanjear(recompensa)">
+                                                    {{ recompensa.puntos }}
+                                                </span>
+                                                <span class="text-sm text-gray-500">puntos</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="p-3 border-t bg-gray-50">
+                                            <button class="w-full text-sm font-medium py-2 rounded-lg transition-colors"
+                                                [class.bg-purple-600]="puedesCanjear(recompensa)"
+                                                [class.hover:bg-purple-700]="puedesCanjear(recompensa)"
+                                                [class.text-white]="puedesCanjear(recompensa)"
+                                                [class.bg-gray-300]="!puedesCanjear(recompensa)"
+                                                [class.text-gray-600]="!puedesCanjear(recompensa)"
+                                                [disabled]="!puedesCanjear(recompensa)"
+                                                (click)="canjearRecompensa(recompensa)">
+                                                {{ !puedesCanjear(recompensa) ? 'Puntos Insuficientes' : 'Canjear' }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
                     </div>
+                }
 
-                    <!-- Contenido Principal -->
-                    <div class="perfil-content">
-                        <!-- Columna Izquierda: Avatar y Stats -->
-                        <div class="perfil-left">
-                            <div class="avatar-section">
-                                <div class="avatar-container">
-                                    <div class="avatar-circle-perfil">A</div>
-                                    <button class="edit-avatar-btn">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                                
-                                <div class="usuario-info">
-                                    <h2 class="usuario-nombre-perfil">{{ perfilUsuario.nombre }} Rodriguez</h2>
-                                    <p class="usuario-nivel">{{ perfilUsuario.nivel }} ⭐</p>
-                                </div>
-                            </div>
-
-                            <div class="stats-section">
-                                <div class="stat-item-perfil">
-                                    <span class="stat-label-perfil">Miembro desde</span>
-                                    <span class="stat-value-perfil">Enero 2024</span>
-                                </div>
-                                
-                                <div class="stat-item-perfil">
-                                    <span class="stat-label-perfil">Total reciclado</span>
-                                    <span class="stat-value-perfil green">127.3 kg</span>
-                                </div>
-                                
-                                <div class="stat-item-perfil">
-                                    <span class="stat-label-perfil">CO₂ ahorrado</span>
-                                    <span class="stat-value-perfil blue">381.9 kg</span>
-                                </div>
-                            </div>
-
-                            <button class="editar-perfil-btn" [class.active]="editandoPerfil" (click)="toggleEditarPerfil()">
-                                {{ editandoPerfil ? 'Cancelar' : 'Editar Perfil' }}
+                @if (currentSection === 'perfil') {
+                    <div class="p-6">
+                        <div class="flex justify-end mb-6">
+                            <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors" [class.active]="editandoPerfil" (click)="toggleEditarPerfil()">
+                                {{ editandoPerfil ? 'Cancelar Edición' : 'Editar Perfil' }}
                             </button>
                         </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-1 eco-card p-6 flex flex-col items-center text-center">
+                                <div class="w-24 h-24 bg-eco-green rounded-full flex items-center justify-center text-3xl font-bold text-white mb-4">
+                                    {{ (perfilUsuario.nombre || 'A')[0] }}
+                                </div>
+                                <h2 class="text-xl font-poppins font-semibold text-gray-900">{{ perfilUsuario.nombre }}</h2>
+                                <p class="text-sm text-gray-600 mb-4">{{ perfilUsuario.nivel }} ⭐</p>
 
-                        <!-- Columna Derecha: Formulario -->
-                        <div class="perfil-right">
-                            <div class="form-section">
-                                <h3 class="form-title">Información Personal</h3>
+                                <div class="w-full space-y-3 border-t pt-4 mt-4">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">Total reciclado:</span>
+                                        <span class="font-medium text-eco-green">127.3 kg</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-500">CO₂ ahorrado:</span>
+                                        <span class="font-medium text-blue-500">381.9 kg</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="lg:col-span-2 eco-card p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Información Personal</h3>
+                                <div class="space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="form-group">
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+                                            <input type="text" class="form-input" [(ngModel)]="perfilForm.nombre" [disabled]="!editandoPerfil">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
+                                            <input type="text" class="form-input" [(ngModel)]="perfilForm.apellido" [disabled]="!editandoPerfil">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Correo Electrónico</label>
+                                        <input type="email" class="form-input" [(ngModel)]="perfilForm.email" [disabled]="!editandoPerfil">
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="form-group">
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+                                            <input type="tel" class="form-input" [(ngModel)]="perfilForm.telefono" [disabled]="!editandoPerfil">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Distrito</label>
+                                            <select class="form-input" [(ngModel)]="perfilForm.distrito" [disabled]="!editandoPerfil">
+                                                @for (distrito of distritos; track distrito) {
+                                                    <option [value]="distrito">{{ distrito }}</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Dirección</label>
+                                        <input type="text" class="form-input" [(ngModel)]="perfilForm.direccion" [disabled]="!editandoPerfil">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Usuario</label>
+                                        <div class="flex space-x-4">
+                                            <label class="flex items-center space-x-2">
+                                                <input type="radio" name="tipoUsuario" value="Individual" [(ngModel)]="perfilForm.tipoUsuario" [disabled]="!editandoPerfil">
+                                                <span class="text-sm text-gray-700">Individual</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="radio" name="tipoUsuario" value="Empresa" [(ngModel)]="perfilForm.tipoUsuario" [disabled]="!editandoPerfil">
+                                                <span class="text-sm text-gray-700">Empresa</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                                 
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label class="form-label">Nombre</label>
-                                        <input type="text" 
-                                               class="form-input" 
-                                               [(ngModel)]="perfilForm.nombre"
-                                               [disabled]="!editandoPerfil"
-                                               placeholder="Alexander">
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Apellido</label>
-                                        <input type="text" 
-                                               class="form-input" 
-                                               [(ngModel)]="perfilForm.apellido"
-                                               [disabled]="!editandoPerfil"
-                                               placeholder="Rodriguez">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label">Correo Electrónico</label>
-                                    <input type="email" 
-                                           class="form-input full-width" 
-                                           [(ngModel)]="perfilForm.email"
-                                           [disabled]="!editandoPerfil"
-                                           placeholder="alexander.rodriguez@email.com">
-                                </div>
-
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label class="form-label">Teléfono</label>
-                                        <input type="tel" 
-                                               class="form-input" 
-                                               [(ngModel)]="perfilForm.telefono"
-                                               [disabled]="!editandoPerfil"
-                                               placeholder="+51 987 654 321">
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Distrito</label>
-                                        <select class="form-input" 
-                                                [(ngModel)]="perfilForm.distrito"
-                                                [disabled]="!editandoPerfil">
-                                            <option value="Miraflores">Miraflores</option>
-                                            <option value="San Isidro">San Isidro</option>
-                                            <option value="Surco">Surco</option>
-                                            <option value="La Molina">La Molina</option>
-                                            <option value="Barranco">Barranco</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label">Dirección</label>
-                                    <input type="text" 
-                                           class="form-input full-width" 
-                                           [(ngModel)]="perfilForm.direccion"
-                                           [disabled]="!editandoPerfil"
-                                           placeholder="Av. Larco 123, Miraflores">
-                                </div>
-
-                                <!-- Tipo de Usuario -->
-                                <div class="form-group">
-                                    <label class="form-label">Tipo de Usuario</label>
-                                    <div class="radio-group">
-                                        <label class="radio-item">
-                                            <input type="radio" 
-                                                   name="tipoUsuario" 
-                                                   value="Individual"
-                                                   [(ngModel)]="perfilForm.tipoUsuario"
-                                                   [disabled]="!editandoPerfil">
-                                            <span class="radio-text">Individual</span>
-                                        </label>
-                                        <label class="radio-item">
-                                            <input type="radio" 
-                                                   name="tipoUsuario" 
-                                                   value="Empresa"
-                                                   [(ngModel)]="perfilForm.tipoUsuario"
-                                                   [disabled]="!editandoPerfil">
-                                            <span class="radio-text">Empresa</span>
-                                        </label>
-                                    </div>
-                                </div>
-
                                 @if (editandoPerfil) {
-                                    <div class="form-actions">
-                                        <button class="save-btn" (click)="guardarPerfil()">
+                                    <div class="flex justify-end mt-6">
+                                        <button class="bg-eco-green hover:bg-eco-dark text-white px-6 py-2 rounded-lg font-medium transition-colors" (click)="guardarPerfil()">
                                             Guardar Cambios
                                         </button>
                                     </div>
                                 }
-                            </div>
 
-                            <!-- Preferencias -->
-                            <div class="preferencias-section">
-                                <h3 class="form-title">Preferencias</h3>
-                                
-                                <div class="preferencia-item">
-                                    <div class="preferencia-info">
-                                        <h4 class="preferencia-titulo">Notificaciones por email</h4>
-                                        <p class="preferencia-descripcion">Recibe actualizaciones sobre tus recolecciones</p>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4 mt-8 pt-4 border-t">Preferencias</h3>
+                                <div class="space-y-4">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <h4 class="font-medium text-gray-900">Notificaciones por email</h4>
+                                            <p class="text-xs text-gray-500">Recibe actualizaciones sobre tus recolecciones</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" [(ngModel)]="perfilForm.notificacionesEmail" [disabled]="!editandoPerfil" class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-eco-green"></div>
+                                        </label>
                                     </div>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" [(ngModel)]="perfilForm.notificacionesEmail">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-
-                                <div class="preferencia-item">
-                                    <div class="preferencia-info">
-                                        <h4 class="preferencia-titulo">Notificaciones push</h4>
-                                        <p class="preferencia-descripcion">Alertas sobre nuevas recompensas</p>
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <h4 class="font-medium text-gray-900">Notificaciones push</h4>
+                                            <p class="text-xs text-gray-500">Alertas sobre nuevas recompensas</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" [(ngModel)]="perfilForm.notificacionesPush" [disabled]="!editandoPerfil" class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-eco-green"></div>
+                                        </label>
                                     </div>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" [(ngModel)]="perfilForm.notificacionesPush">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-
-                                <div class="preferencia-item">
-                                    <div class="preferencia-info">
-                                        <h4 class="preferencia-titulo">Recordatorios de recolección</h4>
-                                        <p class="preferencia-descripcion">Te recordamos 1 día antes de tu cita</p>
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <h4 class="font-medium text-gray-900">Recordatorios de recolección</h4>
+                                            <p class="text-xs text-gray-500">Te recordamos 1 día antes de tu cita</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" [(ngModel)]="perfilForm.recordatorios" [disabled]="!editandoPerfil" class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-eco-green"></div>
+                                        </label>
                                     </div>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" [(ngModel)]="perfilForm.recordatorios">
-                                        <span class="toggle-slider"></span>
-                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            }
+                }
 
-            <!-- Loading -->
-            @if (isLoading) {
-                <div class="flex items-center justify-center p-8">
-                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-eco-green"></div>
-                    <span class="ml-2 text-gray-600">Cargando...</span>
-                </div>
+                @if (showAgendarForm) {
+                    <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+                        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                            <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                                <div>
+                                    <h3 class="text-xl font-poppins font-semibold text-gray-900">Agendar Nueva Recolección</h3>
+                                    <p class="text-sm text-gray-600">Completa el formulario para programar tu recolección</p>
+                                </div>
+                                <button (click)="cancelarAgendamiento()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </button>
+                            </div>
+
+                            <div class="px-6 py-4 bg-gray-50">
+                                <div class="flex items-center justify-center space-x-4">
+                                    <div class="flex items-center">
+                                        <div [class]="agendarStep >= 1 ? 'w-8 h-8 bg-eco-green text-white rounded-full flex items-center justify-center text-sm font-medium' : 'w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium'">1</div>
+                                        <span [class]="agendarStep >= 1 ? 'ml-2 text-sm font-medium text-eco-green' : 'ml-2 text-sm text-gray-500'">Tipo de Material</span>
+                                    </div>
+                                    <div class="w-8 h-px bg-gray-300"></div>
+                                    <div class="flex items-center">
+                                        <div [class]="agendarStep >= 2 ? 'w-8 h-8 bg-eco-green text-white rounded-full flex items-center justify-center text-sm font-medium' : 'w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium'">2</div>
+                                        <span [class]="agendarStep >= 2 ? 'ml-2 text-sm font-medium text-eco-green' : 'ml-2 text-sm text-gray-500'">Fecha y Hora</span>
+                                    </div>
+                                    <div class="w-8 h-px bg-gray-300"></div>
+                                    <div class="flex items-center">
+                                        <div [class]="agendarStep >= 3 ? 'w-8 h-8 bg-eco-green text-white rounded-full flex items-center justify-center text-sm font-medium' : 'w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium'">3</div>
+                                        <span [class]="agendarStep >= 3 ? 'ml-2 text-sm font-medium text-eco-green' : 'ml-2 text-sm text-gray-500'">Dirección</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-6">
+                                @if (agendarStep === 1) {
+                                    <div class="space-y-6">
+                                        <div>
+                                            <h4 class="text-lg font-medium text-gray-900 mb-4">Tipo de Material</h4>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                @for (material of materialesDisponibles; track material.tipo) {
+                                                    <button (click)="toggleMaterial(material)" [ngClass]="getMaterialClass(material)">
+                                                        <div class="text-2xl mb-2">{{ material.icono }}</div>
+                                                        <div class="font-medium">{{ material.nombre }}</div>
+                                                    </button>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Cantidad (kg)</label>
+                                            <input type="number" [(ngModel)]="agendarForm.cantidad" min="1" max="100" class="w-full form-input" placeholder="Cantidad aproximada en kilogramos">
+                                            <p class="text-xs text-gray-500 mt-1">Cantidad aproximada en kilogramos</p>
+                                        </div>
+                                    </div>
+                                }
+
+                                @if (agendarStep === 2) {
+                                    <div class="space-y-6">
+                                        <div>
+                                            <h4 class="text-lg font-medium text-gray-900 mb-4">Fecha y Hora</h4>
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-2">Fecha</label>
+                                                    <input type="date" [(ngModel)]="agendarForm.fecha" class="w-full form-input">
+                                                </div>
+                                                
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-2">Hora</label>
+                                                    <select [(ngModel)]="agendarForm.hora" class="w-full form-input">
+                                                        @for (hora of horasDisponibles; track hora) {
+                                                            <option [value]="hora">{{ hora }}</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                                @if (agendarStep === 3) {
+                                    <div class="space-y-6">
+                                        <div>
+                                            <h4 class="text-lg font-medium text-gray-900 mb-4">Dirección de Recolección</h4>
+                                            
+                                            <div class="space-y-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-2">Dirección</label>
+                                                    <input type="text" [(ngModel)]="agendarForm.direccion" class="w-full form-input" placeholder="Av. Larco 123, Miraflores">
+                                                </div>
+                                                
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-2">Distrito</label>
+                                                    <select [(ngModel)]="agendarForm.distrito" class="w-full form-input">
+                                                        @for (distrito of distritos; track distrito) {
+                                                            <option [value]="distrito">{{ distrito }}</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                                
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-2">Referencia (opcional)</label>
+                                                    <textarea [(ngModel)]="agendarForm.referencia" rows="3" class="w-full form-input" placeholder="Casa verde, portón negro, al lado del parque..."></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-6 p-4 bg-gray-100 rounded-lg">
+                                                <h5 class="font-medium text-gray-900 mb-2">Resumen de tu recolección:</h5>
+                                                <div class="text-sm text-gray-600 space-y-1">
+                                                    <p><strong>Materiales:</strong> {{ agendarForm.materiales.join(', ') }}</p>
+                                                    <p><strong>Cantidad:</strong> {{ agendarForm.cantidad }} kg</p>
+                                                    <p><strong>Fecha:</strong> {{ formatearFecha(agendarForm.fecha) }}</p>
+                                                    <p><strong>Hora:</strong> {{ agendarForm.hora }}</p>
+                                                    <p><strong>Dirección:</strong> {{ agendarForm.direccion }}, {{ agendarForm.distrito }}</p>
+                                                    @if (agendarForm.referencia) {
+                                                        <p><strong>Referencia:</strong> {{ agendarForm.referencia }}</p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="flex items-center justify-between p-6 border-t border-gray-200">
+                                <div>
+                                    @if (agendarStep > 1) {
+                                        <button (click)="prevAgendarStep()" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+                                            ← Anterior
+                                        </button>
+                                    }
+                                </div>
+                                
+                                <div class="flex space-x-3">
+                                    <button (click)="cancelarAgendamiento()" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+                                        Cancelar
+                                    </button>
+                                    
+                                    @if (agendarStep < 3) {
+                                        <button 
+                                            (click)="nextAgendarStep()" 
+                                            [disabled]="!canProceedToNext()"
+                                            [ngClass]="canProceedToNext() ? 'bg-eco-green hover:bg-eco-dark text-white px-6 py-2 rounded-lg font-medium transition-colors' : 'bg-gray-300 text-gray-500 px-6 py-2 rounded-lg font-medium cursor-not-allowed'"
+                                        >
+                                            Siguiente →
+                                        </button>
+                                    } @else {
+                                        <button 
+                                            (click)="confirmarRecoleccion()" 
+                                            [disabled]="!canProceedToNext() || isLoading"
+                                            [ngClass]="canProceedToNext() && !isLoading ? 'bg-eco-green hover:bg-eco-dark text-white px-6 py-2 rounded-lg font-medium transition-colors flex items-center justify-center' : 'bg-gray-300 text-gray-500 px-6 py-2 rounded-lg font-medium cursor-not-allowed flex items-center justify-center'"
+                                        >
+                                            @if (isLoading) {
+                                                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                Confirmando...
+                                            } @else {
+                                                Confirmar Recolección
+                                            }
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
             }
         </main>
     </div>
