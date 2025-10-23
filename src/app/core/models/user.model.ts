@@ -1,6 +1,6 @@
 export interface User {
     id: string;
     email: string;
-    role: 'admin' | 'recolector' | 'usuario';
+    rol: 'ADMIN' | 'RECOLECTOR' | 'CLIENTE';
     name: string;
 }

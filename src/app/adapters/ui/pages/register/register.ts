@@ -19,7 +19,7 @@ export class RegisterComponent {
     password: '',
     confirmPassword: '',
     acceptTerms: false,
-    userType: 'usuario' as 'usuario' | 'recolector' // Tipos válidos según el backend
+    userType: 'CLIENTE' as 'CLIENTE' | 'RECOLECTOR' // Tipos válidos según el backend
   };
 
   // Estados del componente
@@ -76,7 +76,7 @@ export class RegisterComponent {
       nombre: this.registerForm.fullName,    // Backend espera 'nombre'
       email: this.registerForm.email,
       password: this.registerForm.password,
-      role: this.registerForm.userType
+      rol: this.registerForm.userType
     };
 
     // Log para depuración
@@ -92,15 +92,15 @@ export class RegisterComponent {
         if (res.success && res.user) {
           alert('¡Cuenta creada y sesión iniciada!');
           // Redirigir según rol (si vino desde backend o usamos el tipo seleccionado)
-          const role = res.user.role || this.registerForm.userType;
-          switch (role) {
-            case 'admin':
+          const rol = res.user.rol || this.registerForm.userType;
+          switch (rol) {
+            case 'ADMIN':
               this.router.navigate(['/admin/dashboard']);
               break;
-            case 'recolector':
+            case 'RECOLECTOR':
               this.router.navigate(['/recolector/dashboard']);
               break;
-            case 'usuario':
+            case 'CLIENTE':
             default:
               this.router.navigate(['/usuario/dashboard']);
               break;

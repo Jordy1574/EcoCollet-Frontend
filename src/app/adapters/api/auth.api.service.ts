@@ -20,7 +20,7 @@ export interface RegisterRequest {
   nombre: string;     // Backend espera 'nombre' no 'name'
   email: string;
   password: string;
-  role: 'usuario' | 'recolector';
+  rol: 'RECOLECTOR' | 'CLIENTE';
   telefono?: string;  // Backend espera 'telefono' no 'phone'
   direccion?: string; // Backend espera 'direccion' no 'address'
 }
@@ -73,8 +73,10 @@ export class AuthApiService {
       .pipe(
         // handle multiple backend shapes: wrapper {success,data}, or { token }
         switchMap(response => {
+          console.log('AuthApiService.login: response from backend:', response);
           // Case: wrapped response
           if (response && typeof response === 'object' && 'success' in response) {
+            console.log('AuthApiService.login: detected wrapped response with success field');
             if (response.success && response.data) {
               const data = response.data as any;
               if (data.token) {
@@ -94,6 +96,7 @@ export class AuthApiService {
 
           // Case: backend returns only { token: '...' }
           if (response && typeof response === 'object' && 'token' in response) {
+            console.log('AuthApiService.login: detected token-only response');
             const respAny: any = response as any;
             const token = respAny.token as string;
             if (token) {
@@ -136,6 +139,7 @@ export class AuthApiService {
 
           // Other shapes: maybe direct user
           if (response && typeof response === 'object' && 'email' in response) {
+            console.log('AuthApiService.login: detected direct user object response');
             const user = response as User;
             localStorage.setItem('user', JSON.stringify(user));
             this.currentUserSubject.next(user);
@@ -157,9 +161,9 @@ export class AuthApiService {
   async loginMock(email: string, password: string): Promise<{ success: boolean; user?: User; error?: string }> {
     // Simulación de usuarios para testing
     const mockUsers: User[] = [
-      { id: '1', email: 'admin@ecocollet.com', role: 'admin', name: 'Administrador Sistema' },
-      { id: '2', email: 'recolector@ecocollet.com', role: 'recolector', name: 'Juan Recolector' },
-      { id: '3', email: 'usuario@ecocollet.com', role: 'usuario', name: 'María Usuario' }
+      { id: '1', email: 'admin@ecocollet.com', rol: 'ADMIN', name: 'Administrador Sistema' },
+      { id: '2', email: 'recolector@ecocollet.com', rol: 'RECOLECTOR', name: 'Juan Recolector' },
+      { id: '3', email: 'usuario@ecocollet.com', rol: 'CLIENTE', name: 'María Usuario' }
     ];
 
     // Simular delay de red
@@ -273,9 +277,9 @@ export class AuthApiService {
   /**
    * Verificar rol específico
    */
-  hasRole(role: string): boolean {
+  hasRole(rol: string): boolean {
     const user = this.getCurrentUser();
-    return user?.role === role;
+    return user?.rol === rol;
   }
 
   /**

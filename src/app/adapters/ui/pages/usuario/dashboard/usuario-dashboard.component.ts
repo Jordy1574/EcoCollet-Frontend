@@ -92,7 +92,7 @@ export class UsuarioDashboardComponent implements OnInit {
     this.user = this.authService.getCurrentUser();
     
     // Lógica de Redirección y Autenticación
-    if (!this.authService.isAuthenticated() || !this.user || this.user.role !== 'usuario') {
+    if (!this.authService.isAuthenticated() || !this.user || this.user.rol !== 'CLIENTE') {
       this.router.navigate(['/login']);
       return;
     }
@@ -105,7 +105,7 @@ export class UsuarioDashboardComponent implements OnInit {
   private loadDashboardData(): void {
     setTimeout(() => {
       // mock user con id como string para coincidir con User model
-      this.user = { id: '1', name: 'Alexander Rodriguez', role: 'usuario', email: 'alex@mail.com' };
+      this.user = { id: '1', name: 'Alexander Rodriguez', rol: 'CLIENTE', email: 'alex@mail.com' };
       if (this.user) {
         this.perfilForm.nombre = this.user.name.split(' ')[0] || '';
         this.perfilForm.apellido = this.user.name.split(' ')[1] || '';

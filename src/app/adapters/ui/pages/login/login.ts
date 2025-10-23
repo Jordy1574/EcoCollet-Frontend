@@ -51,28 +51,28 @@ export class LoginComponent {
             console.log('Login result:', result);
             const userFromResult = result.user;
             if (userFromResult) {
-              console.log('Usuario recibido en login, navegando por rol:', userFromResult.role);
-              this.navigationService.navigateToDashboard(userFromResult.role).catch((err: any) => {
+              console.log('Usuario recibido en login, navegando por rol:', userFromResult.rol);
+              this.navigationService.navigateToDashboard(userFromResult.rol).catch((err: any) => {
                 console.error('Error navegando al dashboard:', err);
                 // Fallback simple
-                this.redirectBasedOnRole(userFromResult.role);
+                this.redirectBasedOnRole(userFromResult.rol);
               });
             } else if (localStorage.getItem('' + 'ecollet_token') || localStorage.getItem('ecollet_token') || localStorage.getItem('user')) {
               // Token-only backend flow: wait for AuthApiService to populate currentUser$
               console.log('Login returned token-only; esperando a que currentUser$ emita...');
-              firstValueFrom(this.authService.currentUser$.pipe(filter(u => !!u), take(1)))
+              firstValueFrom(this.authService.currentUser$.pipe(filter(u => !!u), take(1), timeout(2000)))
                 .then(u => {
                   console.log('currentUser$ emitió user, navegando:', u);
-                  this.navigationService.navigateToDashboard(u!.role).catch((err: any) => {
+                  this.navigationService.navigateToDashboard(u!.rol).catch((err: any) => {
                     console.error('Error navegando al dashboard tras esperar user:', err);
-                    this.redirectBasedOnRole(u!.role);
+                    this.redirectBasedOnRole(u!.rol);
                   });
                 })
                 .catch(err => {
                   console.warn('Timeout esperando currentUser$, haciendo fallback:', err);
                   const fallbackUser = this.authService.getCurrentUser();
                   if (fallbackUser) {
-                    this.navigationService.navigateToDashboard(fallbackUser.role).catch(() => this.redirectBasedOnRole(fallbackUser.role));
+                    this.navigationService.navigateToDashboard(fallbackUser.rol).catch(() => this.redirectBasedOnRole(fallbackUser.rol));
                   } else {
                     this.errorMessage = result?.error || 'No se pudo obtener usuario tras login';
                   }
@@ -128,15 +128,15 @@ export class LoginComponent {
   }
 
   // Redirigir según el rol del usuario
-  private redirectBasedOnRole(role: string): void {
-    switch (role) {
-      case 'admin':
+  private redirectBasedOnRole(rol: string): void {
+    switch (rol) {
+      case 'ADMIN':
         this.router.navigate(['/admin/dashboard']);
         break;
-      case 'recolector':
+      case 'RECOLECTOR':
         this.router.navigate(['/recolector/dashboard']);
         break;
-      case 'usuario':
+      case 'CLIENTE':
         this.router.navigate(['/usuario/dashboard']);
         break;
       default:

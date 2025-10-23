@@ -15,9 +15,9 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
-  { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
-  { path: 'recolector/dashboard', component: RecolectorDashboardComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['recolector'] } },
-  { path: 'usuario/dashboard', component: UsuarioDashboardComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['usuario'] } },
+  { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['ADMIN'] } },
+  { path: 'recolector/dashboard', component: RecolectorDashboardComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['RECOLECTOR'] } },
+  { path: 'usuario/dashboard', component: UsuarioDashboardComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['CLIENTE'] } },
   { path: 'test-backend', component: TestBackendComponent }, // Página de testing
   { path: '**', redirectTo: '' }
 ];

@@ -11,19 +11,19 @@ export class NavigationService {
     private authService: AuthApiService
   ) {}
 
-  async navigateToDashboard(role: string | undefined = undefined): Promise<boolean> {
+  async navigateToDashboard(rol: string | undefined = undefined): Promise<boolean> {
     console.log('NavigationService: Iniciando navegación al dashboard...');
     
     // Si no se proporciona rol, intentar obtenerlo del usuario actual
-    if (!role) {
+    if (!rol) {
       const currentUser = this.authService.getCurrentUser();
-      role = currentUser?.role;
+      rol = currentUser?.rol;
     }
 
-    console.log('NavigationService: Rol detectado:', role);
+    console.log('NavigationService: Rol detectado:', rol);
 
     // Determinar la ruta del dashboard
-    const dashboard = this.getDashboardRoute(role);
+    const dashboard = this.getDashboardRoute(rol);
     console.log('NavigationService: Ruta del dashboard:', dashboard);
 
     try {
@@ -42,13 +42,13 @@ export class NavigationService {
     }
   }
 
-  private getDashboardRoute(role: string | undefined): string {
-    switch (role) {
-      case 'admin':
+  private getDashboardRoute(rol: string | undefined): string {
+    switch (rol) {
+      case 'ADMIN':
         return '/admin/dashboard';
-      case 'recolector':
+      case 'RECOLECTOR':
         return '/recolector/dashboard';
-      case 'usuario':
+      case 'CLIENTE':
         return '/usuario/dashboard';
       default:
         console.warn('NavigationService: Rol no reconocido, usando dashboard de usuario por defecto');

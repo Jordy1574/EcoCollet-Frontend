@@ -41,7 +41,7 @@ export class AdminDashboardComponent implements OnInit {
     this.user = this.authService.getCurrentUser();
     
     // Protección de ruta: Solo administradores
-    if (!this.user || this.user.role !== 'admin') {
+    if (!this.user || this.user.rol !== 'ADMIN') {
       this.router.navigate(['/login']); 
     }
   }
