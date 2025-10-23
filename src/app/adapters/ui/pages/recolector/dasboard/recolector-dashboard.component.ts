@@ -81,10 +81,21 @@ export class RecolectorDashboardComponent implements OnInit {
     if (confirm('¿Confirmas que deseas enviar una alerta de emergencia?')) {
         alert('🚨 ALERTA DE EMERGENCIA ENVIADA. Contactando a soporte.');
     }
-  }
+  } 
 
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/']); 
+  }
+
+  /* 
+    Devuelve el primer nombre del usuario separado por espacio.
+    Si no hay nombre disponible, retorna el valor por defecto 'Recolector'.
+  */
+  get firstName(): string {
+    if (this.user?.name) {
+      return this.user.name.split(' ')[0];
+    }
+    return 'Recolector';
   }
 }

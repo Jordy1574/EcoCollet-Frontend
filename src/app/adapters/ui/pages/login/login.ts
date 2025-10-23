@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../../api/auth.api.service';
+import { AuthApiService } from '../../../api/auth.api.service';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +24,7 @@ export class LoginComponent {
   showPassword = false;
   errorMessage = '';
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthApiService) { }
 
   // Manejar envío del formulario
   async onSubmit(): Promise<void> {
@@ -41,7 +41,8 @@ export class LoginComponent {
       
       if (result.success && result.user) {
         // Login exitoso - redirigir según el rol
-        this.authService.redirectBasedOnRole(result.user.role);
+        const redirectUrl = this.authService.redirectBasedOnRole(result.user.role);
+        this.router.navigate([redirectUrl]);  
       } else {
         this.errorMessage = result.error || 'Error en el login';
       }

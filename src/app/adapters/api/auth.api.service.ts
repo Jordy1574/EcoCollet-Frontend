@@ -63,7 +63,21 @@ export class AuthApiService {
     const user = this.getCurrentUser();
     return user?.role === role;
   }
-
+  
+  // Devuelve la ruta a la que se debe redirigir el usuario según su rol
+  // Recibe el rol como string y retorna la URL correspondiente como string
+  redirectBasedOnRole(role: string): string {
+    switch (role) { 
+      case 'admin':
+        return '/admin-dashboard';
+      case 'recolector':
+        return '/recolector-dashboard';
+      case 'usuario':
+        return '/user-dashboard';
+      default:
+        return '/';
+    }
+  }
 }
 
 
