@@ -238,14 +238,20 @@ export class PuntosReciclajeCrudComponent implements OnInit {
     this.editingPunto = false;
     this.currentPunto = {
       estado: 'Activo',
-      materiales: []
+      materiales: [],
+      tipo: 'principal',
+      tipoTexto: 'Centro Principal',
+      horario: 'Lun-Vie 8:00 AM - 6:00 PM'
     };
     this.showModal = true;
   }
 
   editPunto(punto: PuntoReciclaje): void {
     this.editingPunto = true;
-    this.currentPunto = { ...punto };
+    this.currentPunto = { 
+      ...punto,
+      materiales: punto.materiales ? [...punto.materiales] : []
+    };
     this.showModal = true;
   }
 

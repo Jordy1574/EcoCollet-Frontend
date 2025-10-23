@@ -137,6 +137,27 @@ import { Usuario } from '../../../../../core/models/admin.models';
               >
             </div>
             <div>
+              <label class="block text-sm font-medium text-gray-700">Teléfono</label>
+              <input 
+                type="text" 
+                [(ngModel)]="currentUsuario.telefono" 
+                name="telefono"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-eco-green focus:ring focus:ring-eco-green focus:ring-opacity-50"
+              >
+            </div>
+            <div *ngIf="!editingUsuario">
+              <label class="block text-sm font-medium text-gray-700">Contraseña</label>
+              <input 
+                type="password" 
+                [(ngModel)]="currentUsuario.password" 
+                name="password"
+                [required]="!editingUsuario"
+                minlength="6"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-eco-green focus:ring focus:ring-eco-green focus:ring-opacity-50"
+              >
+              <p class="text-xs text-gray-500 mt-1">Mínimo 6 caracteres</p>
+            </div>
+            <div>
               <label class="block text-sm font-medium text-gray-700">Estado</label>
               <select 
                 [(ngModel)]="currentUsuario.estado" 
@@ -188,7 +209,7 @@ export class UsuariosCrudComponent implements OnInit {
   searchTerm: string = '';
   showModal: boolean = false;
   editingUsuario: boolean = false;
-  currentUsuario: Partial<Usuario> = {};
+  currentUsuario: Partial<Usuario> & { password?: string; telefono?: string } = {};
 
   constructor(private adminService: AdminApiService) {}
 
@@ -224,7 +245,9 @@ export class UsuariosCrudComponent implements OnInit {
     this.editingUsuario = false;
     this.currentUsuario = {
       estado: 'Activo',
-      rol: 'Usuario'
+      rol: 'Usuario',
+      password: '',
+      telefono: ''
     };
     this.showModal = true;
   }

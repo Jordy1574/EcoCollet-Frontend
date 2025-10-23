@@ -206,7 +206,14 @@ export class MaterialesCrudComponent implements OnInit {
 
   editMaterial(material: Material): void {
     this.editingMaterial = true;
-    this.currentMaterial = { ...material };
+    this.currentMaterial = { 
+      ...material,
+      info: material.info ? { ...material.info } : {
+        precioPromedio: '',
+        puntosActivos: '0',
+        ultimaActualizacion: new Date().toLocaleDateString()
+      }
+    };
     this.showModal = true;
   }
 
