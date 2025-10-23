@@ -7,15 +7,17 @@ import { AdminDashboardComponent } from './adapters/ui/pages/admin/dasboard/admi
 import { RecolectorDashboardComponent } from './adapters/ui/pages/recolector/dasboard/recolector-dashboard.component';
 import { UsuarioDashboardComponent } from './adapters/ui/pages/usuario/dashboard/usuario-dashboard.component';
 import { TestBackendComponent } from './test-backend.component';
+import { AuthGuard } from './guards/auth.guard';
+import { RoleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
-  { path: 'admin/dashboard', component: AdminDashboardComponent },
-  { path: 'recolector/dashboard', component: RecolectorDashboardComponent },
-  { path: 'usuario/dashboard', component: UsuarioDashboardComponent },
+  { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'recolector/dashboard', component: RecolectorDashboardComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['recolector'] } },
+  { path: 'usuario/dashboard', component: UsuarioDashboardComponent, canActivate: [AuthGuard], data: { roles: ['usuario', 'recolector', 'admin'] } },
   { path: 'test-backend', component: TestBackendComponent }, // Página de testing
   { path: '**', redirectTo: '' }
 ];

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthApiService } from '../../../api/auth.api.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -18,7 +19,7 @@ export class RegisterComponent {
     password: '',
     confirmPassword: '',
     acceptTerms: false,
-    userType: 'usuario' // 'usuario' o 'empresa'
+    userType: 'usuario' as 'usuario' | 'recolector' // Tipos válidos según el backend
   };
 
   // Estados del componente
@@ -28,7 +29,7 @@ export class RegisterComponent {
   errorMessage = '';
   passwordStrength = 0;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private authService: AuthApiService) { }
 
   // Manejar envío del formulario
   onSubmit(): void {
@@ -70,15 +71,64 @@ export class RegisterComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
-    // Simular registro (aquí irá la lógica real)
-    setTimeout(() => {
-      this.isLoading = false;
-      
-      // Simulación de registro exitoso
-      alert('¡Cuenta creada exitosamente! Bienvenido a EcoCollet.');
-      // Redirigir al login o directamente al home
-      this.router.navigate(['/login']);
-    }, 2000);
+    // Preparar datos de registro con los nombres de campos que espera el backend
+    const registerData = {
+      nombre: this.registerForm.fullName,    // Backend espera 'nombre'
+      email: this.registerForm.email,
+      password: this.registerForm.password,
+      role: this.registerForm.userType
+    };
+
+    // Log para depuración
+    console.log('Enviando datos de registro:', {
+      ...registerData,
+      password: '***' // No mostrar contraseña en logs
+    });
+
+    // Llamar al servicio de autenticación para registrar
+    this.authService.register(registerData).subscribe({
+      next: (res: { success: boolean; user?: any; error?: string }) => {
+        this.isLoading = false;
+        if (res.success && res.user) {
+          alert('¡Cuenta creada y sesión iniciada!');
+          // Redirigir según rol (si vino desde backend o usamos el tipo seleccionado)
+          const role = res.user.role || this.registerForm.userType;
+          switch (role) {
+            case 'admin':
+              this.router.navigate(['/admin/dashboard']);
+              break;
+            case 'recolector':
+              this.router.navigate(['/recolector/dashboard']);
+              break;
+            case 'usuario':
+            default:
+              this.router.navigate(['/usuario/dashboard']);
+              break;
+          }
+        } else {
+          this.errorMessage = res.error || 'Error en el registro';
+        }
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        // Log detallado del error
+        console.error('Error en registro:', {
+          status: err?.status,
+          message: err?.message,
+          error: err?.error,
+          fullError: err
+        });
+        
+        // Mostrar mensaje más detallado al usuario
+        if (err?.status === 403) {
+          this.errorMessage = 'No tienes permisos para realizar esta acción. Verifica que todos los campos sean correctos.';
+        } else if (err?.error?.message) {
+          this.errorMessage = err.error.message;
+        } else {
+          this.errorMessage = err?.message || 'Error de conexión al registrar';
+        }
+      }
+    });
   }
 
   // Toggle para mostrar/ocultar contraseña

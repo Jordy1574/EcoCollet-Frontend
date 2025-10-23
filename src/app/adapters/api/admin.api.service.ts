@@ -163,5 +163,106 @@ export class AdminApiService {
         return of(this.mockConfiguracion).pipe(delay(100));
     }
 
-    // [Aquí iría la lógica para editar o añadir elementos, si fuera una API real]
+    // ====================================================================
+    // CRUD METHODS (mock implementations)
+    // ====================================================================
+
+    // Usuarios
+    createUsuario(usuario: Partial<Usuario>): Observable<Usuario> {
+        const newUsuario: Usuario = {
+            id: (this.mockUsuarios.length + 1).toString(),
+            nombre: usuario.nombre || 'Nuevo Usuario',
+            email: usuario.email || 'nuevo@dominio.com',
+            rol: usuario.rol || 'Usuario',
+            distrito: usuario.distrito || '',
+            estado: usuario.estado || 'Activo',
+            fechaRegistro: usuario.fechaRegistro || new Date().toLocaleDateString()
+        };
+        this.mockUsuarios.push(newUsuario);
+        return of(newUsuario).pipe(delay(300));
+    }
+
+    updateUsuario(id: string, usuario: Partial<Usuario>): Observable<Usuario> {
+        const idx = this.mockUsuarios.findIndex(u => u.id === id);
+        if (idx !== -1) {
+            this.mockUsuarios[idx] = { ...this.mockUsuarios[idx], ...usuario };
+            return of(this.mockUsuarios[idx]).pipe(delay(300));
+        }
+        throw new Error('Usuario no encontrado');
+    }
+
+    deleteUsuario(id: string): Observable<void> {
+        const idx = this.mockUsuarios.findIndex(u => u.id === id);
+        if (idx !== -1) {
+            this.mockUsuarios.splice(idx, 1);
+            return of(void 0).pipe(delay(300));
+        }
+        throw new Error('Usuario no encontrado');
+    }
+
+    // Materiales
+    createMaterial(material: Partial<Material>): Observable<Material> {
+        const newMaterial: Material = {
+            id: (this.mockMateriales.length + 1).toString(),
+            nombre: material.nombre || 'Nuevo Material',
+            tipo: material.tipo || 'otro',
+            cantidad: material.cantidad || '0',
+            periodo: material.periodo || 'Hoy',
+            info: material.info
+        } as Material;
+        this.mockMateriales.push(newMaterial);
+        return of(newMaterial).pipe(delay(300));
+    }
+
+    updateMaterial(id: string, material: Partial<Material>): Observable<Material> {
+        const idx = this.mockMateriales.findIndex(m => m.id === id);
+        if (idx !== -1) {
+            this.mockMateriales[idx] = { ...this.mockMateriales[idx], ...material };
+            return of(this.mockMateriales[idx]).pipe(delay(300));
+        }
+        throw new Error('Material no encontrado');
+    }
+
+    deleteMaterial(id: string): Observable<void> {
+        const idx = this.mockMateriales.findIndex(m => m.id === id);
+        if (idx !== -1) {
+            this.mockMateriales.splice(idx, 1);
+            return of(void 0).pipe(delay(300));
+        }
+        throw new Error('Material no encontrado');
+    }
+
+    // Puntos de reciclaje
+    createPuntoReciclaje(punto: Partial<PuntoReciclaje>): Observable<PuntoReciclaje> {
+        const newPunto: PuntoReciclaje = {
+            id: (this.mockPuntosReciclaje.length + 1).toString(),
+            nombre: punto.nombre || 'Nuevo Punto',
+            tipo: punto.tipo || 'comunitario',
+            tipoTexto: punto.tipoTexto || 'Centro',
+            direccion: punto.direccion || '',
+            horario: punto.horario || '',
+            materiales: punto.materiales || [],
+            estado: punto.estado || 'Activo'
+        } as PuntoReciclaje;
+        this.mockPuntosReciclaje.push(newPunto);
+        return of(newPunto).pipe(delay(300));
+    }
+
+    updatePuntoReciclaje(id: string, punto: Partial<PuntoReciclaje>): Observable<PuntoReciclaje> {
+        const idx = this.mockPuntosReciclaje.findIndex(p => p.id === id);
+        if (idx !== -1) {
+            this.mockPuntosReciclaje[idx] = { ...this.mockPuntosReciclaje[idx], ...punto };
+            return of(this.mockPuntosReciclaje[idx]).pipe(delay(300));
+        }
+        throw new Error('Punto de reciclaje no encontrado');
+    }
+
+    deletePuntoReciclaje(id: string): Observable<void> {
+        const idx = this.mockPuntosReciclaje.findIndex(p => p.id === id);
+        if (idx !== -1) {
+            this.mockPuntosReciclaje.splice(idx, 1);
+            return of(void 0).pipe(delay(300));
+        }
+        throw new Error('Punto de reciclaje no encontrado');
+    }
 }

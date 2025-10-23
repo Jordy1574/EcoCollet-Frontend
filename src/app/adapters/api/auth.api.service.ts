@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { map, tap, switchMap, catchError } from 'rxjs/operators';
 import { User } from '../../core/models/user.model';
 import { BaseHttpService, ApiResponse } from '../../core/services/base-http.service';
 import { environment } from '../../../environments/environment';
@@ -17,12 +17,12 @@ export interface LoginResponse {
 }
 
 export interface RegisterRequest {
-  name: string;
+  nombre: string;     // Backend espera 'nombre' no 'name'
   email: string;
   password: string;
   role: 'usuario' | 'recolector';
-  phone?: string;
-  address?: string;
+  telefono?: string;  // Backend espera 'telefono' no 'phone'
+  direccion?: string; // Backend espera 'direccion' no 'address'
 }
 
 @Injectable({
@@ -69,27 +69,84 @@ export class AuthApiService {
    * Login con backend
    */
   login(credentials: LoginRequest): Observable<{ success: boolean; user?: User; error?: string }> {
-    return this.baseHttp.post<LoginResponse>('auth/login', credentials, false)
+    return this.baseHttp.post<any>('auth/login', credentials, false)
       .pipe(
-        map(response => {
-          if (response.success && response.data) {
-            // Guardar token y usuario
-            localStorage.setItem(environment.tokenKey, response.data.token);
-            localStorage.setItem(environment.refreshTokenKey, response.data.refreshToken);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
-            
-            // Actualizar BehaviorSubject
-            this.currentUserSubject.next(response.data.user);
-            
-            return { success: true, user: response.data.user };
-          } else {
-            return { success: false, error: response.message || 'Error de autenticación' };
+        // handle multiple backend shapes: wrapper {success,data}, or { token }
+        switchMap(response => {
+          // Case: wrapped response
+          if (response && typeof response === 'object' && 'success' in response) {
+            if (response.success && response.data) {
+              const data = response.data as any;
+              if (data.token) {
+                localStorage.setItem(environment.tokenKey, data.token);
+              }
+              if (data.refreshToken) {
+                localStorage.setItem(environment.refreshTokenKey, data.refreshToken);
+              }
+              if (data.user) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+                this.currentUserSubject.next(data.user as User);
+                return of({ success: true, user: data.user as User });
+              }
+            }
+            return of({ success: false, error: response.message || 'Error de autenticación' });
           }
+
+          // Case: backend returns only { token: '...' }
+          if (response && typeof response === 'object' && 'token' in response) {
+            const respAny: any = response as any;
+            const token = respAny.token as string;
+            if (token) {
+              localStorage.setItem(environment.tokenKey, token);
+              if (respAny.refreshToken) {
+                localStorage.setItem(environment.refreshTokenKey, respAny.refreshToken);
+              }
+
+              // Now retrieve user info from backend (verify endpoint) using stored token
+              return this.baseHttp.get<any>('auth/verify').pipe(
+                map(verifyResp => {
+                  // verifyResp may be wrapped or raw user
+                  if (verifyResp && typeof verifyResp === 'object' && 'success' in verifyResp) {
+                    if (verifyResp.success && verifyResp.data) {
+                      const user = verifyResp.data as User;
+                      localStorage.setItem('user', JSON.stringify(user));
+                      this.currentUserSubject.next(user);
+                      return { success: true, user };
+                    }
+                    return { success: false, error: verifyResp.message || 'No se pudo verificar usuario' };
+                  }
+
+                  // raw user object
+                  const maybeUser = verifyResp as User;
+                  if (maybeUser && maybeUser.email) {
+                    localStorage.setItem('user', JSON.stringify(maybeUser));
+                    this.currentUserSubject.next(maybeUser);
+                    return { success: true, user: maybeUser };
+                  }
+
+                  return { success: false, error: 'No se pudo obtener el usuario' };
+                }),
+                catchError(err => {
+                  console.error('Error verifying token after login:', err);
+                  return of({ success: false, error: err?.message || 'Error de verificación' });
+                })
+              );
+            }
+          }
+
+          // Other shapes: maybe direct user
+          if (response && typeof response === 'object' && 'email' in response) {
+            const user = response as User;
+            localStorage.setItem('user', JSON.stringify(user));
+            this.currentUserSubject.next(user);
+            return of({ success: true, user });
+          }
+
+          return of({ success: false, error: 'Error de autenticación' });
         }),
-        tap({
-          error: (error) => {
-            console.error('Login error:', error);
-          }
+        catchError(err => {
+          console.error('Login error:', err);
+          return of({ success: false, error: err?.message || 'Network error' });
         })
       );
   }
@@ -124,14 +181,55 @@ export class AuthApiService {
    * Registro de usuario
    */
   register(userData: RegisterRequest): Observable<{ success: boolean; user?: User; error?: string }> {
-    return this.baseHttp.post<LoginResponse>('auth/register', userData, false)
+    return this.baseHttp.post<any>('auth/register', userData, false)
       .pipe(
-        map(response => {
-          if (response.success && response.data) {
-            return { success: true, user: response.data.user };
-          } else {
-            return { success: false, error: response.message || 'Error en el registro' };
+        switchMap(response => {
+          // If backend returns wrapper { success, data }
+          if (response && typeof response === 'object' && 'success' in response) {
+            if (response.success && response.data) {
+              const data = response.data as any;
+              if (data.token) {
+                localStorage.setItem(environment.tokenKey, data.token);
+              }
+              if (data.refreshToken) {
+                localStorage.setItem(environment.refreshTokenKey, data.refreshToken);
+              }
+              if (data.user) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+                this.currentUserSubject.next(data.user as User);
+                return of({ success: true, user: data.user as User });
+              }
+            }
+            return of({ success: false, error: response.message || 'Error en el registro' });
           }
+
+          // If backend returns the created user object (no token), attempt to login automatically
+          if (response && typeof response === 'object' && 'email' in response) {
+            const createdUser = response as User;
+
+            // Try to login using the credentials the user provided at registration
+            // NOTE: we have access to the plain password because it was passed into this function
+            const credentials: LoginRequest = { email: userData.email, password: userData.password };
+
+            return this.login(credentials).pipe(
+              map(loginResult => {
+                if (loginResult.success && loginResult.user) {
+                  return { success: true, user: loginResult.user };
+                }
+                // If login failed, still return created user but mark as partial success
+                // store created user locally so the app can show a friendly message
+                localStorage.setItem('user', JSON.stringify(createdUser));
+                this.currentUserSubject.next(createdUser);
+                return { success: true, user: createdUser };
+              })
+            );
+          }
+
+          return of({ success: false, error: 'Error en el registro' });
+        }),
+        catchError(err => {
+          console.error('Register error:', err);
+          return of({ success: false, error: err?.message || 'Network error' });
         })
       );
   }
