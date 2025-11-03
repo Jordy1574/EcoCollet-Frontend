@@ -299,9 +299,172 @@
                 </div>
             }
 
-            <app-usuarios-crud [hidden]="currentSection !== 'usuarios'"></app-usuarios-crud>
-            <app-puntos-reciclaje-crud [hidden]="currentSection !== 'puntos'"></app-puntos-reciclaje-crud>
-            <app-materiales-crud [hidden]="currentSection !== 'materiales'"></app-materiales-crud>
+            @if (currentSection === 'usuarios') {
+                <app-usuarios-crud></app-usuarios-crud>
+            }
+
+            @if (currentSection === 'puntos') {
+                <app-puntos-reciclaje-crud></app-puntos-reciclaje-crud>
+            }
+
+            @if (currentSection === 'materiales') {
+                <app-materiales-crud></app-materiales-crud>
+            }
+
+            @if (currentSection === 'citas') {
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium text-gray-900">Gestión de Citas de Recolección</h3>
+                            <button class="bg-[#5EA362] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600">
+                                + Nueva Cita
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Material</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha y Hora</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recolector</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @for (cita of citas; track cita.id) {
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ cita.id }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div>
+                                                <div class="text-sm font-medium text-gray-900">{{ cita.usuario.nombre }}</div>
+                                                <div class="text-sm text-gray-500">{{ cita.usuario.direccion }}</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div>
+                                                <div class="text-sm font-medium text-gray-900">{{ cita.material.tipo }}</div>
+                                                <div class="text-sm text-gray-500">{{ cita.material.cantidad }}</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div>
+                                                <div class="text-sm font-medium text-gray-900">{{ cita.fecha.dia }}</div>
+                                                <div class="text-sm text-gray-500">{{ cita.fecha.hora }}</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ cita.recolector || 'Sin asignar' }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span [class]="getAppointmentStatusClass(cita.estado)" class="px-2 py-1 rounded-full text-xs font-medium">
+                                                {{ cita.estado }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button class="text-[#5EA362] hover:text-green-600 mr-3">Editar</button>
+                                            <button class="text-red-600 hover:text-red-800">Cancelar</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+
+            @if (currentSection === 'reportes') {
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <!-- Estadísticas Generales -->
+                    <div class="bg-white rounded-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Estadísticas Generales</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-4 bg-blue-50 rounded-lg">
+                                <span class="text-sm font-medium text-gray-700">Total de Usuarios</span>
+                                <span class="text-2xl font-bold text-blue-600">{{ usuarios.length }}</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-yellow-50 rounded-lg">
+                                <span class="text-sm font-medium text-gray-700">Citas Procesadas</span>
+                                <span class="text-2xl font-bold text-yellow-600">{{ citas.length }}</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-green-50 rounded-lg">
+                                <span class="text-sm font-medium text-gray-700">Puntos Activos</span>
+                                <span class="text-2xl font-bold text-green-600">{{ getPuntosActivos() }}</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-purple-50 rounded-lg">
+                                <span class="text-sm font-medium text-gray-700">Materiales Registrados</span>
+                                <span class="text-2xl font-bold text-purple-600">{{ materiales.length }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico de Rendimiento -->
+                    <div class="bg-white rounded-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Rendimiento Mensual</h3>
+                        <div class="h-64 flex items-center justify-center text-gray-500">
+                            <div class="text-center">
+                                <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path>
+                                </svg>
+                                <p>Gráfico de rendimiento mensual</p>
+                                <p class="text-xs mt-2">Datos simulados para demo</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de Reportes Detallados -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">Reporte Detallado de Actividades</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actividad</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario/Material</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @for (cita of citas; track cita.id) {
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ cita.fecha.dia }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Recolección</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ cita.usuario.nombre }} - {{ cita.material.tipo }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ cita.material.cantidad }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span [class]="getAppointmentStatusClass(cita.estado)" class="px-2 py-1 rounded-full text-xs font-medium">
+                                                {{ cita.estado }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                                <!-- Agregar datos de materiales como actividades adicionales -->
+                                @for (material of materiales; track material.id) {
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ material.periodo }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Procesamiento</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ material.nombre }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ material.cantidad }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                                                Procesado
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
 
             @if (currentSection === 'configuracion') {
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -475,211 +638,6 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            }
-
-            @if (currentSection === 'materiales') {
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    @for (material of materiales; track material.id) {
-                        <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                            <div class="p-6">
-                                <div class="flex flex-col items-center text-center mb-6">
-                                    <div [class]="getMaterialIconClass(material.tipo)" class="w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                        </svg>
-                                    </div>
-                                    <h3 class="text-lg font-semibold text-gray-900 capitalize">{{ material.nombre }}</h3>
-                                </div>
-                                <div class="space-y-3">
-                                    <div class="text-center">
-                                        <p class="text-3xl font-bold text-gray-900">{{ material.cantidad }}</p>
-                                        <p class="text-sm text-gray-500">{{ material.periodo }}</p>
-                                    </div>
-                                    @if (material.info) {
-                                        <div class="space-y-2 pt-4 border-t border-gray-200">
-                                            <div class="flex justify-between">
-                                                <span class="text-xs text-gray-500">Precio promedio:</span>
-                                                <span class="text-xs font-medium text-gray-900">{{ material.info.precioPromedio }}</span>
-                                            </div>
-                                            <div class="flex justify-between">
-                                                <span class="text-xs text-gray-500">Puntos activos:</span>
-                                                <span class="text-xs font-medium text-gray-900">{{ material.info.puntosActivos }}</span>
-                                            </div>
-                                            <div class="flex justify-between">
-                                                <span class="text-xs text-gray-500">Actualizado:</span>
-                                                <span class="text-xs font-medium text-gray-900">{{ material.info.ultimaActualizacion }}</span>
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            }
-
-            @if (currentSection === 'puntos') {
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    @for (punto of puntosReciclaje; track punto.id) {
-                        <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                            <div class="p-6">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div [class]="getPointTypeIconClass(punto.tipo)" class="w-12 h-12 rounded-full flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                        </svg>
-                                    </div>
-                                    <span [class]="getPointStatusClass(punto.estado)" class="px-2 py-1 rounded-full text-xs font-medium">
-                                        {{ punto.estado }}
-                                    </span>
-                                </div>
-                                <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ punto.nombre }}</h3>
-                                <p class="text-sm text-gray-500 mb-2">{{ punto.tipoTexto }}</p>
-                                <p class="text-sm text-gray-600 mb-4">{{ punto.direccion }}</p>
-                                <div class="space-y-2">
-                                    <p class="text-xs text-gray-500">Horario: {{ punto.horario }}</p>
-                                    <div class="flex flex-wrap gap-1">
-                                        @for (material of punto.materiales; track material) {
-                                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">{{ material }}</span>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            }
-
-            @if (currentSection === 'citas') {
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">Gestión de Citas de Recolección</h3>
-                            <button class="bg-[#5EA362] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600">
-                                + Nueva Cita
-                            </button>
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Material</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha y Hora</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recolector</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @for (cita of citas; track cita.id) {
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ cita.id }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div>
-                                                <div class="text-sm font-medium text-gray-900">{{ cita.usuario.nombre }}</div>
-                                                <div class="text-sm text-gray-500">{{ cita.usuario.direccion }}</div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div>
-                                                <div class="text-sm font-medium text-gray-900">{{ cita.material.tipo }}</div>
-                                                <div class="text-sm text-gray-500">{{ cita.material.cantidad }}</div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div>
-                                                <div class="text-sm font-medium text-gray-900">{{ cita.fecha.dia }}</div>
-                                                <div class="text-sm text-gray-500">{{ cita.fecha.hora }}</div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ cita.recolector || 'Sin asignar' }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span [class]="getAppointmentStatusClass(cita.estado)" class="px-2 py-1 rounded-full text-xs font-medium">
-                                                {{ cita.estado }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <button class="text-[#5EA362] hover:text-green-600 mr-3">Editar</button>
-                                            <button class="text-red-600 hover:text-red-800">Cancelar</button>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            }
-
-            @if (currentSection === 'usuarios') {
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">Lista de Usuarios</h3>
-                            <button class="bg-[#5EA362] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600">
-                                + Nuevo Usuario
-                            </button>
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Distrito</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registro</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @for (usuario of usuarios; track usuario.id) {
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="flex items-center">
-                                                <div class="w-10 h-10 bg-[#5EA362] rounded-full flex items-center justify-center mr-4">
-                                                    <span class="text-white font-semibold text-sm">{{ getInitials(usuario.nombre) }}</span>
-                                                </div>
-                                                <div>
-                                                    <div class="text-sm font-medium text-gray-900">{{ usuario.nombre }}</div>
-                                                    <div class="text-sm text-gray-500">{{ usuario.email }}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span [class]="getRoleBadgeClass(usuario.rol)" class="px-2 py-1 rounded-full text-xs font-medium">
-                                                {{ usuario.rol }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ usuario.distrito }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span [class]="getStatusBadgeClass(usuario.estado)" class="px-2 py-1 rounded-full text-xs font-medium">
-                                                {{ usuario.estado }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ usuario.fechaRegistro }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <button class="text-[#5EA362] hover:text-green-600 mr-3">Editar</button>
-                                            <button class="text-red-600 hover:text-red-800">Eliminar</button>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            }
-
-            @if (currentSection !== 'dashboard' && currentSection !== 'usuarios' && currentSection !== 'citas' && currentSection !== 'puntos' && currentSection !== 'materiales' && currentSection !== 'reportes' && currentSection !== 'configuracion') {
-                <div class="bg-white rounded-xl p-8 shadow-sm text-center">
-                    <h3 class="text-xl font-medium text-gray-900 mb-2">Sección {{ currentSection | titlecase }}</h3>
-                    <p class="text-gray-600">Esta sección estará disponible próximamente</p>
                 </div>
             }
 

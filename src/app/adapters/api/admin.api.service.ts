@@ -224,7 +224,7 @@ export class AdminApiService {
             tipo: 'principal',
             tipoTexto: 'Centro Principal',
             direccion: p.direccion ?? '',
-            horario: '',
+            horario: p.horario ?? '',
             materiales: (p.materialesAceptados || []).map((mat: any) => mat?.nombre ?? '').filter((n: string) => !!n),
             estado: this.capitalizeEstado(p.estado)
         };
@@ -316,19 +316,25 @@ export class AdminApiService {
     }
 
     // Materiales
-    createMaterial(material: Partial<Material>): Observable<Material> {
+    createMaterial(material: any): Observable<Material> {
+        const precio = typeof material?.precioPorKg === 'number'
+            ? material.precioPorKg
+            : this.parsePrecioLabel(material?.info?.precioPromedio);
         const body = {
-            nombre: material.nombre ?? '',
-            precioPorKg: this.parsePrecioLabel(material.info?.precioPromedio)
+            nombre: material?.nombre ?? '',
+            precioPorKg: isNaN(precio) ? 0 : precio
         };
         return this.http.post<any>('admin/materiales', body)
             .pipe(map(resp => this.mapBackendMaterial((resp as any).data)));
     }
 
-    updateMaterial(id: string, material: Partial<Material>): Observable<Material> {
+    updateMaterial(id: string, material: any): Observable<Material> {
+        const precio = typeof material?.precioPorKg === 'number'
+            ? material.precioPorKg
+            : this.parsePrecioLabel(material?.info?.precioPromedio);
         const body = {
-            nombre: material.nombre ?? '',
-            precioPorKg: this.parsePrecioLabel(material.info?.precioPromedio)
+            nombre: material?.nombre ?? '',
+            precioPorKg: isNaN(precio) ? 0 : precio
         };
         return this.http.put<any>(`admin/materiales/${id}`, body)
             .pipe(map(resp => this.mapBackendMaterial((resp as any).data)));
@@ -353,6 +359,7 @@ export class AdminApiService {
             nombre: punto.nombre ?? '',
             direccion: punto.direccion ?? '',
             telefono: undefined,
+            horario: punto.horario ?? '',
             estado: this.toApiEstado(punto.estado),
             materialesAceptadosIds
         };
