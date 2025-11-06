@@ -2,6 +2,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 // IMPORTACIONES CORREGIDAS (4 NIVELES DE SALTO)
@@ -16,7 +17,7 @@ import { MaterialesCrudComponent } from '../materiales/materiales-crud.component
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, UsuariosCrudComponent, PuntosReciclajeCrudComponent, MaterialesCrudComponent],
+  imports: [CommonModule, FormsModule, UsuariosCrudComponent, PuntosReciclajeCrudComponent, MaterialesCrudComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: [],
 })
@@ -35,6 +36,14 @@ export class AdminDashboardComponent implements OnInit {
   topUsers: TopUser[] = [];
   rolesPermisos: RolPermiso[] = [];
   configuracion: ConfiguracionSistema | null = null;
+  
+  // Estadísticas del dashboard
+  dashboardStats: any = {
+    totalUsuarios: 0,
+    citasActivas: 0,
+    puntosActivos: 0,
+    kgRecolectadosEsteMes: 0
+  };
 
   constructor(
     private authService: AuthApiService, 
@@ -56,13 +65,38 @@ export class AdminDashboardComponent implements OnInit {
   // CARGAR DATOS DEL DASHBOARD
   loadDashboardData(): void {
     this.adminApi.getUsuarios().subscribe(data => this.usuarios = data);
-    this.adminApi.getCitas().subscribe(data => this.citas = data);
+    
+    // ✅ Intentar cargar citas desde el backend, fallback a mock si falla
+    this.adminApi.getCitasFromBackend().subscribe(data => this.citas = data);
+    
     this.adminApi.getPuntosReciclaje().subscribe(data => this.puntosReciclaje = data);
     this.adminApi.getMateriales().subscribe(data => this.materiales = data);
-    this.adminApi.getConfiguracion().subscribe(data => this.configuracion = data);
-    this.adminApi.getTopUsers().subscribe(data => this.topUsers = data);
+    
+    // Intentar cargar configuración del backend
+    this.adminApi.getConfiguracionFromBackend().subscribe(data => this.configuracion = data);
+    
+    // Intentar cargar top usuarios del backend
+    this.adminApi.getTopUsuariosBackend(5).subscribe(data => this.topUsers = data);
+    
     this.adminApi.getRolesPermisos().subscribe(data => this.rolesPermisos = data);
     this.adminApi.getTrendPoints().subscribe(data => this.trendPoints = data);
+    
+    // Cargar estadísticas del dashboard desde backend
+    this.adminApi.getDashboardResumen().subscribe(resumen => {
+      if (resumen && resumen.estadisticas) {
+        this.dashboardStats = resumen.estadisticas;
+        if (resumen.topUsuarios?.length) {
+          this.topUsers = resumen.topUsuarios.map((u: any, idx: number) => ({
+            id: String(u.id),
+            position: idx + 1,
+            nombre: u.nombre,
+            ubicacion: u.distrito,
+            cantidad: `${u.totalKg} kg`,
+            citas: `${u.totalCitas} citas`
+          }));
+        }
+      }
+    });
   }
 
   // NAVEGACIÓN ENTRE SECCIONES
@@ -143,6 +177,67 @@ export class AdminDashboardComponent implements OnInit {
 
   getPuntosActivos(): number {
     return this.puntosReciclaje.filter(p => p.estado === 'Activo').length;
+  }
+
+  // GUARDAR CONFIGURACIÓN
+  guardarConfiguracion(): void {
+    if (!this.configuracion) return;
+    
+    this.adminApi.updateConfiguracion(this.configuracion).subscribe({
+      next: (config) => {
+        this.configuracion = config;
+        alert('Configuración guardada exitosamente');
+      },
+      error: (err) => {
+        console.error('Error al guardar configuración:', err);
+        alert('Error al guardar la configuración');
+      }
+    });
+  }
+
+  // ✅ ACTUALIZAR ESTADO DE CITA (Admin)
+  cambiarEstadoCita(citaId: string, nuevoEstado: string): void {
+    const estados = ['Pendiente', 'En proceso', 'Completada', 'Cancelada'];
+    const estadoActual = this.citas.find(c => c.id === citaId)?.estado;
+    
+    if (!estadoActual) return;
+    
+    // Mostrar opciones de estado
+    const opcion = prompt(`Estado actual: ${estadoActual}\n\nCambiar a:\n1. Pendiente\n2. En proceso\n3. Completada\n4. Cancelada\n\nIngresa el número:`, '2');
+    
+    if (!opcion) return;
+    
+    const index = parseInt(opcion) - 1;
+    if (index >= 0 && index < estados.length) {
+      const estadoBackend = estados[index].toUpperCase().replace(' ', '_');
+      
+      this.adminApi.updateCita(citaId, { estado: estadoBackend }).subscribe({
+        next: () => {
+          alert(`Estado actualizado a: ${estados[index]}`);
+          this.loadDashboardData(); // Recargar citas
+        },
+        error: (err) => {
+          console.error('Error al actualizar estado:', err);
+          alert('Error al actualizar el estado de la cita');
+        }
+      });
+    }
+  }
+
+  // ✅ CANCELAR CITA (Admin)
+  cancelarCitaAdmin(citaId: string): void {
+    if (!confirm('¿Estás seguro de cancelar esta cita?')) return;
+    
+    this.adminApi.updateCita(citaId, { estado: 'CANCELADA' }).subscribe({
+      next: () => {
+        alert('Cita cancelada exitosamente');
+        this.loadDashboardData(); // Recargar citas
+      },
+      error: (err) => {
+        console.error('Error al cancelar cita:', err);
+        alert('Error al cancelar la cita');
+      }
+    });
   }
 
   logout(): void {

@@ -189,7 +189,7 @@
                             </div>
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-600">Total Usuarios</p>
-                                <p class="text-3xl font-bold text-gray-900">{{ usuarios.length }}</p>
+                                <p class="text-3xl font-bold text-gray-900">{{ dashboardStats.totalUsuarios || usuarios.length }}</p>
                                 <p class="text-sm text-blue-600">Registrados</p>
                             </div>
                         </div>
@@ -205,7 +205,7 @@
                             </div>
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-600">Citas Activas</p>
-                                <p class="text-3xl font-bold text-gray-900">{{ citas.length }}</p>
+                                <p class="text-3xl font-bold text-gray-900">{{ dashboardStats.citasActivas || citas.length }}</p>
                                 <p class="text-sm text-orange-600">Programadas</p>
                             </div>
                         </div>
@@ -222,8 +222,8 @@
                             </div>
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-600">Puntos Activos</p>
-                                <p class="text-3xl font-bold text-gray-900">{{ puntosReciclaje.length }}</p>
-                                <p class="text-sm text-green-600">{{ getPuntosActivos() }} operativos</p>
+                                <p class="text-3xl font-bold text-gray-900">{{ dashboardStats.puntosActivos || getPuntosActivos() }}</p>
+                                <p class="text-sm text-green-600">Operativos</p>
                             </div>
                         </div>
                     </div>
@@ -238,14 +238,12 @@
                             </div>
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-600">Total Recolectado</p>
-                                <p class="text-3xl font-bold text-gray-900">{{ getTotalMateriales() }}</p>
+                                <p class="text-3xl font-bold text-gray-900">{{ dashboardStats.kgRecolectadosEsteMes || getTotalMateriales() }}</p>
                                 <p class="text-sm text-purple-600">kg este mes</p>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                </div>                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     <!-- Gráfico de Usuarios -->
                     <div class="bg-white rounded-xl p-6 shadow-sm">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Usuarios Activos</h3>
@@ -365,8 +363,12 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <button class="text-[#5EA362] hover:text-green-600 mr-3">Editar</button>
-                                            <button class="text-red-600 hover:text-red-800">Cancelar</button>
+                                            <button (click)="cambiarEstadoCita(cita.id, cita.estado)" class="text-[#5EA362] hover:text-green-600 mr-3">
+                                                Editar
+                                            </button>
+                                            <button (click)="cancelarCitaAdmin(cita.id)" class="text-red-600 hover:text-red-800">
+                                                Cancelar
+                                            </button>
                                         </td>
                                     </tr>
                                 }
@@ -474,15 +476,15 @@
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Nombre del Sistema</label>
-                                <input type="text" [value]="configuracion?.nombreSistema" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5EA362] focus:border-transparent">
+                                <input type="text" [(ngModel)]="configuracion!.nombreSistema" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5EA362] focus:border-transparent">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Email de Contacto</label>
-                                <input type="email" [value]="configuracion?.emailContacto" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5EA362] focus:border-transparent">
+                                <input type="email" [(ngModel)]="configuracion!.emailContacto" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5EA362] focus:border-transparent">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Zona Horaria</label>
-                                <select [value]="configuracion?.zonaHoraria" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5EA362] focus:border-transparent">
+                                <select [(ngModel)]="configuracion!.zonaHoraria" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5EA362] focus:border-transparent">
                                     <option value="America/Lima">America/Lima</option>
                                     <option value="America/Bogota">America/Bogota</option>
                                     <option value="America/Mexico_City">America/Mexico_City</option>
@@ -497,7 +499,7 @@
                         <div class="space-y-4">
                             <div class="flex items-center justify-between">
                                 <label class="text-sm font-medium text-gray-700">Backup Automático</label>
-                                <input type="checkbox" [checked]="configuracion?.backupAutomatico" class="rounded text-[#5EA362] focus:ring-[#5EA362]">
+                                <input type="checkbox" [(ngModel)]="configuracion!.backupAutomatico" class="rounded text-[#5EA362] focus:ring-[#5EA362]">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Último Backup</label>
@@ -505,11 +507,11 @@
                             </div>
                             <div class="flex items-center justify-between">
                                 <label class="text-sm font-medium text-gray-700">Doble Autenticación</label>
-                                <input type="checkbox" [checked]="configuracion?.seguridad?.dobleAutenticacion" class="rounded text-[#5EA362] focus:ring-[#5EA362]">
+                                <input type="checkbox" [(ngModel)]="configuracion!.seguridad.dobleAutenticacion" class="rounded text-[#5EA362] focus:ring-[#5EA362]">
                             </div>
                             <div class="flex items-center justify-between">
                                 <label class="text-sm font-medium text-gray-700">Sesión Segura</label>
-                                <input type="checkbox" [checked]="configuracion?.seguridad?.sesionSegura" class="rounded text-[#5EA362] focus:ring-[#5EA362]">
+                                <input type="checkbox" [(ngModel)]="configuracion!.seguridad.sesionSegura" class="rounded text-[#5EA362] focus:ring-[#5EA362]">
                             </div>
                         </div>
                     </div>
@@ -520,15 +522,15 @@
                         <div class="space-y-4">
                             <div class="flex items-center justify-between">
                                 <label class="text-sm font-medium text-gray-700">Email</label>
-                                <input type="checkbox" [checked]="configuracion?.notificaciones?.email" class="rounded text-[#5EA362] focus:ring-[#5EA362]">
+                                <input type="checkbox" [(ngModel)]="configuracion!.notificaciones.email" class="rounded text-[#5EA362] focus:ring-[#5EA362]">
                             </div>
                             <div class="flex items-center justify-between">
                                 <label class="text-sm font-medium text-gray-700">SMS</label>
-                                <input type="checkbox" [checked]="configuracion?.notificaciones?.sms" class="rounded text-[#5EA362] focus:ring-[#5EA362]">
+                                <input type="checkbox" [(ngModel)]="configuracion!.notificaciones.sms" class="rounded text-[#5EA362] focus:ring-[#5EA362]">
                             </div>
                             <div class="flex items-center justify-between">
                                 <label class="text-sm font-medium text-gray-700">Push</label>
-                                <input type="checkbox" [checked]="configuracion?.notificaciones?.push" class="rounded text-[#5EA362] focus:ring-[#5EA362]">
+                                <input type="checkbox" [(ngModel)]="configuracion!.notificaciones.push" class="rounded text-[#5EA362] focus:ring-[#5EA362]">
                             </div>
                         </div>
                     </div>
@@ -548,6 +550,13 @@
                             }
                         </div>
                     </div>
+                </div>
+
+                <!-- Botón de Guardar Configuración -->
+                <div class="mt-8 flex justify-end">
+                    <button (click)="guardarConfiguracion()" class="bg-[#5EA362] text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-green-600 transition-colors">
+                        💾 Guardar Configuración
+                    </button>
                 </div>
             }
 

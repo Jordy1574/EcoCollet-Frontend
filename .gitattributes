@@ -1,0 +1,30 @@
+# Normalize line endings across the repo
+
+# Auto-detect text files and ensure they are normalized in the repo
+* text=auto
+
+# Force LF for source/text files (consistent across OS)
+*.ts   text eol=lf
+*.tsx  text eol=lf
+*.js   text eol=lf
+*.jsx  text eol=lf
+*.html text eol=lf
+*.css  text eol=lf
+*.scss text eol=lf
+*.json text eol=lf
+*.md   text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.xml  text eol=lf
+
+# Keep typical binary files untouched
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+
+# Keep Windows scripts with native endings if needed
+*.cmd eol=crlf
+*.bat eol=crlf

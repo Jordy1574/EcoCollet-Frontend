@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { Cita, } from '../../../../../core/models/cita.model'; 
 import {  User } from '../../../../../core/models/user.model';
 import { AuthApiService } from '../../../../api/auth.api.service'; 
+import { UserCitasApiService, CitaUsuario } from '../../../../api/user-citas.api.service';
+import { AdminApiService } from '../../../../api/admin.api.service';
 // NOTA: Es fundamental que Cita.id y User.id sean ambos STRING o ambos NUMBER para evitar errores.
 // Asumo que tu backend usa STRINGs para IDs.
 
@@ -33,29 +35,28 @@ export class UsuarioDashboardComponent implements OnInit {
     puntosGanados: 890,
     impactoAmbiental: 12
   };
-  citasPendientes: Cita[] = [
-    // IDs como string para coincidir con la interfaz en core/models
-    { id: '1', fecha: '2025-10-25', hora: '10:00 AM', estado: 'Pendiente', direccion: 'Calle Los Rosales 123', tipoMaterial: 'PLASTICO', cantidadEstimada: 5, puntos: 50 },
-    { id: '2', fecha: '2025-10-22', hora: '02:00 PM', estado: 'Completada', direccion: 'Av. Siempreviva 742', tipoMaterial: 'PAPEL', cantidadEstimada: 3, puntos: 30 },
-    { id: '3', fecha: '2025-11-01', hora: '09:00 AM', estado: 'Pendiente', direccion: 'Jr. Miraflores 999', tipoMaterial: 'VIDRIO', cantidadEstimada: 12, puntos: 120 }
-  ];
+  citasPendientes: Cita[] = [];
+  misCitasBackend: CitaUsuario[] = []; // Citas del backend
+  materialesBackend: any[] = []; // Lista de materiales del backend
   
   // --- FORMULARIOS Y ESTADOS ---
   showAgendarForm = false; 
   agendarStep = 1; 
   materialesDisponibles = [
-    { tipo: 'PLASTICO', nombre: 'Plástico', seleccionado: false, icono: '♲' }, 
-    { tipo: 'PAPEL', nombre: 'Papel', seleccionado: false, icono: '📄' }, 
-    { tipo: 'VIDRIO', nombre: 'Vidrio', seleccionado: false, icono: '🍾' }, 
-    { tipo: 'METAL', nombre: 'Metal', seleccionado: false, icono: '🔧' } 
+    { tipo: 'PLASTICO', nombre: 'Plástico', seleccionado: false, icono: '♲', id: 1 }, 
+    { tipo: 'PAPEL', nombre: 'Papel', seleccionado: false, icono: '📄', id: 2 }, 
+    { tipo: 'VIDRIO', nombre: 'Vidrio', seleccionado: false, icono: '🍾', id: 3 }, 
+    { tipo: 'METAL', nombre: 'Metal', seleccionado: false, icono: '🔧', id: 4 } 
   ]; 
   agendarForm = {
+    materialId: 0,
     cantidad: 0,
     fecha: '',
     hora: '',
     direccion: '',
     referencia: '',
     distrito: '',
+    notas: '',
     materiales: [] as string[]
   }; 
   horasDisponibles = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00']; 
@@ -86,7 +87,12 @@ export class UsuarioDashboardComponent implements OnInit {
 
 
   // --- CONSTRUCTOR Y LIFECYCLE ---
-  constructor(private authService: AuthApiService, private router: Router) {}
+  constructor(
+    private authService: AuthApiService, 
+    private router: Router,
+    private userCitasService: UserCitasApiService,
+    private adminApi: AdminApiService
+  ) {}
 
   ngOnInit(): void {
     this.user = this.authService.getCurrentUser();
@@ -98,6 +104,8 @@ export class UsuarioDashboardComponent implements OnInit {
     }
     
     this.loadDashboardData();
+    this.cargarMisCitas();
+    this.cargarMateriales();
   }
 
   // --- MÉTODOS DE LA UI Y NEGOCIO ---
@@ -115,6 +123,78 @@ export class UsuarioDashboardComponent implements OnInit {
 
       this.isLoading = false;
     }, 500);
+  }
+
+  // ✅ CARGAR MIS CITAS DESDE BACKEND
+  private cargarMisCitas(): void {
+    this.userCitasService.getMisCitas().subscribe({
+      next: (citas) => {
+        this.misCitasBackend = citas;
+        // Convertir a formato Cita para compatibilidad con UI existente
+        this.citasPendientes = citas.map(c => ({
+          id: String(c.id),
+          fecha: c.fecha,
+          hora: c.hora,
+          estado: this.normalizarEstado(c.estado),
+          direccion: 'Dirección guardada',
+          tipoMaterial: c.materialNombre.toUpperCase(),
+          cantidadEstimada: c.cantidadEstimada,
+          puntos: Math.round(c.cantidadEstimada * 10)
+        }));
+      },
+      error: (err) => {
+        console.error('Error al cargar citas:', err);
+      }
+    });
+  }
+
+  private normalizarEstado(estado: string): 'Pendiente' | 'En proceso' | 'Completada' | 'Confirmada' | 'Cancelada' {
+    const e = estado.toLowerCase();
+    if (e.includes('pend')) return 'Pendiente';
+    if (e.includes('proceso')) return 'En proceso';
+    if (e.includes('complet')) return 'Completada';
+    if (e.includes('confirm')) return 'Confirmada';
+    if (e.includes('cancel')) return 'Cancelada';
+    return 'Pendiente';
+  }
+
+  // ✅ CARGAR MATERIALES DESDE BACKEND
+  private cargarMateriales(): void {
+    this.adminApi.getMateriales().subscribe({
+      next: (materiales) => {
+        if (materiales && materiales.length > 0) {
+          this.materialesBackend = materiales;
+          // Mapear a materialesDisponibles solo si hay datos del backend
+          const materialesFromBackend = materiales.map(m => ({
+            tipo: m.nombre.toUpperCase(),
+            nombre: m.nombre,
+            seleccionado: false,
+            icono: this.getIconoPorMaterial(m.nombre),
+            id: parseInt(m.id)
+          }));
+          
+          // Actualizar materialesDisponibles conservando el estado de selección
+          this.materialesDisponibles = materialesFromBackend.map(mb => {
+            const existing = this.materialesDisponibles.find(md => md.tipo === mb.tipo);
+            return existing ? { ...mb, seleccionado: existing.seleccionado } : mb;
+          });
+        }
+        // Si no hay materiales del backend, mantener los hardcoded
+      },
+      error: (err) => {
+        console.error('Error al cargar materiales:', err);
+        // En caso de error, mantener los materiales hardcoded que ya están inicializados
+      }
+    });
+  }
+
+  private getIconoPorMaterial(nombre: string): string {
+    const n = nombre.toLowerCase();
+    if (n.includes('plast')) return '♲';
+    if (n.includes('papel')) return '📄';
+    if (n.includes('vidri')) return '🍾';
+    if (n.includes('metal')) return '🔧';
+    return '♲';
   }
 
   loadSection(section: 'dashboard' | 'citas' | 'puntos' | 'recompensas' | 'perfil'): void {
@@ -194,8 +274,55 @@ export class UsuarioDashboardComponent implements OnInit {
     if (this.agendarStep === 3) return !!this.agendarForm.direccion && !!this.agendarForm.distrito;
     return false;
   }
-  confirmarRecoleccion() { this.showAgendarForm = false; this.resetAgendarForm(); }
-  cancelarCita(id: string) { console.log('Cancelando cita:', id); } 
+  
+  // ✅ CONFIRMAR RECOLECCIÓN CON BACKEND
+  confirmarRecoleccion() {
+    // Obtener el ID del material seleccionado
+    const materialSeleccionado = this.materialesDisponibles.find(m => m.seleccionado);
+    if (!materialSeleccionado) {
+      alert('Por favor selecciona un material');
+      return;
+    }
+
+    const citaRequest = {
+      materialId: materialSeleccionado.id,
+      cantidadEstimada: this.agendarForm.cantidad,
+      fecha: this.agendarForm.fecha,
+      hora: this.agendarForm.hora,
+      notas: `${this.agendarForm.direccion}, ${this.agendarForm.distrito}. ${this.agendarForm.referencia}`
+    };
+
+    this.userCitasService.crearCita(citaRequest).subscribe({
+      next: (cita) => {
+        console.log('✅ Cita creada exitosamente:', cita);
+        alert('¡Cita agendada exitosamente! 🎉');
+        this.cargarMisCitas(); // Recargar lista
+        this.showAgendarForm = false;
+        this.resetAgendarForm();
+      },
+      error: (err) => {
+        console.error('❌ Error al crear cita:', err);
+        alert('Error al agendar la cita. Por favor intenta de nuevo.');
+      }
+    });
+  }
+  
+  // ✅ CANCELAR CITA CON BACKEND
+  cancelarCita(id: string) {
+    if (!confirm('¿Estás seguro de cancelar esta cita?')) return;
+    
+    this.userCitasService.cancelarCita(parseInt(id)).subscribe({
+      next: () => {
+        console.log('✅ Cita cancelada:', id);
+        alert('Cita cancelada exitosamente');
+        this.cargarMisCitas(); // Recargar lista
+      },
+      error: (err) => {
+        console.error('❌ Error al cancelar cita:', err);
+        alert('Error al cancelar la cita');
+      }
+    });
+  } 
   editarCita(citaId: string) { console.log('Editando cita:', citaId); } 
   verRutaHacia(punto: any) { console.log('Ver ruta hacia:', punto); } 
   llamarPunto(punto: any) { console.log('Llamar a punto:', punto); } 
@@ -226,7 +353,17 @@ export class UsuarioDashboardComponent implements OnInit {
   }
 
   resetAgendarForm() {
-    this.agendarForm = { cantidad: 0, fecha: '', hora: '', direccion: '', referencia: '', distrito: '', materiales: [] };
+    this.agendarForm = { 
+      materialId: 0,
+      cantidad: 0, 
+      fecha: '', 
+      hora: '', 
+      direccion: '', 
+      referencia: '', 
+      distrito: '', 
+      notas: '',
+      materiales: [] 
+    };
     this.materialesDisponibles.forEach(m => m.seleccionado = false);
   }
 
