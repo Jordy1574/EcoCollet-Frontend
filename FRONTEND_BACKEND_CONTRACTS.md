@@ -370,9 +370,165 @@ Authorization: Bearer {token}
 }
 ```
 
+### 2️⃣0️⃣ Crear Cita (Admin, múltiples materiales)
+El Admin puede crear una cita para cualquier usuario y asignar múltiples materiales con sus kg.
+
+**Frontend solicita:**
+```http
+POST /api/admin/citas
+Authorization: Bearer {token}
+
+{
+  "usuarioId": 5,
+  "materiales": [
+    { "materialId": 1, "kg": 10.5 },
+    { "materialId": 2, "kg": 4.0 }
+  ],
+  "fecha": "2025-11-12",
+  "hora": "09:30",
+  "notas": "Recojo en recepción",
+  "recolectorId": 8 // opcional
+}
+```
+
+**Backend debe responder:**
+```json
+{
+  "data": {
+    "id": 101,
+    "usuarioNombre": "Juan Pérez",
+    "usuarioDireccion": "Av. Pardo 456",
+    "items": [
+      { "materialNombre": "Plástico", "kg": 10.5 },
+      { "materialNombre": "Papel", "kg": 4.0 }
+    ],
+    "fecha": "2025-11-12",
+    "hora": "09:30",
+    "estado": "PENDIENTE",
+    "recolectorNombre": null
+  }
+}
+```
+
+Notas de compatibilidad frontend:
+- Si el backend devuelve `items`/`materiales`/`detalles` como arreglo, el frontend resume como: "N materiales" y "TotalKg kg".
+- También sigue soportando la respuesta clásica con `materialNombre` + `cantidadEstimada`.
+
 ---
 
-## 📊 DASHBOARD Y REPORTES (ADMIN)
+## �️ Qué debe agregar el Backend (para que funcione esto)
+
+### 1) Entidades y tablas (si no existen)
+- `Cita` (id, usuario_id, fecha, hora, estado, notas, recolector_id nullable, created_at)
+- `CitaItem` (id, cita_id, material_id, kg decimal(10,2))
+  - Relación: Cita 1..N CitaItem
+  - En JPA: `@OneToMany(mappedBy="cita", cascade = CascadeType.ALL, orphanRemoval = true)`
+
+### 2) DTOs de Request/Response
+- `CreateCitaAdminRequest`
+  - usuarioId: number (requerido)
+  - materiales: [{ materialId: number, kg: number }] (requerido, min 1, kg > 0)
+  - fecha: string (yyyy-MM-dd)
+  - hora: string (HH:mm)
+  - notas?: string
+  - recolectorId?: number
+
+- `UpdateCitaAdminRequest`
+  - estado?: 'PENDIENTE' | 'EN_PROCESO' | 'COMPLETADA' | 'CANCELADA'
+  - recolectorId?: number
+  - notas?: string
+
+- `CitaAdminDTO` (response)
+  - id
+  - usuarioNombre, usuarioDireccion
+  - fecha, hora, estado (UPPERCASE)
+  - recolectorNombre (nullable)
+  - items: [{ materialId, materialNombre, kg }]
+  - (Compatibilidad) Alternativa simple: materialNombre + cantidadEstimada
+
+### 3) Endpoints (ADMIN)
+- `GET /api/admin/citas` → retorna TODAS las citas (no filtrar por usuario del token)
+- `POST /api/admin/citas` → crear cita con múltiples materiales
+- `PUT /api/admin/citas/{id}` → actualizar estado/recolector/notas
+
+Recomendación de seguridad: `@PreAuthorize("hasRole('ADMIN')")`
+
+### 4) Validaciones mínimas
+- `usuarioId`, `materialId`, `recolectorId` deben existir.
+- `materiales.length >= 1` y cada `kg > 0`.
+- Formato `fecha` = yyyy-MM-dd, `hora` = HH:mm.
+- Transiciones de estado:
+  - PENDIENTE → EN_PROCESO → COMPLETADA
+  - CANCELADA desde PENDIENTE/EN_PROCESO
+  - No permitir cambiar una COMPLETADA (opcional estricto)
+- Si `estado = EN_PROCESO` o `COMPLETADA`, se recomienda exigir `recolectorId` asignado
+
+### 5) Respuestas consistentes
+- Wrapper `{ "data": ... }` en todas las respuestas.
+- Campos presentables: `usuarioNombre`, `usuarioDireccion`, `recolectorNombre` ya resueltos.
+- Si se usa `items`, cada item con `materialNombre` además de `materialId`.
+
+### 6) Ejemplos en Java (Spring Boot)
+```java
+@PostMapping("/api/admin/citas")
+@PreAuthorize("hasRole('ADMIN')")
+public ResponseEntity<?> crearCitaAdmin(@RequestBody CreateCitaAdminRequest req) {
+  Usuario usuario = usuarioRepo.findById(req.getUsuarioId())
+    .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+
+  Cita cita = new Cita();
+  cita.setUsuario(usuario);
+  cita.setFecha(LocalDate.parse(req.getFecha()));
+  cita.setHora(LocalTime.parse(req.getHora()));
+  cita.setEstado(EstadoCita.PENDIENTE);
+  cita.setNotas(req.getNotas());
+
+  if (req.getRecolectorId() != null) {
+    Usuario reco = usuarioRepo.findById(req.getRecolectorId())
+      .orElseThrow(() -> new NotFoundException("Recolector no encontrado"));
+    cita.setRecolector(reco);
+  }
+
+  List<CitaItem> items = req.getMateriales().stream().map(it -> {
+    Material m = materialRepo.findById(it.getMaterialId())
+      .orElseThrow(() -> new NotFoundException("Material no encontrado"));
+    CitaItem ci = new CitaItem();
+    ci.setMaterial(m);
+    ci.setKg(BigDecimal.valueOf(it.getKg()));
+    ci.setCita(cita);
+    return ci;
+  }).toList();
+  cita.setItems(items);
+
+  Cita guardada = citaRepo.save(cita);
+  return ResponseEntity.ok(Map.of("data", CitaAdminDTO.from(guardada)));
+}
+
+@PutMapping("/api/admin/citas/{id}")
+@PreAuthorize("hasRole('ADMIN')")
+public ResponseEntity<?> actualizarCitaAdmin(@PathVariable Long id, @RequestBody UpdateCitaAdminRequest req) {
+  Cita cita = citaRepo.findById(id)
+    .orElseThrow(() -> new NotFoundException("Cita no encontrada"));
+
+  if (req.getEstado() != null) {
+    cita.setEstado(EstadoCita.valueOf(req.getEstado()));
+  }
+  if (req.getRecolectorId() != null) {
+    Usuario reco = usuarioRepo.findById(req.getRecolectorId())
+      .orElseThrow(() -> new NotFoundException("Recolector no encontrado"));
+    cita.setRecolector(reco);
+  }
+  if (req.getNotas() != null) {
+    cita.setNotas(req.getNotas());
+  }
+  citaRepo.save(cita);
+  return ResponseEntity.ok(Map.of("data", CitaAdminDTO.from(cita)));
+}
+```
+
+---
+
+## �📊 DASHBOARD Y REPORTES (ADMIN)
 
 ### 2️⃣0️⃣ Resumen Dashboard
 **Frontend solicita:**

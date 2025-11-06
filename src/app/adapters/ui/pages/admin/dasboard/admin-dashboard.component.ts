@@ -37,6 +37,32 @@ export class AdminDashboardComponent implements OnInit {
   rolesPermisos: RolPermiso[] = [];
   configuracion: ConfiguracionSistema | null = null;
   
+  // UI estado para modales de Citas (editar/crear)
+  showEditCitaModal = false;
+  showNewCitaModal = false;
+  editCitaForm: { id: string; estado: 'PENDIENTE' | 'EN_PROCESO' | 'COMPLETADA' | 'CANCELADA'; recolectorId: string | null } = {
+    id: '', estado: 'PENDIENTE', recolectorId: null
+  };
+  newCitaForm: {
+    usuarioId: string | null;
+    fecha: string;
+    hora: string;
+    notas: string;
+    recolectorId: string | null;
+    items: { materialId: string | null; kg: number | null }[];
+  } = {
+    usuarioId: null,
+    fecha: '',
+    hora: '',
+    notas: '',
+    recolectorId: null,
+    items: [{ materialId: null, kg: null }]
+  };
+  
+  // Listas derivadas
+  recolectores: Usuario[] = [];
+  clientes: Usuario[] = [];
+  
   // Estadísticas del dashboard
   dashboardStats: any = {
     totalUsuarios: 0,
@@ -64,7 +90,14 @@ export class AdminDashboardComponent implements OnInit {
 
   // CARGAR DATOS DEL DASHBOARD
   loadDashboardData(): void {
-    this.adminApi.getUsuarios().subscribe(data => this.usuarios = data);
+    this.adminApi.getUsuarios().subscribe(data => {
+      this.usuarios = data;
+      this.recolectores = this.usuarios.filter(u => (u.rol || '').toLowerCase() === 'recolector');
+      this.clientes = this.usuarios.filter(u => {
+        const r = (u.rol || '').toLowerCase();
+        return r === 'usuario' || r === 'empresa' || r === 'cliente';
+      });
+    });
     
     // ✅ Intentar cargar citas desde el backend, fallback a mock si falla
     this.adminApi.getCitasFromBackend().subscribe(data => this.citas = data);
@@ -243,5 +276,91 @@ export class AdminDashboardComponent implements OnInit {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/']); 
+  }
+
+  // ====== NUEVO: Abrir modal de edición (estado + recolector)
+  abrirEditarCita(cita: Cita): void {
+    this.editCitaForm.id = cita.id;
+    // Mapear estado UI -> backend enum
+    const e = (cita.estado || '').toUpperCase().replace(' ', '_');
+    this.editCitaForm.estado = (['PENDIENTE','EN_PROCESO','COMPLETADA','CANCELADA'].includes(e) ? e : 'PENDIENTE') as any;
+    const reco = this.recolectores.find(r => r.nombre === cita.recolector);
+    this.editCitaForm.recolectorId = reco ? reco.id : null;
+    this.showEditCitaModal = true;
+  }
+
+  guardarEdicionCita(): void {
+    if (!this.editCitaForm.id) return;
+    const updates: any = { estado: this.editCitaForm.estado };
+    if (this.editCitaForm.recolectorId) {
+      updates.recolectorId = Number(this.editCitaForm.recolectorId);
+    }
+    this.adminApi.updateCita(this.editCitaForm.id, updates).subscribe({
+      next: () => {
+        this.showEditCitaModal = false;
+        this.loadDashboardData();
+      },
+      error: (err) => {
+        console.error('Error al guardar edición:', err);
+        alert('No se pudo actualizar la cita');
+      }
+    });
+  }
+
+  // ====== NUEVO: Crear Cita con múltiples materiales
+  abrirNuevaCita(): void {
+    this.newCitaForm = {
+      usuarioId: null,
+      fecha: '',
+      hora: '',
+      notas: '',
+      recolectorId: null,
+      items: [{ materialId: null, kg: null }]
+    };
+    this.showNewCitaModal = true;
+  }
+
+  agregarItemMaterial(): void {
+    this.newCitaForm.items.push({ materialId: null, kg: null });
+  }
+
+  quitarItemMaterial(idx: number): void {
+    if (this.newCitaForm.items.length <= 1) return;
+    this.newCitaForm.items.splice(idx, 1);
+  }
+
+  guardarNuevaCita(): void {
+    const f = this.newCitaForm;
+    if (!f.usuarioId || !f.fecha || !f.hora) {
+      alert('Selecciona usuario, fecha y hora');
+      return;
+    }
+    const items = f.items
+      .filter(it => it.materialId && it.kg != null)
+      .map(it => ({ materialId: Number(it.materialId), kg: Number(it.kg) }))
+      .filter(it => it.kg > 0);
+    if (!items.length) {
+      alert('Agrega al menos un material con kg > 0');
+      return;
+    }
+    const payload: any = {
+      usuarioId: Number(f.usuarioId),
+      materiales: items,
+      fecha: f.fecha,
+      hora: f.hora,
+      notas: f.notas || undefined
+    };
+    if (f.recolectorId) payload.recolectorId = Number(f.recolectorId);
+
+    this.adminApi.createCitaMulti(payload).subscribe({
+      next: () => {
+        this.showNewCitaModal = false;
+        this.loadDashboardData();
+      },
+      error: (err) => {
+        console.error('Error al crear cita:', err);
+        alert('No se pudo crear la cita');
+      }
+    });
   }
 }

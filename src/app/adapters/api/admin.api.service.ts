@@ -414,6 +414,17 @@ export class AdminApiService {
     // ====================================================================
     
     private mapBackendCita(c: any): Cita {
+        // Soporta respuesta de 1 material o múltiples materiales (items/detalles)
+        let tipo = c.materialNombre ?? 'Sin especificar';
+        let cantidad = c.cantidadEstimada ? `${c.cantidadEstimada} kg aprox.` : 'N/A';
+
+        const items = c.items || c.detalles || c.materiales || c.materialesDetalle;
+        if (Array.isArray(items) && items.length) {
+            const totalKg = items.reduce((sum: number, it: any) => sum + (Number(it.kg || it.cantidadKg || it.cantidad) || 0), 0);
+            tipo = `${items.length} materiales`;
+            cantidad = `${totalKg} kg`;
+        }
+
         return {
             id: c.id ? `#${String(c.id).padStart(3, '0')}` : '#000',
             usuario: {
@@ -421,8 +432,8 @@ export class AdminApiService {
                 direccion: c.usuarioDireccion ?? 'Sin dirección'
             },
             material: {
-                tipo: c.materialNombre ?? 'Sin especificar',
-                cantidad: c.cantidadEstimada ? `${c.cantidadEstimada} kg aprox.` : 'N/A'
+                tipo,
+                cantidad
             },
             fecha: {
                 dia: c.fecha ?? 'Sin fecha',
@@ -443,6 +454,12 @@ export class AdminApiService {
 
     createCita(cita: { usuarioId: number; materialId: number; cantidadEstimada: number; fecha: string; hora: string; notas?: string }): Observable<Cita> {
         return this.http.post<any>('admin/citas', cita)
+            .pipe(map(resp => this.mapBackendCita(resp.data)));
+    }
+
+    // Crear cita con múltiples materiales [{ materialId, kg }]
+    createCitaMulti(payload: { usuarioId: number; materiales: { materialId: number; kg: number }[]; fecha: string; hora: string; notas?: string; recolectorId?: number; }): Observable<Cita> {
+        return this.http.post<any>('admin/citas', payload)
             .pipe(map(resp => this.mapBackendCita(resp.data)));
     }
 
