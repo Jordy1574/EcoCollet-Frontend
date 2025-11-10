@@ -64,7 +64,8 @@ export class UsuarioDashboardComponent implements OnInit {
   materialesFiltro = ['Todos', 'Plástico', 'Papel', 'Vidrio', 'Metal'];
 
   // --- PERFIL Y OTROS DATOS ---
-  perfilUsuario = { nombre: 'Alexander', nivel: 'Eco-Héroe', correo: 'alexander@mail.com', avatar: '👤', titulo: 'Reciclador Pro', kilos: 45 };
+  // Valores por defecto (no deben usarse como mock en producción)
+  perfilUsuario = { nombre: 'Usuario', nivel: 'Eco-Héroe', correo: 'usuario@mail.com', avatar: '👤', titulo: 'Reciclador Pro', kilos: 0 };
   editandoPerfil = false;
   perfilForm = { nombre: '', apellido: '', correo: '', email: '', telefono: '', distrito: '', direccion: '', tipoUsuario: 'Individual', notificacionesEmail: true, notificacionesPush: true, recordatorios: true };
   puntosDisponibles = 1250;
@@ -95,14 +96,44 @@ export class UsuarioDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Obtener usuario actual (puede venir de storage o después del login)
     this.user = this.authService.getCurrentUser();
-    
+
+    // Suscribirse a cambios del usuario (por ejemplo, después de login)
+    this.authService.currentUser$.subscribe(u => {
+      if (u) {
+        this.user = u;
+        this.populateProfileData();
+      }
+    });
+
+    // Fallback: si el servicio no tiene user pero hay uno en localStorage, uselo
+    if (!this.user) {
+      try {
+        const raw = localStorage.getItem('user');
+        if (raw) {
+          const parsed: any = JSON.parse(raw);
+          // compatible con formas 'name' o 'nombre'
+          const normalized: User = {
+            id: String(parsed.id || parsed.userId || parsed._id || '0'),
+            email: parsed.email || parsed.correo || '',
+            rol: parsed.rol || parsed.role || 'CLIENTE',
+            name: parsed.name || parsed.nombre || parsed.fullName || ''
+          };
+          this.user = normalized;
+          this.populateProfileData();
+        }
+      } catch (err) {
+        console.warn('No se pudo parsear user desde localStorage:', err);
+      }
+    }
+
     // Lógica de Redirección y Autenticación
     if (!this.authService.isAuthenticated() || !this.user || this.user.rol !== 'CLIENTE') {
       this.router.navigate(['/login']);
       return;
     }
-    
+
     this.loadDashboardData();
     this.cargarMisCitas();
     this.cargarMateriales();
@@ -111,18 +142,52 @@ export class UsuarioDashboardComponent implements OnInit {
   // --- MÉTODOS DE LA UI Y NEGOCIO ---
 
   private loadDashboardData(): void {
+    // Cargar datos iniciales de dashboard (simulación ligera de delay)
     setTimeout(() => {
-      // mock user con id como string para coincidir con User model
-      this.user = { id: '1', name: 'Alexander Rodriguez', rol: 'CLIENTE', email: 'alex@mail.com' };
-      if (this.user) {
-        this.perfilForm.nombre = this.user.name.split(' ')[0] || '';
-        this.perfilForm.apellido = this.user.name.split(' ')[1] || '';
-        this.perfilForm.email = this.user.email || '';
-        this.perfilUsuario.nombre = this.user.name || this.perfilUsuario.nombre;
-      }
-
+      // Llenar datos de perfil desde el usuario autenticado (si está disponible)
+      this.populateProfileData();
       this.isLoading = false;
     }, 500);
+  }
+
+  /**
+   * Rellena los formularios y perfil con los datos del usuario autenticado
+   */
+  private populateProfileData(): void {
+    if (!this.user) return;
+
+    const nombreCompleto = this.user.name || '';
+    const parts = nombreCompleto.split(' ');
+    this.perfilForm.nombre = parts[0] || '';
+    this.perfilForm.apellido = parts.slice(1).join(' ') || '';
+    this.perfilForm.email = this.user.email || '';
+    this.perfilUsuario.nombre = nombreCompleto || this.perfilUsuario.nombre;
+  }
+
+  /** Nombre a mostrar en la UI: intenta this.user luego localStorage y finalmente 'Usuario' */
+  get displayName(): string {
+    if (this.user && this.user.name) return this.user.name;
+
+    try {
+      const raw = localStorage.getItem('user');
+      if (raw) {
+        const parsed: any = JSON.parse(raw);
+        return parsed.name || parsed.nombre || parsed.fullName || parsed.usuario || '';
+      }
+    } catch (err) {
+      // ignore
+    }
+
+    return 'Usuario';
+  }
+
+  get displayInitial(): string {
+    return (this.displayName && this.displayName.length > 0) ? this.displayName[0] : 'U';
+  }
+
+  get displayFirstName(): string {
+    const n = this.displayName || '';
+    return n.split(' ')[0] || 'Usuario';
   }
 
   // ✅ CARGAR MIS CITAS DESDE BACKEND

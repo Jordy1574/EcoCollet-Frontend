@@ -78,10 +78,10 @@
         <div class="p-4 border-t border-gray-200">
             <div class="flex items-center mb-4">
                 <div class="w-10 h-10 bg-eco-green rounded-full flex items-center justify-center mr-3">
-                    <span class="text-white font-semibold text-sm">{{ (user?.name || 'Alexander')[0] }}</span>
+                    <span class="text-white font-semibold text-sm">{{ displayInitial }}</span>
                 </div>
                 <div>
-                    <p class="text-sm font-medium text-gray-700">{{ user?.name || 'Alexander' }}</p>
+                    <p class="text-sm font-medium text-gray-700">{{ displayName }}</p>
                     <p class="text-xs text-gray-500">Nivel: Eco-Héroe ⭐</p>
                 </div>
             </div>
@@ -130,7 +130,7 @@
                         <div class="eco-card p-6 mb-6 bg-eco-green text-white">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <h3 class="font-poppins font-bold text-2xl mb-2">¡Excelente trabajo, {{ (user?.name?.split(' ') || [])[0] || 'Alexander' }}! 🌱</h3>
+                                    <h3 class="font-poppins font-bold text-2xl mb-2">¡Excelente trabajo, {{ displayFirstName }}! 🌱</h3>
                                     <p class="text-green-100 mb-4">Has reciclado {{ estadisticas.materialReciclado }} kg este mes y has ayudado a reducir {{ estadisticas.impactoAmbiental }} kg de CO2.</p>
                                     <div class="flex items-center space-x-6">
                                         <span [class]="getCrecimientoClass()" class="text-sm">{{ calcularPorcentajeCrecimiento() }} vs mes anterior</span>
