@@ -83,38 +83,20 @@ import { AdminApiService } from '../../../../../adapters/api/admin.api.service';
               >
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700">Tipo</label>
-              <select 
-                [(ngModel)]="currentMaterial.tipo" 
-                name="tipo"
-                required
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-eco-green focus:ring focus:ring-eco-green focus:ring-opacity-50"
-              >
-                <option value="plastico">Plástico</option>
-                <option value="papel">Papel</option>
-                <option value="vidrio">Vidrio</option>
-                <option value="metal">Metal</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Cantidad</label>
-              <input 
-                type="text" 
-                [(ngModel)]="currentMaterial.cantidad" 
-                name="cantidad"
-                required
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-eco-green focus:ring focus:ring-eco-green focus:ring-opacity-50"
-              >
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Precio Promedio</label>
-              <input 
-                type="text" 
-                [(ngModel)]="currentMaterial.info!.precioPromedio" 
-                name="precioPromedio"
-                required
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-eco-green focus:ring focus:ring-eco-green focus:ring-opacity-50"
-              >
+              <label class="block text-sm font-medium text-gray-700">Precio</label>
+              <div class="mt-1 flex items-stretch gap-2">
+                <input 
+                  type="number"
+                  [(ngModel)]="precioInput"
+                  name="precioPorKg"
+                  min="0"
+                  step="0.01"
+                  required
+                  class="flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-eco-green focus:ring focus:ring-eco-green focus:ring-opacity-50"
+                >
+                <span class="px-3 py-2 bg-gray-100 rounded-md text-sm text-gray-600 select-none">S/. / kg</span>
+              </div>
+              <p class="mt-1 text-xs text-gray-500">Se entiende en soles por kilogramo.</p>
             </div>
           </div>
           <div class="mt-6 flex justify-end space-x-3">
@@ -155,6 +137,8 @@ export class MaterialesCrudComponent implements OnInit {
   searchTerm: string = '';
   showModal: boolean = false;
   editingMaterial: boolean = false;
+  // Input numérico controlado para el formulario
+  precioInput: number | null = null;
   currentMaterial: Partial<Material> = {
     info: {
       precioPromedio: '',
@@ -201,6 +185,7 @@ export class MaterialesCrudComponent implements OnInit {
         ultimaActualizacion: new Date().toLocaleDateString()
       }
     };
+    this.precioInput = null;
     this.showModal = true;
   }
 
@@ -214,12 +199,21 @@ export class MaterialesCrudComponent implements OnInit {
         ultimaActualizacion: new Date().toLocaleDateString()
       }
     };
+    this.precioInput = this.parseNumber(material.info?.precioPromedio || '');
     this.showModal = true;
   }
 
   saveMaterial(): void {
+    // Validación básica (0.0 o mayor permitido)
+    const precio = typeof this.precioInput === 'number' && !isNaN(this.precioInput) ? this.precioInput : 0;
+    // Preparar payload mínimo solo con nombre y precioPorKg
+    const payload: any = {
+      nombre: this.currentMaterial.nombre ?? '',
+      precioPorKg: precio
+    };
+
     if (this.editingMaterial) {
-      this.adminService.updateMaterial(this.currentMaterial.id!, this.currentMaterial).subscribe({
+      this.adminService.updateMaterial(this.currentMaterial.id!, payload).subscribe({
         next: () => {
           this.loadMateriales();
           this.closeModal();
@@ -227,7 +221,7 @@ export class MaterialesCrudComponent implements OnInit {
         error: (error: unknown) => console.error('Error actualizando material:', error)
       });
     } else {
-      this.adminService.createMaterial(this.currentMaterial).subscribe({
+      this.adminService.createMaterial(payload).subscribe({
         next: () => {
           this.loadMateriales();
           this.closeModal();
@@ -256,6 +250,7 @@ export class MaterialesCrudComponent implements OnInit {
       }
     };
     this.editingMaterial = false;
+    this.precioInput = null;
   }
 
   getMaterialIconClass(tipo: string): string {
@@ -266,5 +261,13 @@ export class MaterialesCrudComponent implements OnInit {
       'metal': 'bg-gray-600'
     };
     return classes[tipo as keyof typeof classes] || 'bg-gray-400';
+  }
+
+  // Helpers para extraer números desde etiquetas como "S/. 2.50/kg" o "55 kg"
+  private parseNumber(value: string): number {
+    if (!value) return 0;
+    const cleaned = value.toString().replace(/[^0-9.,-]/g, '').replace(',', '.');
+    const num = parseFloat(cleaned);
+    return isNaN(num) ? 0 : num;
   }
 }

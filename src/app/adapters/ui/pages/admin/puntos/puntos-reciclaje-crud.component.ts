@@ -120,13 +120,43 @@ import { AdminApiService } from '../../../../../adapters/api/admin.api.service';
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700">Horario</label>
-              <input 
-                type="text" 
-                [(ngModel)]="currentPunto.horario" 
-                name="horario"
-                required
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-eco-green focus:ring focus:ring-eco-green focus:ring-opacity-50"
-              >
+              <!-- Builder de horario: días y horas -->
+              <div class="mt-2 space-y-3">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <label class="inline-flex items-center gap-2 text-sm">
+                    <input type="checkbox" [checked]="isDaySelected('Lun')" (change)="toggleDay('Lun')" class="rounded border-gray-300 text-eco-green focus:ring-eco-green"> Lun
+                  </label>
+                  <label class="inline-flex items-center gap-2 text-sm">
+                    <input type="checkbox" [checked]="isDaySelected('Mar')" (change)="toggleDay('Mar')" class="rounded border-gray-300 text-eco-green focus:ring-eco-green"> Mar
+                  </label>
+                  <label class="inline-flex items-center gap-2 text-sm">
+                    <input type="checkbox" [checked]="isDaySelected('Mié')" (change)="toggleDay('Mié')" class="rounded border-gray-300 text-eco-green focus:ring-eco-green"> Mié
+                  </label>
+                  <label class="inline-flex items-center gap-2 text-sm">
+                    <input type="checkbox" [checked]="isDaySelected('Jue')" (change)="toggleDay('Jue')" class="rounded border-gray-300 text-eco-green focus:ring-eco-green"> Jue
+                  </label>
+                  <label class="inline-flex items-center gap-2 text-sm">
+                    <input type="checkbox" [checked]="isDaySelected('Vie')" (change)="toggleDay('Vie')" class="rounded border-gray-300 text-eco-green focus:ring-eco-green"> Vie
+                  </label>
+                  <label class="inline-flex items-center gap-2 text-sm">
+                    <input type="checkbox" [checked]="isDaySelected('Sáb')" (change)="toggleDay('Sáb')" class="rounded border-gray-300 text-eco-green focus:ring-eco-green"> Sáb
+                  </label>
+                  <label class="inline-flex items-center gap-2 text-sm">
+                    <input type="checkbox" [checked]="isDaySelected('Dom')" (change)="toggleDay('Dom')" class="rounded border-gray-300 text-eco-green focus:ring-eco-green"> Dom
+                  </label>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="flex-1">
+                    <label class="block text-xs text-gray-500">Apertura</label>
+                    <input type="time" [(ngModel)]="openTime" name="openTime" (change)="updateHorarioPreview()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-eco-green focus:ring focus:ring-eco-green focus:ring-opacity-50">
+                  </div>
+                  <div class="flex-1">
+                    <label class="block text-xs text-gray-500">Cierre</label>
+                    <input type="time" [(ngModel)]="closeTime" name="closeTime" (change)="updateHorarioPreview()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-eco-green focus:ring focus:ring-eco-green focus:ring-opacity-50">
+                  </div>
+                </div>
+                <p class="text-xs text-gray-500">Vista previa: <span class="font-medium text-gray-700">{{ horarioPreview || '—' }}</span></p>
+              </div>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700">Estado</label>
@@ -203,11 +233,25 @@ export class PuntosReciclajeCrudComponent implements OnInit {
   };
 
   availableMateriales: string[] = ['Plástico', 'Papel', 'Vidrio', 'Metal', 'Electrónicos', 'Cartón'];
+  // Builder de horario
+  selectedDays: string[] = ['Lun','Mar','Mié','Jue','Vie'];
+  openTime: string = '08:00';
+  closeTime: string = '18:00';
+  horarioPreview: string = '';
 
   constructor(private adminService: AdminApiService) {}
 
   ngOnInit(): void {
     this.loadPuntos();
+    // Cargar materiales desde backend para poblar las opciones
+    this.adminService.getMateriales().subscribe({
+      next: mats => {
+        const nombres = mats.map(m => m.nombre).filter(Boolean);
+        if (nombres.length) this.availableMateriales = nombres;
+      },
+      error: () => {}
+    });
+    this.updateHorarioPreview();
   }
 
   loadPuntos(): void {
@@ -243,6 +287,11 @@ export class PuntosReciclajeCrudComponent implements OnInit {
       tipoTexto: 'Centro Principal',
       horario: 'Lun-Vie 8:00 AM - 6:00 PM'
     };
+    // reset horario builder a valores por defecto
+    this.selectedDays = ['Lun','Mar','Mié','Jue','Vie'];
+    this.openTime = '08:00';
+    this.closeTime = '18:00';
+    this.updateHorarioPreview();
     this.showModal = true;
   }
 
@@ -252,10 +301,15 @@ export class PuntosReciclajeCrudComponent implements OnInit {
       ...punto,
       materiales: punto.materiales ? [...punto.materiales] : []
     };
+    // intentar parsear horario existente a builder (simple)
+    this.tryParseExistingHorario(punto.horario);
+    this.updateHorarioPreview();
     this.showModal = true;
   }
 
   savePunto(): void {
+    // Construir horario final antes de guardar
+    this.currentPunto.horario = this.buildHorario();
     if (this.editingPunto) {
       this.adminService.updatePuntoReciclaje(this.currentPunto.id!, this.currentPunto).subscribe({
         next: () => {
@@ -332,5 +386,53 @@ export class PuntosReciclajeCrudComponent implements OnInit {
       'Inactivo': 'inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800'
     };
     return classes[estado as keyof typeof classes] || 'inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800';
+  }
+
+  // ==== Horario helpers ====
+  private daysOrder: string[] = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+  isDaySelected(d: string): boolean { return this.selectedDays.includes(d); }
+  toggleDay(d: string): void {
+    const i = this.selectedDays.indexOf(d);
+    if (i === -1) this.selectedDays.push(d); else this.selectedDays.splice(i,1);
+    // ordenar por el orden definido
+    this.selectedDays.sort((a,b) => this.daysOrder.indexOf(a) - this.daysOrder.indexOf(b));
+    this.updateHorarioPreview();
+  }
+  private condenseDays(days: string[]): string {
+    const full = this.daysOrder;
+    if (days.length === 7) return 'Lun-Dom';
+    const work = ['Lun','Mar','Mié','Jue','Vie'];
+    if (days.join(',') === work.join(',')) return 'Lun-Vie';
+    const weekend = ['Sáb','Dom'];
+    if (days.join(',') === weekend.join(',')) return 'Sáb-Dom';
+    return days.join(', ');
+  }
+  buildHorario(): string {
+    if (!this.selectedDays.length || !this.openTime || !this.closeTime) return this.currentPunto.horario || '';
+    return `${this.condenseDays(this.selectedDays)} ${this.openTime}-${this.closeTime}`;
+  }
+  updateHorarioPreview(): void {
+    this.horarioPreview = this.buildHorario();
+  }
+  private tryParseExistingHorario(h: string|undefined): void {
+    if (!h) return;
+    // Formatos soportados: "Lun-Vie 08:00-18:00" o "Lun, Mié 09:00-12:00"
+    const [daysPart, timePart] = h.split(' ');
+    if (timePart && timePart.includes('-')) {
+      const [op, cl] = timePart.split('-');
+      if (op) this.openTime = op; if (cl) this.closeTime = cl;
+    }
+    if (daysPart) {
+      if (daysPart.includes('-')) {
+        const [start, end] = daysPart.split('-');
+        const startIdx = this.daysOrder.indexOf(start);
+        const endIdx = this.daysOrder.indexOf(end);
+        if (startIdx !== -1 && endIdx !== -1 && startIdx <= endIdx) {
+          this.selectedDays = this.daysOrder.slice(startIdx, endIdx+1);
+        }
+      } else {
+        this.selectedDays = daysPart.split(',').map(s => s.trim()).filter(Boolean);
+      }
+    }
   }
 }

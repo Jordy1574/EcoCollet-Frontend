@@ -224,7 +224,7 @@ export class AdminApiService {
             tipo: 'principal',
             tipoTexto: 'Centro Principal',
             direccion: p.direccion ?? '',
-            horario: '',
+            horario: p.horario ?? '',
             materiales: (p.materialesAceptados || []).map((mat: any) => mat?.nombre ?? '').filter((n: string) => !!n),
             estado: this.capitalizeEstado(p.estado)
         };
@@ -316,19 +316,25 @@ export class AdminApiService {
     }
 
     // Materiales
-    createMaterial(material: Partial<Material>): Observable<Material> {
+    createMaterial(material: any): Observable<Material> {
+        const precio = typeof material?.precioPorKg === 'number'
+            ? material.precioPorKg
+            : this.parsePrecioLabel(material?.info?.precioPromedio);
         const body = {
-            nombre: material.nombre ?? '',
-            precioPorKg: this.parsePrecioLabel(material.info?.precioPromedio)
+            nombre: material?.nombre ?? '',
+            precioPorKg: isNaN(precio) ? 0 : precio
         };
         return this.http.post<any>('admin/materiales', body)
             .pipe(map(resp => this.mapBackendMaterial((resp as any).data)));
     }
 
-    updateMaterial(id: string, material: Partial<Material>): Observable<Material> {
+    updateMaterial(id: string, material: any): Observable<Material> {
+        const precio = typeof material?.precioPorKg === 'number'
+            ? material.precioPorKg
+            : this.parsePrecioLabel(material?.info?.precioPromedio);
         const body = {
-            nombre: material.nombre ?? '',
-            precioPorKg: this.parsePrecioLabel(material.info?.precioPromedio)
+            nombre: material?.nombre ?? '',
+            precioPorKg: isNaN(precio) ? 0 : precio
         };
         return this.http.put<any>(`admin/materiales/${id}`, body)
             .pipe(map(resp => this.mapBackendMaterial((resp as any).data)));
@@ -353,6 +359,7 @@ export class AdminApiService {
             nombre: punto.nombre ?? '',
             direccion: punto.direccion ?? '',
             telefono: undefined,
+            horario: punto.horario ?? '',
             estado: this.toApiEstado(punto.estado),
             materialesAceptadosIds
         };
@@ -400,5 +407,186 @@ export class AdminApiService {
     getPuntosPorEstado(estado: 'activo' | 'inactivo' | 'mantenimiento'): Observable<PuntoReciclaje[]> {
         return this.http.get<any[]>(`admin/puntos/estado/${estado}`)
             .pipe(map(resp => (resp.data || []).map(p => this.mapBackendPunto(p))));
+    }
+
+    // ====================================================================
+    // CITAS (Recolecciones) - Backend Integration
+    // ====================================================================
+    
+    private mapBackendCita(c: any): Cita {
+        // Soporta respuesta de 1 material o múltiples materiales (items/detalles)
+        let tipo = c.materialNombre ?? 'Sin especificar';
+        let cantidad = c.cantidadEstimada ? `${c.cantidadEstimada} kg aprox.` : 'N/A';
+
+        const items = c.items || c.detalles || c.materiales || c.materialesDetalle;
+        if (Array.isArray(items) && items.length) {
+            const totalKg = items.reduce((sum: number, it: any) => sum + (Number(it.kg || it.cantidadKg || it.cantidad) || 0), 0);
+            tipo = `${items.length} materiales`;
+            cantidad = `${totalKg} kg`;
+        }
+
+        return {
+            id: c.id ? `#${String(c.id).padStart(3, '0')}` : '#000',
+            usuario: {
+                nombre: c.usuarioNombre ?? 'Sin nombre',
+                direccion: c.usuarioDireccion ?? 'Sin dirección'
+            },
+            material: {
+                tipo,
+                cantidad
+            },
+            fecha: {
+                dia: c.fecha ?? 'Sin fecha',
+                hora: c.hora ?? 'Sin hora'
+            },
+            estado: this.capitalizeEstado(c.estado),
+            recolector: c.recolectorNombre ?? undefined
+        };
+    }
+
+    getCitasFromBackend(): Observable<Cita[]> {
+        return this.http.get<any[]>('admin/citas')
+            .pipe(
+                map(resp => (resp.data || []).map(c => this.mapBackendCita(c))),
+                catchError(() => of(this.mockCitas))
+            );
+    }
+
+    createCita(cita: { usuarioId: number; materialId: number; cantidadEstimada: number; fecha: string; hora: string; notas?: string }): Observable<Cita> {
+        return this.http.post<any>('admin/citas', cita)
+            .pipe(map(resp => this.mapBackendCita(resp.data)));
+    }
+
+    // Crear cita con múltiples materiales [{ materialId, kg }]
+    createCitaMulti(payload: { usuarioId: number; materiales: { materialId: number; kg: number }[]; fecha: string; hora: string; notas?: string; recolectorId?: number; }): Observable<Cita> {
+        return this.http.post<any>('admin/citas', payload)
+            .pipe(map(resp => this.mapBackendCita(resp.data)));
+    }
+
+    updateCita(id: string, updates: { estado?: string; recolectorId?: number; notas?: string }): Observable<Cita> {
+        const numericId = id.replace('#', '');
+        return this.http.put<any>(`admin/citas/${numericId}`, updates)
+            .pipe(map(resp => this.mapBackendCita(resp.data)));
+    }
+
+    deleteCita(id: string): Observable<void> {
+        const numericId = id.replace('#', '');
+        return this.http.delete<void>(`admin/citas/${numericId}`)
+            .pipe(map(() => void 0));
+    }
+
+    // ====================================================================
+    // REPORTES Y ESTADÍSTICAS - Backend Integration
+    // ====================================================================
+
+    getEstadisticasGenerales(): Observable<any> {
+        return this.http.get<any>('admin/reportes/estadisticas')
+            .pipe(
+                map(resp => resp.data),
+                catchError(() => of({
+                    totalUsuarios: 0,
+                    totalCitas: 0,
+                    totalPuntosActivos: 0,
+                    totalMaterialesRecolectados: 0,
+                    citasPendientes: 0,
+                    citasEnProceso: 0,
+                    citasCompletadas: 0,
+                    materialesPorTipo: {}
+                }))
+            );
+    }
+
+    getTopUsuariosBackend(limit: number = 10): Observable<TopUser[]> {
+        const params = new HttpParams().set('limit', limit.toString());
+        return this.http.get<any[]>('admin/reportes/top-usuarios', params)
+            .pipe(
+                map(resp => (resp.data || []).map(u => ({
+                    id: String(u.id),
+                    position: u.position ?? 0,
+                    nombre: u.nombre ?? '',
+                    ubicacion: u.distrito ?? '',
+                    cantidad: `${u.totalKg ?? 0} kg`,
+                    citas: `${u.totalCitas ?? 0} citas`
+                }))),
+                catchError(() => of(this.mockTopUsers))
+            );
+    }
+
+    getActividadMensual(): Observable<any> {
+        return this.http.get<any>('admin/reportes/actividad-mensual')
+            .pipe(
+                map(resp => resp.data),
+                catchError(() => of({
+                    labels: [],
+                    citasCreadas: [],
+                    citasCompletadas: [],
+                    kgRecolectados: []
+                }))
+            );
+    }
+
+    getPuntosRendimiento(): Observable<any[]> {
+        return this.http.get<any[]>('admin/reportes/puntos-rendimiento')
+            .pipe(
+                map(resp => resp.data || []),
+                catchError(() => of([]))
+            );
+    }
+
+    // ====================================================================
+    // CONFIGURACIÓN DEL SISTEMA - Backend Integration
+    // ====================================================================
+
+    getConfiguracionFromBackend(): Observable<ConfiguracionSistema> {
+        return this.http.get<any>('admin/configuracion')
+            .pipe(
+                map(resp => ({
+                    nombreSistema: resp.data?.nombreSistema ?? 'EcoCollet',
+                    emailContacto: resp.data?.emailContacto ?? '',
+                    zonaHoraria: resp.data?.zonaHoraria ?? 'America/Lima',
+                    backupAutomatico: resp.data?.backupAutomatico ?? false,
+                    ultimoBackup: resp.data?.ultimoBackup ?? '',
+                    colorPrincipal: resp.data?.colorPrincipal ?? '#5EA362',
+                    tema: resp.data?.tema ?? 'claro',
+                    notificaciones: resp.data?.notificaciones ?? { email: true, sms: false, push: true },
+                    seguridad: resp.data?.seguridad ?? { dobleAutenticacion: false, sesionSegura: true }
+                })),
+                catchError(() => of(this.mockConfiguracion))
+            );
+    }
+
+    updateConfiguracion(config: Partial<ConfiguracionSistema>): Observable<ConfiguracionSistema> {
+        return this.http.put<any>('admin/configuracion', config)
+            .pipe(
+                map(resp => resp.data),
+                catchError(() => of(this.mockConfiguracion))
+            );
+    }
+
+    // ====================================================================
+    // DASHBOARD RESUMEN - Backend Integration
+    // ====================================================================
+
+    getDashboardResumen(): Observable<any> {
+        return this.http.get<any>('admin/dashboard/resumen')
+            .pipe(
+                map(resp => resp.data),
+                catchError(() => of({
+                    estadisticas: {
+                        totalUsuarios: 0,
+                        citasActivas: 0,
+                        puntosActivos: 0,
+                        kgRecolectadosEsteMes: 0
+                    },
+                    topUsuarios: [],
+                    actividadReciente: [],
+                    citasPorEstado: {
+                        PENDIENTE: 0,
+                        EN_PROCESO: 0,
+                        COMPLETADA: 0,
+                        CANCELADA: 0
+                    }
+                }))
+            );
     }
 }

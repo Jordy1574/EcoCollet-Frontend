@@ -6,7 +6,6 @@ import { ForgotPasswordComponent } from './adapters/ui/pages/forgot-password/for
 import { AdminDashboardComponent } from './adapters/ui/pages/admin/dasboard/admin-dashboard.component';
 import { RecolectorDashboardComponent } from './adapters/ui/pages/recolector/dasboard/recolector-dashboard.component';
 import { UsuarioDashboardComponent } from './adapters/ui/pages/usuario/dashboard/usuario-dashboard.component';
-import { TestBackendComponent } from './test-backend.component';
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 
@@ -18,6 +17,5 @@ export const routes: Routes = [
   { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['ADMIN'] } },
   { path: 'recolector/dashboard', component: RecolectorDashboardComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['RECOLECTOR'] } },
   { path: 'usuario/dashboard', component: UsuarioDashboardComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['CLIENTE'] } },
-  { path: 'test-backend', component: TestBackendComponent }, // Página de testing
   { path: '**', redirectTo: '' }
 ];
