@@ -2,18 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { map, tap, delay, catchError } from 'rxjs/operators';
 import { HttpParams } from '@angular/common/http';
-import { Recoleccion, RecolectorStats, AgendaItem, RendimientoSemanal } from '../../core/models/recolector.models';
-import { BaseHttpService, ApiResponse } from '../../core/services/base-http.service';
-
-export interface RecoleccionRequest {
-  clienteId: string;
-  fecha: string;
-  hora: string;
-  tipoMaterial: string;
-  pesoEstimado: number;
-  direccion: string;
-  instrucciones?: string;
-}
+import { RecolectorStats, AgendaItem, RendimientoSemanal } from '../../core/models/recolector.models';
+import { BaseHttpService } from '../../core/services/base-http.service';
+import { Recoleccion } from '../../core/models/recoleccion.model';
 
 export interface ActualizarRecoleccionRequest {
   pesoReal?: number;
@@ -36,9 +27,8 @@ export interface HistorialFilter {
 
 @Injectable({ providedIn: 'root' })
 export class RecolectorApiService {
-  
   constructor(private baseHttp: BaseHttpService) {}
-  // MOCK DATA para modo desarrollo
+
   private mockStats: RecolectorStats = {
     pendientes: 5,
     enCurso: 1,
@@ -127,87 +117,6 @@ export class RecolectorApiService {
   }
 
   /**
-   * Obtener detalles de una recolección específica
-   */
-  getRecoleccionDetalle(id: string): Observable<Recoleccion> {
-    return this.baseHttp.get<Recoleccion>(`recolector/recolecciones/${id}`)
-      .pipe(
-        map(response => response.data!)
-      );
-  }
-
-  /**
-   * Iniciar una recolección
-   */
-  iniciarRecoleccion(id: string): Observable<Recoleccion> {
-    return this.baseHttp.patch<Recoleccion>(`recolector/recolecciones/${id}/iniciar`, {})
-      .pipe(
-        map(response => response.data!)
-      );
-  }
-
-  /**
-   * Completar una recolección
-   */
-  completarRecoleccion(id: string, datos: ActualizarRecoleccionRequest): Observable<Recoleccion> {
-    return this.baseHttp.patch<Recoleccion>(`recolector/recolecciones/${id}/completar`, datos)
-      .pipe(
-        map(response => response.data!)
-      );
-  }
-
-  /**
-   * Actualizar recolección
-   */
-  actualizarRecoleccion(id: string, datos: ActualizarRecoleccionRequest): Observable<Recoleccion> {
-    return this.baseHttp.patch<Recoleccion>(`recolector/recolecciones/${id}`, datos)
-      .pipe(
-        map(response => response.data!)
-      );
-  }
-
-  /**
-   * Aceptar una recolección (modo mock compatible)
-   */
-  aceptarRecoleccion(id: string): Observable<AgendaItem> {
-    return this.baseHttp.patch<AgendaItem>(`recolector/recolecciones/${id}/aceptar`, {})
-      .pipe(
-        map(response => response.data!),
-        catchError(error => {
-          console.warn('Usando lógica mock para aceptar recolección:', error);
-          const item = this.mockAgenda.find(a => a.id === id);
-          if (item && item.estado === 'Pendiente') {
-            item.estado = 'En proceso';
-            this.mockStats.enCurso += 1;
-            this.mockStats.pendientes -= 1;
-            return of(item).pipe(delay(300));
-          }
-          return throwError(() => new Error('No se pudo aceptar la recolección.'));
-        })
-      );
-  }
-
-  /**
-   * Cancelar una recolección
-   */
-  cancelarRecoleccion(id: string, motivo: string): Observable<Recoleccion> {
-    return this.baseHttp.patch<Recoleccion>(`recolector/recolecciones/${id}/cancelar`, { motivo })
-      .pipe(
-        map(response => response.data!)
-      );
-  }
-
-  /**
-   * Reportar problema en una recolección
-   */
-  reportarProblema(id: string, problema: { tipo: string, descripcion: string, urgente?: boolean }): Observable<any> {
-    return this.baseHttp.post(`recolector/recolecciones/${id}/problemas`, problema)
-      .pipe(
-        map(response => response.data)
-      );
-  }
-
-  /**
    * Obtener rendimiento semanal
    */
   getRendimientoSemanal(): Observable<RendimientoSemanal[]> {
@@ -257,5 +166,11 @@ export class RecolectorApiService {
       .pipe(
         map(response => response.data!)
       );
+  }
+
+  aceptarRecoleccion(id: string): Observable<AgendaItem> {
+    return this.baseHttp.patch<AgendaItem>(`recolector/recolecciones/${id}/aceptar`, {}).pipe(
+      map(response => response.data!)
+    );
   }
 }

@@ -1,14 +1,6 @@
-// Define la estructura de los datos que se manejarán en la aplicación
-export interface Recoleccion {
-    id: string;
-    usuarioNombre: string;
-    direccion: string;
-    material: string; // Ej: 'Plástico', 'Papel'
-    cantidad: string; // Ej: '15 kg'
-    hora: string;
-    estado: 'Pendiente' | 'En proceso' | 'Completada' | 'Cancelada';
-}
+import { Recoleccion } from './recoleccion.model';
 
+// Define la estructura de los datos que se manejarán en la aplicación
 export interface RecolectorStats {
     pendientes: number;
     enCurso: number;
