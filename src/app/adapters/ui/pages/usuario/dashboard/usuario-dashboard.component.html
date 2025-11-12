@@ -82,7 +82,7 @@
                 </div>
                 <div>
                     <p class="text-sm font-medium text-gray-700">{{ displayName }}</p>
-                    <p class="text-xs text-gray-500">Nivel: Eco-Héroe ⭐</p>
+                    <p class="text-xs text-gray-500">Nivel: {{ perfilUsuario.nivel }} ⭐</p>
                 </div>
             </div>
             <button (click)="logout()" class="w-full text-red-600 hover:bg-red-50 text-sm py-2 rounded-lg transition-colors">
@@ -154,9 +154,9 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-600 mb-1">Kilos Reciclados</p>
-                                    <p class="text-3xl font-bold text-gray-900 mb-1">{{ estadisticas.materialReciclado }}</p>
-                                    <p [class]="getCrecimientoClass()" class="text-sm">{{ calcularPorcentajeCrecimiento() }} este mes</p>
+                                    <p class="text-sm font-medium text-gray-600 mb-1">Nivel Actual</p>
+                                    <p class="text-3xl font-bold text-gray-900 mb-1">{{ nivelProgresion?.nivel || perfilUsuario.nivel }}</p>
+                                    <p class="text-sm text-eco-green font-medium">🏆 {{ nivelProgresion?.puntosActuales || 0 }} / {{ nivelProgresion?.puntosParaSiguiente || 0 }} puntos</p>
                                 </div>
                             </div>
 
@@ -210,6 +210,35 @@
                                     ¡Solo te faltan {{ (50 - estadisticas.materialReciclado).toFixed(1) }} kg para alcanzar tu meta mensual! 🎯
                                 </p>
                             </div>
+
+                            @if (nivelProgresion) {
+                                <div class="eco-card p-6 bg-gradient-to-br from-eco-green/10 to-blue-50">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="font-semibold text-lg text-gray-900">Progresión de Nivel</h3>
+                                        <span class="text-sm bg-eco-green text-white px-3 py-1 rounded-full">{{ nivelProgresion.porcentajeProgreso.toFixed(0) }}%</span>
+                                    </div>
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center text-xl">🏅</div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-600">Nivel Actual</p>
+                                                <p class="text-lg font-bold text-gray-900">{{ nivelProgresion.nivel }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-sm font-medium text-gray-600">{{ nivelProgresion.puntosActuales }} / {{ nivelProgresion.puntosParaSiguiente }} puntos</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-3">
+                                            <div class="bg-gradient-to-r from-eco-green to-blue-500 h-3 rounded-full transition-all duration-500" [style.width.%]="nivelProgresion.porcentajeProgreso"></div>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600">
+                                        ¡Te faltan <span class="font-bold text-eco-green">{{ nivelProgresion.puntosParaSiguiente - nivelProgresion.puntosActuales }}</span> puntos para subir de nivel! 🚀
+                                    </p>
+                                </div>
+                            }
 
                             <div class="eco-card p-6">
                                 <h3 class="font-semibold text-lg text-gray-900 mb-6">Materiales Reciclados</h3>

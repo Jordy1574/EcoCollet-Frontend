@@ -8,6 +8,7 @@ import {  User } from '../../../../../core/models/user.model';
 import { AuthApiService } from '../../../../api/auth.api.service'; 
 import { UserCitasApiService, CitaUsuario } from '../../../../api/user-citas.api.service';
 import { AdminApiService } from '../../../../api/admin.api.service';
+import { NivelApiService, ProgresionNivel } from '../../../../api/nivel.api.service';
 // NOTA: Es fundamental que Cita.id y User.id sean ambos STRING o ambos NUMBER para evitar errores.
 // Asumo que tu backend usa STRINGs para IDs.
 
@@ -22,7 +23,8 @@ import { AdminApiService } from '../../../../api/admin.api.service';
 export class UsuarioDashboardComponent implements OnInit {
   // --- PROPIEDADES INICIALES Y DATA SIMULADA ---
   user: User | null = null; 
-  isLoading: boolean = true; 
+  isLoading: boolean = true;
+  nivelProgresion: ProgresionNivel | null = null;
   
   currentSection: 'dashboard' | 'citas' | 'puntos' | 'recompensas' | 'perfil' = 'dashboard'; 
   pageTitle: string = 'Panel de Control'; 
@@ -92,7 +94,8 @@ export class UsuarioDashboardComponent implements OnInit {
     private authService: AuthApiService, 
     private router: Router,
     private userCitasService: UserCitasApiService,
-    private adminApi: AdminApiService
+    private adminApi: AdminApiService,
+    private nivelApi: NivelApiService
   ) {}
 
   ngOnInit(): void {
@@ -137,6 +140,7 @@ export class UsuarioDashboardComponent implements OnInit {
     this.loadDashboardData();
     this.cargarMisCitas();
     this.cargarMateriales();
+    this.cargarNivelUsuario();
   }
 
   // --- MÉTODOS DE LA UI Y NEGOCIO ---
@@ -249,6 +253,29 @@ export class UsuarioDashboardComponent implements OnInit {
       error: (err) => {
         console.error('Error al cargar materiales:', err);
         // En caso de error, mantener los materiales hardcoded que ya están inicializados
+      }
+    });
+  }
+
+  // ✅ CARGAR NIVEL DEL USUARIO DESDE BACKEND
+  private cargarNivelUsuario(): void {
+    if (!this.user || !this.user.id) {
+      console.warn('No hay usuario disponible para cargar nivel');
+      return;
+    }
+
+    const usuarioId = parseInt(this.user.id);
+    this.nivelApi.obtenerProgresionNivel(usuarioId).subscribe({
+      next: (progresion) => {
+        this.nivelProgresion = progresion;
+        // Actualizar el nivel en el perfil del usuario
+        this.perfilUsuario.nivel = progresion.nivel || 'Eco-Héroe';
+        console.log('Nivel cargado:', progresion);
+      },
+      error: (err) => {
+        console.error('Error al cargar nivel del usuario:', err);
+        // Mantener el valor por defecto si hay error
+        this.perfilUsuario.nivel = 'Eco-Héroe';
       }
     });
   }
