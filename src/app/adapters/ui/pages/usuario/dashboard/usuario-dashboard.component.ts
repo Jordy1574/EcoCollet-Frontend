@@ -2,17 +2,27 @@ import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@an
 import { CommonModule, DatePipe } from '@angular/common'; 
 import { FormsModule } from '@angular/forms'; 
 import { Router } from '@angular/router'; 
-// Asegúrate de que esta ruta sea correcta y que tus interfaces Cita y User estén allí.
-import { Cita, } from '../../../../../core/models/cita.model'; 
-import {  User } from '../../../../../core/models/user.model';
+import { Cita } from '../../../../../core/models/cita.model'; 
+import { User } from '../../../../../core/models/user.model';
 import { AuthApiService } from '../../../../api/auth.api.service'; 
 import { UserCitasApiService, CitaUsuario } from '../../../../api/user-citas.api.service';
 import { AdminApiService } from '../../../../api/admin.api.service';
 import { NivelApiService, ProgresionNivel } from '../../../../api/nivel.api.service';
 import { RecoleccionApiService } from '../../../../api/recoleccion.api.service';
 import { Recoleccion } from '../../../../../core/models/recoleccion.model';
-// NOTA: Es fundamental que Cita.id y User.id sean ambos STRING o ambos NUMBER para evitar errores.
-// Asumo que tu backend usa STRINGs para IDs.
+
+export interface RecoleccionDto {
+  id: number;
+  clienteId?: number;
+  recolectorId?: number | null;
+  direccionRecojo?: string;
+  tipoMaterial?: string;
+  cantidadKg?: number;
+  estado?: string;
+  fechaSolicitud?: string;
+  fechaAsignacion?: string | null;
+  fechaCompletada?: string | null;
+}
 
 @Component({
   selector: 'app-usuario-dashboard',
@@ -29,6 +39,11 @@ export class UsuarioDashboardComponent implements OnInit {
   isLoading: boolean = true;
   nivelProgresion: ProgresionNivel | null = null;
   
+  // Modal de detalle
+  selectedRecoleccion: RecoleccionDto | null = null;
+  showDetalleModal = false;
+  detalleLoading = false;
+  
   currentSection: 'dashboard' | 'citas' | 'puntos' | 'recompensas' | 'perfil' = 'dashboard'; 
   pageTitle: string = 'Panel de Control'; 
   pageSubtitle: string = 'Bienvenido a tu dashboard'; 
@@ -40,10 +55,15 @@ export class UsuarioDashboardComponent implements OnInit {
     puntosGanados: 890,
     impactoAmbiental: 12
   };
-  citasPendientes: Cita[] = [];
-  misCitasBackend: CitaUsuario[] = []; // Citas del backend
-  materialesBackend: any[] = []; // Lista de materiales del backend
-    misRecolecciones: Recoleccion[] = []; // Recolecciones del usuario autenticado
+  citasPendientes: Cita[] = [
+    // IDs como string para coincidir con la interfaz en core/models
+    { id: '1', fecha: '2025-10-25', hora: '10:00 AM', estado: 'Pendiente', direccion: 'Calle Los Rosales 123', tipoMaterial: 'PLASTICO', cantidadEstimada: 5, puntos: 50 },
+    { id: '2', fecha: '2025-10-22', hora: '02:00 PM', estado: 'Completada', direccion: 'Av. Siempreviva 742', tipoMaterial: 'PAPEL', cantidadEstimada: 3, puntos: 30 },
+    { id: '3', fecha: '2025-11-01', hora: '09:00 AM', estado: 'Pendiente', direccion: 'Jr. Miraflores 999', tipoMaterial: 'VIDRIO', cantidadEstimada: 12, puntos: 120 }
+  ];
+  misCitasBackend: CitaUsuario[] = [];
+  materialesBackend: any[] = [];
+  misRecolecciones: Recoleccion[] = [];
   
   // --- FORMULARIOS Y ESTADOS ---
   showAgendarForm = false; 
@@ -92,8 +112,6 @@ export class UsuarioDashboardComponent implements OnInit {
   distritoSeleccionado = '';
   materialSeleccionado = 'Todos';
 
-
-  // --- CONSTRUCTOR Y LIFECYCLE ---
   constructor(
     private authService: AuthApiService, 
     private router: Router,
@@ -280,7 +298,7 @@ export class UsuarioDashboardComponent implements OnInit {
     this.userCitasService.getMisCitas().subscribe({
       next: (citas) => {
         this.misCitasBackend = citas;
-        // Convertir a formato Cita para compatibilidad con UI existente
+        // Convertir TODAS las citas (incluyendo canceladas) a formato Cita
         this.citasPendientes = citas.map(c => ({
           id: String(c.id),
           fecha: c.fecha,
@@ -291,6 +309,7 @@ export class UsuarioDashboardComponent implements OnInit {
           cantidadEstimada: c.cantidadEstimada,
           puntos: Math.round(c.cantidadEstimada * 10)
         }));
+        console.log('✅ Citas recargadas desde backend:', this.citasPendientes.length);
       },
       error: (err) => {
         console.error('Error al cargar citas:', err);
@@ -440,18 +459,26 @@ export class UsuarioDashboardComponent implements OnInit {
   solicitarNuevaCita() { this.showAgendarForm = true; this.agendarStep = 1; this.resetAgendarForm(); }
   cancelarAgendamiento() { this.showAgendarForm = false; this.resetAgendarForm(); }
   prevAgendarStep() { if (this.agendarStep > 1) { this.agendarStep--; } }
-  nextAgendarStep() { if (this.agendarStep < 3) { this.agendarStep++; } else { this.confirmarRecoleccion(); } }
+  nextAgendarStep() { if (this.agendarStep < 3) { this.agendarStep++; } }
   canProceedToNext(): boolean { 
     if (this.agendarStep === 1) return this.agendarForm.materiales.length > 0 && this.agendarForm.cantidad > 0;
     if (this.agendarStep === 2) return !!this.agendarForm.fecha && !!this.agendarForm.hora;
     if (this.agendarStep === 3) return !!this.agendarForm.direccion && !!this.agendarForm.distrito;
     return false;
   }
-  
-  // ✅ CONFIRMAR RECOLECCIÓN - COMBINA AMBOS MÉTODOS
+
   confirmarRecoleccion() {
-    // Construir el objeto de recolección según el modelo y el formulario
-    if (!this.user) return;
+    console.log('🔵 confirmarRecoleccion() llamado, isLoading:', this.isLoading);
+    
+    if (!this.user) {
+      console.log('❌ No hay usuario');
+      return;
+    }
+    
+    if (this.isLoading) {
+      console.log('⚠️ Ya hay una petición en curso, ignorando...');
+      return;
+    }
     
     const nuevaRecoleccion: Partial<Recoleccion> = {
       cantidad_kg: String(this.agendarForm.cantidad),
@@ -467,25 +494,16 @@ export class UsuarioDashboardComponent implements OnInit {
     };
     
     this.isLoading = true;
+    console.log('📤 Enviando recolección al backend...');
+    
     this.recoleccionApi.createRecoleccion(nuevaRecoleccion).subscribe({
       next: (recoleccion) => {
         console.log('✅ Recolección creada exitosamente:', recoleccion);
         alert('¡Recolección agendada exitosamente! 🎉');
-        // Agregar la nueva cita a la lista local
-        this.citasPendientes.push({
-          id: recoleccion.id,
-          fecha: recoleccion.fechaRecojo,
-          hora: this.agendarForm.hora,
-          estado: recoleccion.estado as any,
-          direccion: recoleccion.direccion,
-          tipoMaterial: recoleccion.tipo_material,
-          cantidadEstimada: Number(recoleccion.cantidad_kg),
-          puntos: 0
-        });
         this.showAgendarForm = false;
         this.resetAgendarForm();
         this.isLoading = false;
-        this.cargarMisCitas(); // Recargar desde backend
+        this.cargarMisRecolecciones(); // Solo recargar desde backend
       },
       error: (err) => {
         console.error('❌ Error al agendar recolección:', err);
@@ -495,7 +513,6 @@ export class UsuarioDashboardComponent implements OnInit {
     });
   }
   
-  // ✅ CANCELAR CITA CON BACKEND
   cancelarCita(id: string) {
     if (!confirm('¿Estás seguro de cancelar esta cita?')) return;
     
@@ -503,7 +520,7 @@ export class UsuarioDashboardComponent implements OnInit {
       next: () => {
         console.log('✅ Cita cancelada:', id);
         alert('Cita cancelada exitosamente');
-        this.cargarMisCitas(); // Recargar lista
+        this.cargarMisCitas();
       },
       error: (err) => {
         console.error('❌ Error al cancelar cita:', err);
@@ -512,46 +529,97 @@ export class UsuarioDashboardComponent implements OnInit {
     });
   }
 
-  editarCita(citaId: string) { console.log('Editando cita:', citaId); } 
-  verRutaHacia(punto: any) { console.log('Ver ruta hacia:', punto); } 
-  llamarPunto(punto: any) { console.log('Llamar a punto:', punto); } 
-  canjearRecompensa(recompensa: any) { console.log('Canjeando recompensa:', recompensa); } 
-  guardarPerfil() { 
+  editarCita(citaId: string) {
+    console.log('Editando cita:', citaId);
+  }
+
+  verDetalle(id: number | string): void {
+    this.selectedRecoleccion = null;
+    this.showDetalleModal = true;
+    this.detalleLoading = true;
+    
+    this.recoleccionApi.getRecoleccionById(String(id)).subscribe({
+      next: (r: any) => {
+        this.selectedRecoleccion = r;
+        this.detalleLoading = false;
+        console.log('✅ Detalle cargado:', r);
+      },
+      error: (err: any) => {
+        console.error('❌ Error cargando detalle de recolección:', err);
+        this.detalleLoading = false;
+        alert('Error al cargar el detalle de la recolección');
+      }
+    });
+  }
+
+  cerrarDetalle(): void {
+    this.showDetalleModal = false;
+    this.selectedRecoleccion = null;
+  }
+
+  parseDireccion(direccionString: any): string {
+    if (!direccionString) return 'Sin dirección';
+    if (typeof direccionString === 'object') {
+      return direccionString.direccion || 'Sin dirección';
+    }
+    const match = String(direccionString).match(/direccion=([^,\)]+)/);
+    return match ? match[1].trim() : String(direccionString);
+  }
+
+  verRutaHacia(punto: any) {
+    console.log('Ver ruta hacia:', punto);
+  }
+
+  llamarPunto(punto: any) {
+    console.log('Llamar a punto:', punto);
+  }
+
+  canjearRecompensa(recompensa: any) {
+    console.log('Canjeando recompensa:', recompensa);
+  }
+
+  guardarPerfil() {
     this.perfilUsuario.nombre = this.perfilForm.nombre + ' ' + this.perfilForm.apellido;
     this.perfilUsuario.correo = this.perfilForm.email;
     this.editandoPerfil = false;
-    console.log('Guardando perfil:', this.perfilForm); 
-  } 
+    console.log('Guardando perfil:', this.perfilForm);
+  }
+
   toggleEditarPerfil() {
     this.editandoPerfil = !this.editandoPerfil;
     if (this.editandoPerfil) {
-      this.perfilForm = { 
-        nombre: this.perfilUsuario.nombre.split(' ')[0], 
+      this.perfilForm = {
+        nombre: this.perfilUsuario.nombre.split(' ')[0],
         apellido: this.perfilUsuario.nombre.split(' ')[1] || '',
-        correo: this.perfilUsuario.correo, 
-        email: this.perfilUsuario.correo, telefono: '', distrito: 'Miraflores', 
-        direccion: '', tipoUsuario: 'Individual', notificacionesEmail: true, 
-        notificacionesPush: true, recordatorios: true 
+        correo: this.perfilUsuario.correo,
+        email: this.perfilUsuario.correo,
+        telefono: '',
+        distrito: 'Miraflores',
+        direccion: '',
+        tipoUsuario: 'Individual',
+        notificacionesEmail: true,
+        notificacionesPush: true,
+        recordatorios: true
       };
     }
   }
-  
-  logout(): void { 
-    this.authService.logoutLocal(); 
-    this.router.navigate(['/login']); 
+
+  logout(): void {
+    this.authService.logoutLocal();
+    this.router.navigate(['/login']);
   }
 
   resetAgendarForm() {
-    this.agendarForm = { 
+    this.agendarForm = {
       materialId: 0,
-      cantidad: 0, 
-      fecha: '', 
-      hora: '', 
-      direccion: '', 
-      referencia: '', 
-      distrito: '', 
+      cantidad: 0,
+      fecha: '',
+      hora: '',
+      direccion: '',
+      referencia: '',
+      distrito: '',
       notas: '',
-      materiales: [] 
+      materiales: []
     };
     this.materialesDisponibles.forEach(m => m.seleccionado = false);
   }
@@ -566,4 +634,3 @@ export class UsuarioDashboardComponent implements OnInit {
       });
   }
 }
-

@@ -51,10 +51,18 @@ export class UserCitasApiService {
      * GET /api/citas/mis-citas
      */
     getMisCitas(): Observable<CitaUsuario[]> {
-        return this.http.get<any[]>('citas/mis-citas')
+        return this.http.get<any>('citas/mis-citas')
             .pipe(
-                map(resp => (resp.data || []).map(c => this.mapBackendCita(c))),
-                catchError(() => of([]))
+                map(resp => {
+                    console.log('📦 Respuesta del backend getMisCitas:', resp);
+                    const citas = resp?.data || [];
+                    console.log('📋 Citas mapeadas:', citas.length);
+                    return citas.map((c: any) => this.mapBackendCita(c));
+                }),
+                catchError(err => {
+                    console.error('❌ Error en getMisCitas:', err);
+                    return of([]);
+                })
             );
     }
 
@@ -74,11 +82,11 @@ export class UserCitasApiService {
     }
 
     /**
-     * Cancelar cita (solo PENDIENTE)
-     * DELETE /api/citas/{id}
+     * Cancelar cita (solo PENDIENTE o ASIGNADA)
+     * PATCH /api/recolecciones/{id}/cancelar
      */
     cancelarCita(id: number): Observable<void> {
-        return this.http.delete<void>(`citas/${id}`)
+        return this.http.patch<void>(`recolecciones/${id}/cancelar`, null)
             .pipe(
                 map(() => void 0),
                 catchError(err => {
