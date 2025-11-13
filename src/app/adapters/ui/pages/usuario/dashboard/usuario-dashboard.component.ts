@@ -10,7 +10,6 @@ import { AdminApiService } from '../../../../api/admin.api.service';
 import { NivelApiService, ProgresionNivel } from '../../../../api/nivel.api.service';
 import { RecoleccionApiService } from '../../../../api/recoleccion.api.service';
 import { Recoleccion } from '../../../../../core/models/recoleccion.model';
-import { UserApiService } from '../../../../api/user.api.service';
 
 export interface RecoleccionDto {
   id: number;
@@ -119,19 +118,16 @@ export class UsuarioDashboardComponent implements OnInit {
     private userCitasService: UserCitasApiService,
     private adminApi: AdminApiService,
     private nivelApi: NivelApiService,
-    private recoleccionApi: RecoleccionApiService,
-    private userApi: UserApiService
+    private recoleccionApi: RecoleccionApiService
   ) {}
 
   ngOnInit(): void {
     // Obtener usuario actual (puede venir de storage o después del login)
     this.user = this.authService.getCurrentUser();
-    console.log('👤 Usuario obtenido del authService:', this.user);
 
     // Suscribirse a cambios del usuario (por ejemplo, después de login)
     this.authService.currentUser$.subscribe(u => {
       if (u) {
-        console.log('👤 Usuario actualizado desde observable:', u);
         this.user = u;
         this.populateProfileData();
       }
@@ -141,25 +137,15 @@ export class UsuarioDashboardComponent implements OnInit {
     if (!this.user) {
       try {
         const raw = localStorage.getItem('user');
-        console.log('💾 Raw user desde localStorage:', raw);
         if (raw) {
           const parsed: any = JSON.parse(raw);
-          console.log('📦 Usuario parseado desde localStorage:', parsed);
           // compatible con formas 'name' o 'nombre'
           const normalized: User = {
             id: String(parsed.id || parsed.userId || parsed._id || '0'),
             email: parsed.email || parsed.correo || '',
             rol: parsed.rol || parsed.role || 'CLIENTE',
-            name: parsed.name || parsed.nombre || parsed.fullName || '',
-            telefono: parsed.telefono || '',
-            distrito: parsed.distrito || '',
-            direccion: parsed.direccion || '',
-            tipoUsuario: parsed.tipoUsuario || 'Individual',
-            notificacionesEmail: parsed.notificacionesEmail !== undefined ? parsed.notificacionesEmail : true,
-            notificacionesPush: parsed.notificacionesPush !== undefined ? parsed.notificacionesPush : true,
-            recordatorios: parsed.recordatorios !== undefined ? parsed.recordatorios : true
+            name: parsed.name || parsed.nombre || parsed.fullName || ''
           };
-          console.log('✅ Usuario normalizado:', normalized);
           this.user = normalized;
           this.populateProfileData();
         }
@@ -188,12 +174,6 @@ export class UsuarioDashboardComponent implements OnInit {
     this.recoleccionApi.getMisRecolecciones().subscribe({
       next: (recolecciones: any[]) => {
         console.log('✅ Recolecciones cargadas:', recolecciones);
-        console.log('📊 Total de recolecciones recibidas:', recolecciones.length);
-        
-        // Log detallado del primer elemento para debug
-        if (recolecciones.length > 0) {
-          console.log('🔍 Primera recolección completa:', JSON.stringify(recolecciones[0], null, 2));
-        }
         
         // Mapear datos del backend al modelo del frontend
         this.misRecolecciones = recolecciones.map(r => {
@@ -217,8 +197,6 @@ export class UsuarioDashboardComponent implements OnInit {
           };
         }) as Recoleccion[];
         
-        console.log('🗂️ misRecolecciones mapeadas:', this.misRecolecciones.length);
-        
         // Actualizar citasPendientes también para que se vean en el dashboard
         this.citasPendientes = this.misRecolecciones.map(r => ({
           id: r.id,
@@ -231,8 +209,7 @@ export class UsuarioDashboardComponent implements OnInit {
           puntos: this.calcularPuntos(Number(r.cantidad_kg))
         }));
         
-        console.log('✅ CitasPendientes actualizadas:', this.citasPendientes.length, 'elementos');
-        console.log('📋 Estados de las citas:', this.citasPendientes.map(c => ({ id: c.id, estado: c.estado })));
+        console.log('✅ CitasPendientes actualizadas:', this.citasPendientes);
       },
       error: (err: any) => {
         console.error('❌ Error al cargar recolecciones:', err);
@@ -283,73 +260,12 @@ export class UsuarioDashboardComponent implements OnInit {
   private populateProfileData(): void {
     if (!this.user) return;
 
-    console.log('📝 Poblando datos de perfil con usuario:', JSON.stringify(this.user, null, 2));
-    
     const nombreCompleto = this.user.name || '';
-    const parts = nombreCompleto.split(' ').filter(p => p.trim() !== '');
-    
-    // Dividir en 2 palabras para nombre y 2 para apellido
-    // Ejemplo: "Juan Lopez Carlos Pérez" → nombre: "Juan Lopez", apellido: "Carlos Pérez"
-    if (parts.length >= 4) {
-      this.perfilForm.nombre = `${parts[0]} ${parts[1]}`;
-      this.perfilForm.apellido = parts.slice(2).join(' ');
-    } else if (parts.length === 3) {
-      // Si hay 3 palabras: 1 para nombre, 2 para apellido
-      this.perfilForm.nombre = parts[0];
-      this.perfilForm.apellido = `${parts[1]} ${parts[2]}`;
-    } else if (parts.length === 2) {
-      this.perfilForm.nombre = parts[0];
-      this.perfilForm.apellido = parts[1];
-    } else {
-      this.perfilForm.nombre = parts[0] || '';
-      this.perfilForm.apellido = '';
-    }
-    
+    const parts = nombreCompleto.split(' ');
+    this.perfilForm.nombre = parts[0] || '';
+    this.perfilForm.apellido = parts.slice(1).join(' ') || '';
     this.perfilForm.email = this.user.email || '';
-    this.perfilForm.correo = this.user.email || '';
-    this.perfilForm.telefono = this.user.telefono || '';
-    
-    // Normalizar distrito: convertir de mayúsculas a formato correcto
-    // Backend: "SAN ISIDRO" → Frontend: "San Isidro"
-    const distritoRaw = this.user.distrito || '';
-    if (distritoRaw) {
-      // Convertir "SAN ISIDRO" a "San Isidro"
-      const distritoNormalizado = distritoRaw
-        .toLowerCase()
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-      
-      // Verificar si existe en la lista de distritos disponibles
-      if (this.distritos.includes(distritoNormalizado)) {
-        this.perfilForm.distrito = distritoNormalizado;
-      } else {
-        console.warn('⚠️ Distrito no encontrado en lista:', distritoNormalizado, 'Original:', distritoRaw);
-        this.perfilForm.distrito = distritoRaw; // Usar el valor original si no coincide
-      }
-    } else {
-      this.perfilForm.distrito = '';
-    }
-    
-    this.perfilForm.direccion = this.user.direccion || '';
-    
-    // Normalizar tipoUsuario: convertir INDIVIDUAL/EMPRESA a Individual/Empresa
-    const tipoUsuarioRaw = (this.user.tipoUsuario || 'INDIVIDUAL').toUpperCase();
-    this.perfilForm.tipoUsuario = tipoUsuarioRaw === 'EMPRESA' ? 'Empresa' : 'Individual';
-    // Convertir a booleano explícitamente en caso de que vengan como string
-    this.perfilForm.notificacionesEmail = this.user.notificacionesEmail !== undefined ? 
-      (typeof this.user.notificacionesEmail === 'boolean' ? this.user.notificacionesEmail : this.user.notificacionesEmail === 'true' || this.user.notificacionesEmail === true) : true;
-    this.perfilForm.notificacionesPush = this.user.notificacionesPush !== undefined ? 
-      (typeof this.user.notificacionesPush === 'boolean' ? this.user.notificacionesPush : this.user.notificacionesPush === 'true' || this.user.notificacionesPush === true) : true;
-    this.perfilForm.recordatorios = this.user.recordatorios !== undefined ? 
-      (typeof this.user.recordatorios === 'boolean' ? this.user.recordatorios : this.user.recordatorios === 'true' || this.user.recordatorios === true) : true;
-    
-    // Actualizar perfilUsuario
     this.perfilUsuario.nombre = nombreCompleto || this.perfilUsuario.nombre;
-    this.perfilUsuario.correo = this.user.email || this.perfilUsuario.correo;
-    
-    console.log('📋 perfilForm actualizado:', this.perfilForm);
-    console.log('👨 perfilUsuario actualizado:', this.perfilUsuario);
   }
 
   /** Nombre a mostrar en la UI: intenta this.user luego localStorage y finalmente 'Usuario' */
@@ -545,20 +461,14 @@ export class UsuarioDashboardComponent implements OnInit {
         break;
       case 'puntos': this.pageTitle = 'Puntos de Reciclaje'; this.pageSubtitle = 'Encuentra puntos cercanos'; break;
       case 'recompensas': this.pageTitle = 'Recompensas'; this.pageSubtitle = 'Canjea tus puntos por premios'; break;
-      case 'perfil': 
-        this.pageTitle = 'Mi Perfil'; 
-        this.pageSubtitle = 'Gestiona tu información personal';
-        // Recargar datos del perfil al abrir la sección
-        this.populateProfileData();
-        console.log('🔄 Perfil recargado al cambiar de sección');
-        break;
+      case 'perfil': this.pageTitle = 'Mi Perfil'; this.pageSubtitle = 'Gestiona tu información personal'; break;
     }
   }
 
   // >>> GETTER CORREGIDO PARA EL DASHBOARD (Soluciona el error de "Parser Error" en el filtro)
   get citasPendientesDashboard(): Cita[] {
-    // Retornar todas las recolecciones sin filtrar
-    return this.citasPendientes;
+    // Filtramos el array una sola vez en TypeScript
+    return this.citasPendientes.filter(cita => cita.estado === 'Pendiente');
   }
 
   // Métodos de UTILIDAD y FORMATO
@@ -671,13 +581,13 @@ export class UsuarioDashboardComponent implements OnInit {
   cancelarCita(id: string) {
     if (!confirm('¿Estás seguro de cancelar esta cita?')) return;
     
-    this.recoleccionApi.cancelarRecoleccion(parseInt(id)).subscribe({
+    this.userCitasService.cancelarCita(parseInt(id)).subscribe({
       next: () => {
         console.log('✅ Cita cancelada:', id);
         alert('Cita cancelada exitosamente');
-        this.cargarMisRecolecciones();
+        this.cargarMisCitas();
       },
-      error: (err: any) => {
+      error: (err) => {
         console.error('❌ Error al cancelar cita:', err);
         alert('Error al cancelar la cita');
       }
@@ -756,79 +666,29 @@ export class UsuarioDashboardComponent implements OnInit {
   }
 
   guardarPerfil() {
-    if (!this.user || !this.user.id) {
-      alert('Error: No se pudo identificar el usuario');
-      return;
-    }
-
-    this.isLoading = true;
-    console.log('💾 Guardando perfil - perfilForm:', this.perfilForm);
-
-    // Preparar datos para enviar al backend (sin id, se envía en la URL)
-    const datosActualizados = {
-      nombre: this.perfilForm.nombre?.trim() || '',
-      apellido: this.perfilForm.apellido?.trim() || '',
-      email: this.perfilForm.email,
-      telefono: this.perfilForm.telefono,
-      distrito: this.perfilForm.distrito?.toUpperCase() || '', // Backend espera mayúsculas
-      direccion: this.perfilForm.direccion,
-      tipoUsuario: this.perfilForm.tipoUsuario?.toUpperCase() || 'INDIVIDUAL',
-      notificacionesEmail: this.perfilForm.notificacionesEmail,
-      notificacionesPush: this.perfilForm.notificacionesPush,
-      recordatorios: this.perfilForm.recordatorios
-    };
-
-    console.log('📤 Datos a enviar al backend (con ID):', datosActualizados);
-
-    this.userApi.actualizarPerfil(this.user.id, datosActualizados).subscribe({
-      next: (response) => {
-        console.log('✅ Perfil actualizado exitosamente:', response);
-        
-        // Actualizar datos locales
-        const nombreCompleto = `${datosActualizados.nombre} ${datosActualizados.apellido}`.trim();
-        this.perfilUsuario.nombre = nombreCompleto;
-        this.perfilUsuario.correo = datosActualizados.email;
-        
-        // Actualizar usuario en el servicio de autenticación y localStorage
-        if (this.user) {
-          this.user.name = nombreCompleto;
-          this.user.email = datosActualizados.email;
-          this.user.telefono = datosActualizados.telefono;
-          this.user.distrito = datosActualizados.distrito;
-          this.user.direccion = datosActualizados.direccion;
-          this.user.tipoUsuario = datosActualizados.tipoUsuario as any;
-          this.user.notificacionesEmail = datosActualizados.notificacionesEmail;
-          this.user.notificacionesPush = datosActualizados.notificacionesPush;
-          this.user.recordatorios = datosActualizados.recordatorios;
-          
-          localStorage.setItem('user', JSON.stringify(this.user));
-        }
-        
-        this.editandoPerfil = false;
-        this.isLoading = false;
-        alert('✅ Perfil actualizado correctamente');
-      },
-      error: (err: any) => {
-        console.error('❌ Error completo al guardar perfil:', err);
-        console.error('❌ Status:', err.status);
-        console.error('❌ Error message:', err.error?.message || err.message);
-        console.error('❌ Error data:', err.error);
-        this.isLoading = false;
-        
-        const mensajeError = err.error?.message || err.message || 'Error desconocido';
-        alert(`Error al guardar el perfil: ${mensajeError}`);
-      }
-    });
+    this.perfilUsuario.nombre = this.perfilForm.nombre + ' ' + this.perfilForm.apellido;
+    this.perfilUsuario.correo = this.perfilForm.email;
+    this.editandoPerfil = false;
+    console.log('Guardando perfil:', this.perfilForm);
   }
 
   toggleEditarPerfil() {
     this.editandoPerfil = !this.editandoPerfil;
-    if (!this.editandoPerfil) {
-      // Si se cancela la edición, recargar los datos originales
-      this.populateProfileData();
+    if (this.editandoPerfil) {
+      this.perfilForm = {
+        nombre: this.perfilUsuario.nombre.split(' ')[0],
+        apellido: this.perfilUsuario.nombre.split(' ')[1] || '',
+        correo: this.perfilUsuario.correo,
+        email: this.perfilUsuario.correo,
+        telefono: '',
+        distrito: 'Miraflores',
+        direccion: '',
+        tipoUsuario: 'Individual',
+        notificacionesEmail: true,
+        notificacionesPush: true,
+        recordatorios: true
+      };
     }
-    // Ya no es necesario reinicializar perfilForm aquí
-    // porque ya está poblado con los datos correctos del usuario
   }
 
   logout(): void {

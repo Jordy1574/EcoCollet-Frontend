@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface NivelResponse {
   usuarioId: number;
@@ -26,7 +27,7 @@ export interface ProgresionNivel {
   providedIn: 'root'
 })
 export class NivelApiService {
-  private apiUrl = 'http://localhost:8080/api/niveles';
+  private apiUrl = `${environment.apiUrl}/niveles`;
 
   constructor(private http: HttpClient) {}
 
