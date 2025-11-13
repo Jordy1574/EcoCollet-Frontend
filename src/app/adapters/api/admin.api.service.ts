@@ -416,32 +416,38 @@ export class AdminApiService {
     // ====================================================================
     
     private mapBackendCita(c: any): Cita {
-        // Soporta respuesta de 1 material o múltiples materiales (items/detalles)
-        let tipo = c.materialNombre ?? 'Sin especificar';
-        let cantidad = c.cantidadEstimada ? `${c.cantidadEstimada} kg aprox.` : 'N/A';
+        // Multi-material support vía items[] y normalización de estados
+        let tipo = 'Sin especificar';
+        let cantidad = 'N/A';
+        const items = c.items || [];
+        if (Array.isArray(items) && items.length > 0) {
+            const totalKg = items.reduce((sum: number, it: any) => sum + (Number(it.kg) || 0), 0);
+            const nombresMateriales = items.map((it: any) => it.materialNombre).filter(Boolean);
+            tipo = nombresMateriales.length > 0 ? nombresMateriales.join(', ') : `${items.length} materiales`;
+            cantidad = `${totalKg.toFixed(1)} kg`;
+        } else {
+            tipo = c.materialNombre ?? 'Sin especificar';
+            cantidad = c.cantidadEstimada ? `${c.cantidadEstimada} kg aprox.` : 'N/A';
+        }
 
-        const items = c.items || c.detalles || c.materiales || c.materialesDetalle;
-        if (Array.isArray(items) && items.length) {
-            const totalKg = items.reduce((sum: number, it: any) => sum + (Number(it.kg || it.cantidadKg || it.cantidad) || 0), 0);
-            tipo = `${items.length} materiales`;
-            cantidad = `${totalKg} kg`;
+        const estadoRaw = (c.estado || '').toUpperCase();
+        // Mapeo específico según guía: ASIGNADA -> En proceso
+        let estadoUi: string;
+        switch (estadoRaw) {
+            case 'PENDIENTE': estadoUi = 'Pendiente'; break;
+            case 'ASIGNADA': estadoUi = 'En proceso'; break;
+            case 'EN_PROCESO': estadoUi = 'En proceso'; break;
+            case 'COMPLETADA': estadoUi = 'Completada'; break;
+            case 'CANCELADA': estadoUi = 'Cancelada'; break;
+            default: estadoUi = 'Pendiente';
         }
 
         return {
             id: c.id ? `#${String(c.id).padStart(3, '0')}` : '#000',
-            usuario: {
-                nombre: c.usuarioNombre ?? 'Sin nombre',
-                direccion: c.usuarioDireccion ?? 'Sin dirección'
-            },
-            material: {
-                tipo,
-                cantidad
-            },
-            fecha: {
-                dia: c.fecha ?? 'Sin fecha',
-                hora: c.hora ?? 'Sin hora'
-            },
-            estado: this.capitalizeEstado(c.estado),
+            usuario: { nombre: c.usuarioNombre ?? 'Sin nombre', direccion: c.usuarioDireccion ?? 'Sin dirección' },
+            material: { tipo, cantidad },
+            fecha: { dia: c.fecha ?? 'Sin fecha', hora: c.hora ?? 'Sin hora' },
+            estado: estadoUi,
             recolector: c.recolectorNombre ?? undefined
         };
     }
@@ -449,26 +455,47 @@ export class AdminApiService {
     getCitasFromBackend(): Observable<Cita[]> {
         return this.http.get<any[]>('admin/citas')
             .pipe(
-                map(resp => (resp.data || []).map(c => this.mapBackendCita(c))),
-                catchError(() => of(this.mockCitas))
+                map(resp => {
+                    console.log('✅ [ADMIN] Citas backend raw response:', resp);
+                    const citas = (resp.data || []).map(c => this.mapBackendCita(c));
+                    console.log('✅ [ADMIN] Citas mapeadas:', citas.length, 'citas');
+                    return citas;
+                }),
+                catchError(err => {
+                    console.error('❌ Error al obtener citas del backend:', err);
+                    return of(this.mockCitas);
+                })
             );
     }
 
+    // Crear cita usuario legacy (1 material)
     createCita(cita: { usuarioId: number; materialId: number; cantidadEstimada: number; fecha: string; hora: string; notas?: string }): Observable<Cita> {
+        console.log('📤 [ADMIN] Creando cita (legacy 1 material):', cita);
         return this.http.post<any>('admin/citas', cita)
-            .pipe(map(resp => this.mapBackendCita(resp.data)));
+            .pipe(map(resp => {
+                console.log('✅ [ADMIN] Cita creada:', resp);
+                return this.mapBackendCita(resp.data);
+            }));
     }
 
-    // Crear cita con múltiples materiales [{ materialId, kg }]
+    // Crear cita con múltiples materiales [{ materialId, kg }] (admin)
     createCitaMulti(payload: { usuarioId: number; materiales: { materialId: number; kg: number }[]; fecha: string; hora: string; notas?: string; recolectorId?: number; }): Observable<Cita> {
+        console.log('📤 [ADMIN] Creando cita multi-material:', payload);
         return this.http.post<any>('admin/citas', payload)
-            .pipe(map(resp => this.mapBackendCita(resp.data)));
+            .pipe(map(resp => {
+                console.log('✅ [ADMIN] Cita multi-material creada:', resp);
+                return this.mapBackendCita(resp.data);
+            }));
     }
 
     updateCita(id: string, updates: { estado?: string; recolectorId?: number; notas?: string }): Observable<Cita> {
         const numericId = id.replace('#', '');
+        console.log(`📤 [ADMIN] Actualizando cita ${numericId}:`, updates);
         return this.http.put<any>(`admin/citas/${numericId}`, updates)
-            .pipe(map(resp => this.mapBackendCita(resp.data)));
+            .pipe(map(resp => {
+                console.log('✅ [ADMIN] Cita actualizada:', resp);
+                return this.mapBackendCita(resp.data);
+            }));
     }
 
     deleteCita(id: string): Observable<void> {

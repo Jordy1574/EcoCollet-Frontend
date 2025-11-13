@@ -18,6 +18,7 @@ export interface Cita {
     fecha: { dia: string; hora: string; };
     estado: string;
     recolector?: string;
+    origen?: 'admin' | 'usuario';
 }
 
 export interface PuntoReciclaje {

@@ -537,7 +537,12 @@ export class UsuarioDashboardComponent implements OnInit {
     this.currentSection = section; 
     switch(section) {
       case 'dashboard': this.pageTitle = 'Panel de Control'; this.pageSubtitle = 'Bienvenido a tu dashboard'; break;
-      case 'citas': this.pageTitle = 'Mis Citas'; this.pageSubtitle = 'Gestiona tus citas de recolección'; break;
+      case 'citas': 
+        this.pageTitle = 'Mis Citas'; 
+        this.pageSubtitle = 'Gestiona tus citas de recolección'; 
+        // Refrescar estado de recolecciones al entrar a la sección
+        this.cargarMisRecolecciones();
+        break;
       case 'puntos': this.pageTitle = 'Puntos de Reciclaje'; this.pageSubtitle = 'Encuentra puntos cercanos'; break;
       case 'recompensas': this.pageTitle = 'Recompensas'; this.pageSubtitle = 'Canjea tus puntos por premios'; break;
       case 'perfil': 

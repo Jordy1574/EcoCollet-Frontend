@@ -24,6 +24,16 @@ export class RecoleccionApiService {
                 })
             );
     }
+    completarRecoleccion(id: number): Observable<void> {
+      return this.baseHttp.patch<void>(`recolecciones/${id}/completar`, null)
+        .pipe(
+          map(() => void 0),
+          catchError(err => {
+            console.error('Error al completar recolección:', err);
+            throw err;
+          })
+        );
+    }
 
   getRecoleccionById(id: string): Observable<Recoleccion> {
     return this.baseHttp.get<Recoleccion>(`recolecciones/${id}`).pipe(
