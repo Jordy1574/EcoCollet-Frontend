@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080/api', // Spring Boot puerto por defecto 8080
-  wsUrl: 'ws://localhost:8080', // Para WebSockets si los necesitas
+  apiUrl: 'https://ecocollect-backend.mangostone-3954dfb1.brazilsouth.azurecontainerapps.io/api',
+  wsUrl: 'wss://ecocollect-backend.mangostone-3954dfb1.brazilsouth.azurecontainerapps.io',
   apiVersion: 'v1',
   tokenKey: 'ecollet_token',
   refreshTokenKey: 'ecollet_refresh_token'
