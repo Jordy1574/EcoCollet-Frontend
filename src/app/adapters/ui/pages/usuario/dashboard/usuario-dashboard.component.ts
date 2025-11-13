@@ -179,6 +179,7 @@ export class UsuarioDashboardComponent implements OnInit {
     this.cargarMateriales();
     this.cargarNivelUsuario();
     this.cargarMisRecolecciones();
+    this.cargarPuntosReciclaje();
   }
 
 
@@ -441,6 +442,65 @@ export class UsuarioDashboardComponent implements OnInit {
     });
   }
 
+  // ✅ CARGAR PUNTOS DESDE BACKEND (endpoint público para usuarios)
+  private cargarPuntosReciclaje(): void {
+    console.log('🔍 Cargando puntos de reciclaje desde API pública...');
+    
+    // Usar endpoint público /api/puntos-reciclaje en lugar de /api/admin/puntos
+    this.recoleccionApi.getPuntosReciclaje().subscribe({
+      next: (puntos: any[]) => {
+        console.log('✅ Puntos de reciclaje recibidos:', puntos);
+        console.log('📊 Total de puntos:', puntos?.length || 0);
+        
+        if (puntos && puntos.length > 0) {
+          console.log('🔍 Primer punto recibido:', JSON.stringify(puntos[0], null, 2));
+          
+          // Mapear y normalizar los datos del backend
+          this.puntos = puntos.map((p, index) => {
+            const mappedPunto = {
+              id: p.id || p.puntoId,
+              nombre: p.nombre || 'Sin nombre',
+              estado: p.estado || 'activo',
+              direccion: p.direccion || 'Sin dirección',
+              horario: p.horario || 'No especificado',
+              materiales: this.normalizarMateriales(p.materialesAceptados || p.materiales || []),
+              distancia: p.distancia || '',
+              googleMapsUrl: p.googleMapsUrl || '',
+              tipo: p.tipo || 'punto-oficial'
+            };
+            
+            console.log(`🗺️ Punto ${index + 1} (${mappedPunto.nombre}): googleMapsUrl = "${mappedPunto.googleMapsUrl}"`);
+            return mappedPunto;
+          });
+          
+          console.log('✅ Puntos procesados:', this.puntos.length);
+          console.log('📋 URLs de todos los puntos:', this.puntos.map(p => ({ nombre: p.nombre, url: p.googleMapsUrl })));
+        } else {
+          console.warn('⚠️ No se recibieron puntos de reciclaje del backend');
+          this.puntos = [];
+        }
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar puntos de reciclaje:', err);
+        console.error('Status:', err.status);
+        console.error('Message:', err.message);
+        this.puntos = [];
+      }
+    });
+  }
+
+  // Normalizar array de materiales desde el backend
+  private normalizarMateriales(materiales: any[]): string[] {
+    if (!materiales || materiales.length === 0) return [];
+    
+    return materiales.map(m => {
+      if (typeof m === 'string') return m;
+      if (m.nombre) return m.nombre;
+      if (m.tipoMaterial) return m.tipoMaterial;
+      return String(m);
+    });
+  }
+
   // ✅ CARGAR NIVEL DEL USUARIO DESDE BACKEND
   private cargarNivelUsuario(): void {
     if (!this.user || !this.user.id) {
@@ -630,9 +690,23 @@ export class UsuarioDashboardComponent implements OnInit {
     
     this.recoleccionApi.getRecoleccionById(String(id)).subscribe({
       next: (r: any) => {
-        this.selectedRecoleccion = r;
+        // Mapear respuesta del backend (Recoleccion) al DTO usado por el modal
+        const dto: RecoleccionDto = {
+          id: Number(r.id ?? id),
+          clienteId: r.cliente_id ? Number(r.cliente_id) : undefined,
+          recolectorId: r.recolector_id ? Number(r.recolector_id) : null,
+          direccionRecojo: r.direccion ?? '',
+          tipoMaterial: r.tipo_material ?? '',
+          cantidadKg: r.cantidad_kg != null ? Number(r.cantidad_kg) : 0,
+          estado: r.estado ?? 'Pendiente',
+          fechaSolicitud: r.fechaSolicitud ?? r.fecha_solicitud ?? '',
+          fechaAsignacion: r.fechaAsignacion ?? r.fecha_asignacion ?? null,
+          fechaCompletada: r.fechaCompletada ?? r.fecha_completada ?? null
+        };
+
+        this.selectedRecoleccion = dto;
         this.detalleLoading = false;
-        console.log('✅ Detalle cargado:', r);
+        console.log('✅ Detalle cargado (DTO):', dto);
       },
       error: (err: any) => {
         console.error('❌ Error cargando detalle de recolección:', err);
@@ -656,8 +730,16 @@ export class UsuarioDashboardComponent implements OnInit {
     return match ? match[1].trim() : String(direccionString);
   }
 
-  verRutaHacia(punto: any) {
-    console.log('Ver ruta hacia:', punto);
+  abrirGoogleMaps(punto: any) {
+    console.log('🗺️ Intentando abrir Google Maps para punto:', punto);
+    console.log('🔗 URL:', punto.googleMapsUrl);
+    
+    if (punto.googleMapsUrl && punto.googleMapsUrl.trim() !== '') {
+      window.open(punto.googleMapsUrl, '_blank');
+    } else {
+      console.warn('⚠️ No hay URL de Google Maps para este punto');
+      alert('Este punto de reciclaje no tiene una ubicación de Google Maps configurada.');
+    }
   }
 
   llamarPunto(punto: any) {

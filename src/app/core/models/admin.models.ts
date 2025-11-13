@@ -29,6 +29,7 @@ export interface PuntoReciclaje {
     horario: string;
     materiales: string[];
     estado: string;
+    googleMapsUrl?: string;
 }
 
 export interface Material {

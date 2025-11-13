@@ -43,34 +43,37 @@ import { Recoleccion } from '../../../../../core/models/recoleccion.model';
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr *ngFor="let recoleccion of filteredRecolecciones" class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap">{{recoleccion.direccion}}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{recoleccion.distrito}}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{recoleccion.fechaRecojo | date:'short'}}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{recoleccion.tipo_material}}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{recoleccion.estado}}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button 
-                  (click)="editRecoleccion(recoleccion)"
-                  class="text-eco-green hover:text-eco-dark mr-3"
-                >Editar</button>
-                <button 
-                  (click)="deleteRecoleccion(recoleccion.id)"
-                  class="text-red-600 hover:text-red-900"
-                >Eliminar</button>
-              </td>
-            </tr>
+            @for (recoleccion of filteredRecolecciones; track recoleccion.id) {
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">{{recoleccion.direccion}}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{recoleccion.distrito}}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{recoleccion.fechaRecojo | date:'short'}}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{recoleccion.tipo_material}}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{recoleccion.estado}}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <button 
+                    (click)="editRecoleccion(recoleccion)"
+                    class="text-eco-green hover:text-eco-dark mr-3"
+                  >Editar</button>
+                  <button 
+                    (click)="deleteRecoleccion(recoleccion.id)"
+                    class="text-red-600 hover:text-red-900"
+                  >Eliminar</button>
+                </td>
+              </tr>
+            }
           </tbody>
         </table>
       </div>
     </div>
 
     <!-- Modal de Agregar/Editar Recolección -->
-    <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 w-full max-w-md">
-        <h3 class="text-lg font-medium mb-4">{{editingRecoleccion ? 'Editar' : 'Agregar'}} Recolección</h3>
-        <form (ngSubmit)="saveRecoleccion()" #recoleccionForm="ngForm">
-          <div class="space-y-4">
+    @if (showModal) {
+      <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+          <h3 class="text-lg font-medium mb-4">{{editingRecoleccion ? 'Editar' : 'Agregar'}} Recolección</h3>
+          <form (ngSubmit)="saveRecoleccion()" #recoleccionForm="ngForm">
+            <div class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700">Dirección</label>
               <input 
@@ -130,22 +133,23 @@ import { Recoleccion } from '../../../../../core/models/recoleccion.model';
                 <option value="Cancelada">Cancelada</option>
               </select>
             </div>
-          </div>
-          <div class="mt-6 flex justify-end space-x-3">
-            <button 
-              type="button"
-              (click)="closeModal()"
-              class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-            >Cancelar</button>
-            <button 
-              type="submit"
-              [disabled]="!recoleccionForm.form.valid"
-              class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-eco-green hover:bg-eco-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-eco-green"
-            >{{editingRecoleccion ? 'Guardar' : 'Crear'}}</button>
-          </div>
-        </form>
+            </div>
+            <div class="mt-6 flex justify-end space-x-3">
+              <button 
+                type="button"
+                (click)="closeModal()"
+                class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              >Cancelar</button>
+              <button 
+                type="submit"
+                [disabled]="!recoleccionForm.form.valid"
+                class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-eco-green hover:bg-eco-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-eco-green"
+              >{{editingRecoleccion ? 'Guardar' : 'Crear'}}</button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    }
   `
 })
 export class RecoleccionesCrudComponent implements OnInit {

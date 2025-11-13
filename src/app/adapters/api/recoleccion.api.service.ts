@@ -54,5 +54,12 @@ export class RecoleccionApiService {
         map(response => response.data || [])
       );
     }
+
+  // ✅ Endpoint público para puntos de reciclaje (usuarios CLIENTE/RECOLECTOR)
+  getPuntosReciclaje(): Observable<any[]> {
+    return this.baseHttp.get<any[]>('puntos-reciclaje').pipe(
+      map(response => response.data || [])
+    );
+  }
     
 }

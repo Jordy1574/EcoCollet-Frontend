@@ -119,6 +119,23 @@ import { AdminApiService } from '../../../../../adapters/api/admin.api.service';
               >
             </div>
             <div>
+              <label class="block text-sm font-medium text-gray-700">URL de Google Maps</label>
+              <input 
+                type="url" 
+                [(ngModel)]="currentPunto.googleMapsUrl" 
+                name="googleMapsUrl"
+                placeholder="https://maps.google.com/..."
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-eco-green focus:ring focus:ring-eco-green focus:ring-opacity-50"
+              >
+              <p class="text-xs text-gray-500 mt-1">
+                @if (currentPunto.googleMapsUrl && currentPunto.googleMapsUrl.trim() !== '') {
+                  <span class="text-green-600">✓ URL configurada</span>
+                } @else {
+                  <span class="text-amber-600">⚠ Sin URL (botón "Ver Ruta" deshabilitado)</span>
+                }
+              </p>
+            </div>
+            <div>
               <label class="block text-sm font-medium text-gray-700">Horario</label>
               <!-- Builder de horario: días y horas -->
               <div class="mt-2 space-y-3">
@@ -285,7 +302,8 @@ export class PuntosReciclajeCrudComponent implements OnInit {
       materiales: [],
       tipo: 'principal',
       tipoTexto: 'Centro Principal',
-      horario: 'Lun-Vie 8:00 AM - 6:00 PM'
+      horario: 'Lun-Vie 8:00 AM - 6:00 PM',
+      googleMapsUrl: ''
     };
     // reset horario builder a valores por defecto
     this.selectedDays = ['Lun','Mar','Mié','Jue','Vie'];
@@ -299,8 +317,11 @@ export class PuntosReciclajeCrudComponent implements OnInit {
     this.editingPunto = true;
     this.currentPunto = { 
       ...punto,
-      materiales: punto.materiales ? [...punto.materiales] : []
+      materiales: punto.materiales ? [...punto.materiales] : [],
+      googleMapsUrl: punto.googleMapsUrl || ''
     };
+    console.log('📝 Editando punto:', punto);
+    console.log('🔗 GoogleMapsUrl cargado:', this.currentPunto.googleMapsUrl);
     // intentar parsear horario existente a builder (simple)
     this.tryParseExistingHorario(punto.horario);
     this.updateHorarioPreview();
@@ -310,21 +331,27 @@ export class PuntosReciclajeCrudComponent implements OnInit {
   savePunto(): void {
     // Construir horario final antes de guardar
     this.currentPunto.horario = this.buildHorario();
+    
+    console.log('💾 Guardando punto:', this.currentPunto);
+    console.log('🔗 GoogleMapsUrl a enviar:', this.currentPunto.googleMapsUrl);
+    
     if (this.editingPunto) {
       this.adminService.updatePuntoReciclaje(this.currentPunto.id!, this.currentPunto).subscribe({
-        next: () => {
+        next: (result) => {
+          console.log('✅ Punto actualizado:', result);
           this.loadPuntos();
           this.closeModal();
         },
-  error: (error: unknown) => console.error('Error actualizando punto:', error)
+  error: (error: unknown) => console.error('❌ Error actualizando punto:', error)
       });
     } else {
       this.adminService.createPuntoReciclaje(this.currentPunto).subscribe({
-        next: () => {
+        next: (result) => {
+          console.log('✅ Punto creado:', result);
           this.loadPuntos();
           this.closeModal();
         },
-  error: (error: unknown) => console.error('Error creando punto:', error)
+  error: (error: unknown) => console.error('❌ Error creando punto:', error)
       });
     }
   }

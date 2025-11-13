@@ -1,4 +1,4 @@
-﻿<div class="flex h-full bg-eco-light font-inter">
+<div class="flex h-full bg-eco-light font-inter">
     <div class="w-64 bg-white shadow-lg flex flex-col">
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-center">
@@ -33,7 +33,7 @@
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0h8m-8 0l1 12a2 2 0 002 2h4a2 2 0 002-2l1-12m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v0"></path>
                         </svg>
-                        <span>Mis Citas</span>
+                        <span>más Citas</span>
                         @if (citasPendientes.length > 0) {
                             <span class="ml-auto bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
                                 {{ citasPendientes.length }}
@@ -82,11 +82,11 @@
                 </div>
                 <div>
                     <p class="text-sm font-medium text-gray-700">{{ displayName }}</p>
-                    <p class="text-xs text-gray-500">Nivel: {{ perfilUsuario.nivel }} â­</p>
+                    <p class="text-xs text-gray-500">Nivel: {{ perfilUsuario.nivel }} 💎</p>
                 </div>
             </div>
             <button (click)="logout()" class="w-full text-red-600 hover:bg-red-50 text-sm py-2 rounded-lg transition-colors">
-                Cerrar SesiÃ³n
+                Cerrar Sesión
             </button>
         </div>
     </div>
@@ -104,7 +104,7 @@
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
-                        Agendar Recolección
+                        Agendar recolección
                     </button>
                     <div class="relative">
                         <button class="p-2 text-gray-400 hover:text-gray-600 relative">
@@ -130,16 +130,15 @@
                         <div class="eco-card p-6 mb-6 bg-eco-green text-white">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <h3 class="font-poppins font-bold text-2xl mb-2">¡Excelente trabajo, {{ displayFirstName }}! 🌱</h3>
-                                    <p class="text-green-100 mb-4">Has reciclado {{ estadisticas.materialReciclado }} kg este mes y has ayudado a reducir {{ estadisticas.impactoAmbiental }} kg de CO2.</p>
+                                    <h3 class="font-poppins font-bold text-2xl mb-2">¡Excelente trabajo, {{ displayFirstName }}! 🏆</h3>
+                                    <p class="text-green-100 mb-4">Has reciclado {{ estadisticas.materialReciclado }} kg este más y has ayudado a reducir {{ estadisticas.impactoAmbiental }} kg de CO2.</p>
                                     <div class="flex items-center space-x-6">
-                                        <span [class]="getCrecimientoClass()" class="text-sm">{{ calcularPorcentajeCrecimiento() }} vs mes anterior</span>
+                                        <span [class]="getCrecimientoClass()" class="text-sm">{{ calcularPorcentajeCrecimiento() }} vs más anterior</span>
                                         <span class="text-sm">{{ estadisticas.citasCompletadas }} citas completadas</span>
                                     </div>
                                 </div>
                                 <div class="text-right">
-                                    <div class="text-6xl mb-2">🚛</div>
-                                    <p class="text-sm text-green-100">Camión ECO-001</p>
+                                    <div class="text-6xl mb-2">💎</div>
                                 </div>
                             </div>
                         </div>
@@ -156,7 +155,7 @@
                                 <div>
                                     <p class="text-sm font-medium text-gray-600 mb-1">Nivel Actual</p>
                                     <p class="text-3xl font-bold text-gray-900 mb-1">{{ nivelProgresion?.nivel || perfilUsuario.nivel }}</p>
-                                    <p class="text-sm text-eco-green font-medium">🏆 {{ nivelProgresion?.puntosActuales || 0 }} / {{ nivelProgresion?.puntosParaSiguiente || 0 }} puntos</p>
+                                    <p class="text-sm text-eco-green font-medium">⭐ {{ nivelProgresion?.puntosActuales || 0 }} / {{ nivelProgresion?.puntosParaSiguiente || 0 }} puntos</p>
                                 </div>
                             </div>
 
@@ -171,7 +170,7 @@
                                 <div>
                                     <p class="text-sm font-medium text-gray-600 mb-1">Citas Completadas</p>
                                     <p class="text-3xl font-bold text-gray-900 mb-1">{{ estadisticas.citasCompletadas }}</p>
-                                    <p [class]="getCrecimientoCitasClass()" class="text-sm">{{ calcularCrecimientoCitas() }} vs mes anterior</p>
+                                    <p [class]="getCrecimientoCitasClass()" class="text-sm">{{ calcularCrecimientoCitas() }} vs más anterior</p>
                                 </div>
                             </div>
 
@@ -186,7 +185,7 @@
                                 <div>
                                     <p class="text-sm font-medium text-gray-600 mb-1">Puntos EcoCollet</p>
                                     <p class="text-3xl font-bold text-gray-900 mb-1">{{ estadisticas.puntosGanados.toLocaleString() }}</p>
-                                    <p [class]="getCrecimientoPuntosClass()" class="text-sm">{{ calcularCrecimientoPuntos() }} vs mes anterior</p>
+                                    <p [class]="getCrecimientoPuntosClass()" class="text-sm">{{ calcularCrecimientoPuntos() }} vs más anterior</p>
                                 </div>
                             </div>
                         </div>
@@ -207,19 +206,19 @@
                                     </div>
                                 </div>
                                 <p class="text-sm text-gray-600 flex items-center">
-                                    ¡Solo te faltan {{ (50 - estadisticas.materialReciclado).toFixed(1) }} kg para alcanzar tu meta mensual! 🎯
+                                    ¡Solo te faltan {{ (50 - estadisticas.materialReciclado).toFixed(1) }} kg para alcanzar tu meta mensual! 🚀
                                 </p>
                             </div>
 
                             @if (nivelProgresion) {
                                 <div class="eco-card p-6 bg-gradient-to-br from-eco-green/10 to-blue-50">
                                     <div class="flex items-center justify-between mb-4">
-                                        <h3 class="font-semibold text-lg text-gray-900">Progresión de Nivel</h3>
+                                        <h3 class="font-semibold text-lg text-gray-900">Progresi�n de Nivel</h3>
                                         <span class="text-sm bg-eco-green text-white px-3 py-1 rounded-full">{{ nivelProgresion.porcentajeProgreso.toFixed(0) }}%</span>
                                     </div>
                                     <div class="flex items-center justify-between mb-4">
                                         <div class="flex items-center space-x-3">
-                                            <div class="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center text-xl">🏅</div>
+                                            <div class="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center text-xl">🚚</div>
                                             <div>
                                                 <p class="text-sm font-medium text-gray-600">Nivel Actual</p>
                                                 <p class="text-lg font-bold text-gray-900">{{ nivelProgresion.nivel }}</p>
@@ -235,7 +234,7 @@
                                         </div>
                                     </div>
                                     <p class="text-sm text-gray-600">
-                                        ¡Te faltan <span class="font-bold text-eco-green">{{ nivelProgresion.puntosParaSiguiente - nivelProgresion.puntosActuales }}</span> puntos para subir de nivel! 🚀
+                                        ¡Te faltan <span class="font-bold text-eco-green">{{ nivelProgresion.puntosParaSiguiente - nivelProgresion.puntosActuales }}</span> puntos para subir de nivel! 🔥
                                     </p>
                                 </div>
                             }
@@ -273,7 +272,7 @@
                                 <div class="w-12 h-12 bg-eco-green rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-105 transition-transform">
                                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                                 </div>
-                                <h4 class="font-medium text-gray-900 mb-1">Nueva Recolección</h4>
+                                <h4 class="font-medium text-gray-900 mb-1">Nueva recolección</h4>
                                 <p class="text-sm text-gray-500">Agenda tu próxima cita</p>
                             </button>
                             <button (click)="loadSection('puntos')" class="eco-card p-6 text-center hover:shadow-lg transition-all group">
@@ -287,20 +286,20 @@
                                 <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-105 transition-transform">
                                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path></svg>
                                 </div>
-                                <h4 class="font-medium text-gray-900 mb-1">Mis Recompensas</h4>
+                                <h4 class="font-medium text-gray-900 mb-1">más Recompensas</h4>
                                 <p class="text-sm text-gray-500">Canjea tus puntos</p>
                             </button>
                             <button (click)="loadSection('citas')" class="eco-card p-6 text-center hover:shadow-lg transition-all group">
                                 <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-105 transition-transform">
                                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0h8m-8 0l1 12a2 2 0 002 2h4a2 2 0 002-2l1-12m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v0"></path></svg>
                                 </div>
-                                <h4 class="font-medium text-gray-900 mb-1">Mis Citas</h4>
+                                <h4 class="font-medium text-gray-900 mb-1">más Citas</h4>
                                 <p class="text-sm text-gray-500">Ver historial</p>
                             </button>
                         </div>
 
                         <div class="eco-card p-6">
-                            <h3 class="font-semibold text-lg text-gray-900 mb-6">Próximas Recolecciones</h3>
+                            <h3 class="font-semibold text-lg text-gray-900 mb-6">Próximas recolecciones</h3>
                             
                             @if (citasPendientesDashboard.length === 0) {
                                 <div class="bg-white rounded-xl p-6 text-center">
@@ -320,7 +319,7 @@
                                                         <svg class="w-6 h-6 text-eco-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0h8m-8 0l1 12a2 2 0 002 2h4a2 2 0 002-2l1-12m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v0"></path></svg>
                                                     </div>
                                                     <div>
-                                                        <h4 class="font-medium text-gray-900">Recolección #{{ cita.id }}</h4>
+                                                        <h4 class="font-medium text-gray-900">recolección #{{ cita.id }}</h4>
                                                         <p class="text-sm text-gray-500">{{ cita.fecha | date:'shortDate' }} - {{ cita.hora }}</p>
                                                     </div>
                                                 </div>
@@ -329,7 +328,7 @@
                                                 </span>
                                             </div>
                                             <div class="space-y-2">
-                                                <div class="text-sm"><span class="text-gray-500">DirecciÃ³n:</span><span class="ml-2 text-gray-900">{{ cita.direccion }}</span></div>
+                                                <div class="text-sm"><span class="text-gray-500">Dirección:</span><span class="ml-2 text-gray-900">{{ cita.direccion }}</span></div>
                                                 <div class="text-sm"><span class="text-gray-500">Material:</span><span class="ml-2 text-gray-900">{{ cita.tipoMaterial }}</span></div>
                                                 <div class="text-sm"><span class="text-gray-500">Cantidad:</span><span class="ml-2 text-gray-900">{{ cita.cantidadEstimada }} kg</span></div>
                                             </div>
@@ -349,7 +348,7 @@
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-6">
                             <div>
-                                <h3 class="text-xl font-poppins font-semibold text-gray-900">Mis Citas de Recolección</h3>
+                                <h3 class="text-xl font-poppins font-semibold text-gray-900">más Citas de recolección</h3>
                                 <p class="text-sm text-gray-600">Gestiona y revisa el estado de tus citas</p>
                             </div>
                             <button (click)="solicitarNuevaCita()" class="bg-eco-green hover:bg-eco-dark text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
@@ -462,17 +461,6 @@
                             </div>
                         </div>
 
-                        <div class="mapa-container mb-6 bg-white p-6 rounded-xl shadow-sm text-center">
-                            <div class="mapa-icon mx-auto mb-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#5EA362" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                    <circle cx="12" cy="10" r="3"></circle>
-                                </svg>
-                            </div>
-                            <p class="text-lg font-medium text-gray-900">Mapa Interactivo de Puntos de Reciclaje</p>
-                            <small class="text-sm text-gray-500">Los puntos marcados corresponden a los centros de reciclaje cercanos a tu ubicación</small>
-                        </div>
-
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @for (punto of getPuntosFiltrados(); track punto.id) {
                                 <div class="punto-card bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
@@ -504,7 +492,10 @@
                                     </div>
 
                                     <div class="flex space-x-3 mt-4 pt-4 border-t border-gray-100">
-                                        <button class="flex-1 bg-eco-green hover:bg-eco-dark text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center" (click)="verRutaHacia(punto)">
+                                        <button 
+                                            [disabled]="!punto.googleMapsUrl" 
+                                            [class]="punto.googleMapsUrl ? 'flex-1 bg-eco-green hover:bg-eco-dark text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center' : 'flex-1 bg-gray-300 text-gray-500 px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center cursor-not-allowed'"
+                                            (click)="abrirGoogleMaps(punto)">
                                             <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"></path></svg>
                                             Ver Ruta
                                         </button>
@@ -532,18 +523,18 @@
                 @if (currentSection === 'recompensas') {
                     <div class="p-6">
                         <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-xl font-poppins font-semibold text-gray-900">ðŸŽ Recompensas Disponibles</h3>
+                            <h3 class="text-xl font-poppins font-semibold text-gray-900">🎁 Recompensas Disponibles</h3>
                             <div class="puntos-disponibles-card bg-yellow-500 text-white p-4 rounded-xl flex items-center space-x-3 shadow-md">
                                 <h2 class="text-2xl font-bold">{{ puntosDisponibles }}</h2>
-                                <p class="text-sm">puntos disponibles ðŸ†</p>
+                                <p class="text-sm">puntos disponibles 🏆</p>
                             </div>
                         </div>
 
                         <div class="eco-card p-6 mb-8">
-                            <h3 class="font-semibold text-lg text-gray-900 mb-4">ðŸ… Ranking Mensual - Miraflores</h3>
+                            <h3 class="font-semibold text-lg text-gray-900 mb-4">🏅 Ranking Mensual - Miraflores</h3>
                             <div class="space-y-3">
                                 @for (usuario of rankingUsuarios; track usuario.id) {
-                                    <div class="flex items-center justify-between p-3 rounded-lg" [class.bg-green-50]="usuario.nombre.includes('(TÃº)')">
+                                    <div class="flex items-center justify-between p-3 rounded-lg" [class.bg-green-50]="usuario.nombre.includes('(Tú)')">
                                         <div class="flex items-center space-x-3">
                                             <span class="text-xl w-6 text-center">{{ getRankingIcon(usuario.posicion) }}</span>
                                             <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-sm font-semibold">{{ usuario.avatar }}</div>
@@ -559,11 +550,11 @@
                                     </div>
                                 }
                             </div>
-                            <p class="text-sm text-gray-600 mt-4 text-center">Â¡Solo necesitas 165 puntos mÃ¡s para alcanzar el 2do lugar! ðŸš€</p>
+                            <p class="text-sm text-gray-600 mt-4 text-center">¡Solo necesitas 165 puntos más para alcanzar el 2do lugar! 🚀</p>
                         </div>
 
                         <div class="recompensas-section">
-                            <h3 class="font-semibold text-lg text-gray-900 mb-4">CatÃ¡logo de Recompensas</h3>
+                            <h3 class="font-semibold text-lg text-gray-900 mb-4">Catálogo de Recompensas</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                 @for (recompensa of recompensasDisponibles; track recompensa.id) {
                                     <div class="recompensa-card bg-white rounded-xl shadow-sm overflow-hidden" [class.opacity-60]="!puedesCanjear(recompensa)">
@@ -605,7 +596,7 @@
                     <div class="p-6">
                         <div class="flex justify-end mb-6">
                             <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors" [class.active]="editandoPerfil" (click)="toggleEditarPerfil()">
-                                {{ editandoPerfil ? 'Cancelar EdiciÃ³n' : 'Editar Perfil' }}
+                                {{ editandoPerfil ? 'Cancelar Edición' : 'Editar Perfil' }}
                             </button>
                         </div>
                         
@@ -615,7 +606,7 @@
                                     {{ (perfilUsuario.nombre || 'A')[0] }}
                                 </div>
                                 <h2 class="text-xl font-poppins font-semibold text-gray-900">{{ perfilUsuario.nombre }}</h2>
-                                <p class="text-sm text-gray-600 mb-4">{{ perfilUsuario.nivel }} â­</p>
+                                <p class="text-sm text-gray-600 mb-4">{{ perfilUsuario.nivel }} ⭐</p>
 
                                 <div class="w-full space-y-3 border-t pt-4 mt-4">
                                     <div class="flex justify-between text-sm">
@@ -623,14 +614,14 @@
                                         <span class="font-medium text-eco-green">127.3 kg</span>
                                     </div>
                                     <div class="flex justify-between text-sm">
-                                        <span class="text-gray-500">COâ‚‚ ahorrado:</span>
+                                        <span class="text-gray-500">CO₂ ahorrado:</span>
                                         <span class="font-medium text-blue-500">381.9 kg</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="lg:col-span-2 eco-card p-6">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-4">InformaciÃ³n Personal</h3>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Información Personal</h3>
                                 <div class="space-y-4">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div class="form-group">
@@ -643,12 +634,12 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Correo ElectrÃ³nico</label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Correo Electrónico</label>
                                         <input type="email" class="form-input bg-gray-100" [(ngModel)]="perfilForm.email" disabled>
                                     </div>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div class="form-group">
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">TelÃ©fono</label>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
                                             <input type="tel" class="form-input" [(ngModel)]="perfilForm.telefono" [disabled]="!editandoPerfil">
                                         </div>
                                         <div class="form-group">
@@ -661,7 +652,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">DirecciÃ³n</label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Dirección</label>
                                         <input type="text" class="form-input" [(ngModel)]="perfilForm.direccion" [disabled]="!editandoPerfil">
                                     </div>
                                     
@@ -712,8 +703,8 @@
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <div>
-                                            <h4 class="font-medium text-gray-900">Recordatorios de recolecciÃ³n</h4>
-                                            <p class="text-xs text-gray-500">Te recordamos 1 dÃ­a antes de tu cita</p>
+                                            <h4 class="font-medium text-gray-900">Recordatorios de recolección</h4>
+                                            <p class="text-xs text-gray-500">Te recordamás 1 día antes de tu cita</p>
                                         </div>
                                         <label class="relative inline-flex items-center cursor-pointer">
                                             <input type="checkbox" [(ngModel)]="perfilForm.recordatorios" [disabled]="!editandoPerfil" class="sr-only peer">
@@ -731,8 +722,8 @@
                         <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                             <div class="flex items-center justify-between p-6 border-b border-gray-200">
                                 <div>
-                                    <h3 class="text-xl font-poppins font-semibold text-gray-900">Agendar Nueva RecolecciÃ³n</h3>
-                                    <p class="text-sm text-gray-600">Completa el formulario para programar tu recolecciÃ³n</p>
+                                    <h3 class="text-xl font-poppins font-semibold text-gray-900">Agendar Nueva recolección</h3>
+                                    <p class="text-sm text-gray-600">Completa el formulario para programar tu recolección</p>
                                 </div>
                                 <button (click)="cancelarAgendamiento()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                                     <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -753,7 +744,7 @@
                                     <div class="w-8 h-px bg-gray-300"></div>
                                     <div class="flex items-center">
                                         <div [class]="agendarStep >= 3 ? 'w-8 h-8 bg-eco-green text-white rounded-full flex items-center justify-center text-sm font-medium' : 'w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium'">3</div>
-                                        <span [class]="agendarStep >= 3 ? 'ml-2 text-sm font-medium text-eco-green' : 'ml-2 text-sm text-gray-500'">DirecciÃ³n</span>
+                                        <span [class]="agendarStep >= 3 ? 'ml-2 text-sm font-medium text-eco-green' : 'ml-2 text-sm text-gray-500'">Dirección</span>
                                     </div>
                                 </div>
                             </div>
@@ -807,11 +798,11 @@
                                 @if (agendarStep === 3) {
                                     <div class="space-y-6">
                                         <div>
-                                            <h4 class="text-lg font-medium text-gray-900 mb-4">DirecciÃ³n de RecolecciÃ³n</h4>
+                                            <h4 class="text-lg font-medium text-gray-900 mb-4">Dirección de recolección</h4>
                                             
                                             <div class="space-y-4">
                                                 <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-2">DirecciÃ³n</label>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-2">Dirección</label>
                                                     <input type="text" [(ngModel)]="agendarForm.direccion" class="w-full form-input" placeholder="Av. Larco 123, Miraflores">
                                                 </div>
                                                 
@@ -826,18 +817,18 @@
                                                 
                                                 <div>
                                                     <label class="block text-sm font-medium text-gray-700 mb-2">Referencia (opcional)</label>
-                                                    <textarea [(ngModel)]="agendarForm.referencia" rows="3" class="w-full form-input" placeholder="Casa verde, portÃ³n negro, al lado del parque..."></textarea>
+                                                    <textarea [(ngModel)]="agendarForm.referencia" rows="3" class="w-full form-input" placeholder="Casa verde, portón negro, al lado del parque..."></textarea>
                                                 </div>
                                             </div>
 
                                             <div class="mt-6 p-4 bg-gray-100 rounded-lg">
-                                                <h5 class="font-medium text-gray-900 mb-2">Resumen de tu recolecciÃ³n:</h5>
+                                                <h5 class="font-medium text-gray-900 mb-2">Resumen de tu recolección:</h5>
                                                 <div class="text-sm text-gray-600 space-y-1">
                                                     <p><strong>Materiales:</strong> {{ agendarForm.materiales.join(', ') }}</p>
                                                     <p><strong>Cantidad:</strong> {{ agendarForm.cantidad }} kg</p>
                                                     <p><strong>Fecha:</strong> {{ formatearFecha(agendarForm.fecha) }}</p>
                                                     <p><strong>Hora:</strong> {{ agendarForm.hora }}</p>
-                                                    <p><strong>DirecciÃ³n:</strong> {{ agendarForm.direccion }}, {{ agendarForm.distrito }}</p>
+                                                    <p><strong>Dirección:</strong> {{ agendarForm.direccion }}, {{ agendarForm.distrito }}</p>
                                                     @if (agendarForm.referencia) {
                                                         <p><strong>Referencia:</strong> {{ agendarForm.referencia }}</p>
                                                     }
@@ -852,7 +843,7 @@
                                 <div>
                                     @if (agendarStep > 1) {
                                         <button (click)="prevAgendarStep()" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
-                                            â† Anterior
+                                            ← Anterior
                                         </button>
                                     }
                                 </div>
@@ -868,7 +859,7 @@
                                             [disabled]="!canProceedToNext()"
                                             [ngClass]="canProceedToNext() ? 'bg-eco-green hover:bg-eco-dark text-white px-6 py-2 rounded-lg font-medium transition-colors' : 'bg-gray-300 text-gray-500 px-6 py-2 rounded-lg font-medium cursor-not-allowed'"
                                         >
-                                            Siguiente â†’
+                                            Siguiente →
                                         </button>
                                     } @else {
                                         <button 
@@ -883,7 +874,7 @@
                                                 </svg>
                                                 Confirmando...
                                             } @else {
-                                                Confirmar RecolecciÃ³n
+                                                Confirmar recolección
                                             }
                                         </button>
                                     }
@@ -896,7 +887,7 @@
         </main>
     </div>
 
-    <!-- Modal de Detalle de Recolección -->
+    <!-- Modal de Detalle de recolección -->
     @if (showDetalleModal) {
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" (click)="cerrarDetalle()">
             <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-auto shadow-2xl" (click)="$event.stopPropagation()">
@@ -906,7 +897,7 @@
                         <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
-                        Detalle de Recolección
+                        Detalle de recolección
                     </h3>
                     <button (click)="cerrarDetalle()" class="text-white hover:bg-white/20 p-2 rounded-lg transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -929,7 +920,7 @@
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-3">
                                     <div class="w-12 h-12 bg-eco-green/10 rounded-full flex items-center justify-center">
-                                        <span class="text-2xl">🗑️</span>
+                                        <span class="text-2xl">♻️</span>
                                     </div>
                                     <p class="text-2xl font-bold text-gray-900">#{{ selectedRecoleccion.id }}</p>
                                 </div>
@@ -1005,7 +996,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Fecha de Asignación -->
+                                <!-- Fecha de Asignaci�n -->
                                 @if (selectedRecoleccion.fechaAsignacion) {
                                     <div class="flex items-center justify-between border-b border-gray-200 pb-3">
                                         <div class="flex items-center">
@@ -1015,7 +1006,7 @@
                                                 </svg>
                                             </div>
                                             <div>
-                                                <p class="text-xs text-gray-500">Fecha de Asignación</p>
+                                                <p class="text-xs text-gray-500">Fecha de Asignaci�n</p>
                                                 <p class="font-medium text-gray-900">{{ selectedRecoleccion.fechaAsignacion | date:'medium' }}</p>
                                             </div>
                                         </div>
@@ -1040,7 +1031,7 @@
                                 }
                             </div>
 
-                            <!-- Botones de Acción -->
+                            <!-- Botones de Acci�n -->
                             <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
                                 <button (click)="cerrarDetalle()" class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors font-medium">
                                     Cerrar
@@ -1058,3 +1049,4 @@
         </div>
     }
 </div>
+

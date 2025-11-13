@@ -10,6 +10,7 @@ import { User } from '../../../../../core/models/user.model';
 import { Usuario, Cita, PuntoReciclaje, Material, TrendPoint, TopUser, RolPermiso, ConfiguracionSistema } from '../../../../../core/models/admin.models'; 
 import { AuthApiService } from '../../../../api/auth.api.service'; 
 import { AdminApiService } from '../../../../api/admin.api.service'; 
+import { RecoleccionApiService } from '../../../../api/recoleccion.api.service';
 import { UsuariosCrudComponent } from '../usuarios/usuarios-crud.component';
 import { PuntosReciclajeCrudComponent } from '../puntos/puntos-reciclaje-crud.component';
 import { MaterialesCrudComponent } from '../materiales/materiales-crud.component';
@@ -73,7 +74,8 @@ export class AdminDashboardComponent implements OnInit {
 
   constructor(
     private authService: AuthApiService, 
-    private adminApi: AdminApiService,   
+    private adminApi: AdminApiService,  
+    private recoleccionApi: RecoleccionApiService,
     private router: Router
   ) {
     this.user = this.authService.getCurrentUser();
@@ -99,8 +101,32 @@ export class AdminDashboardComponent implements OnInit {
       });
     });
     
-    // ✅ Intentar cargar citas desde el backend, fallback a mock si falla
-    this.adminApi.getCitasFromBackend().subscribe(data => this.citas = data);
+    // ✅ Citas del backend (admin)
+    this.adminApi.getCitasFromBackend().subscribe(adminCitas => {
+      // ✅ También incluir recolecciones creadas por usuarios, mapeadas al modelo Cita
+      this.recoleccionApi.getRecolecciones().subscribe({
+        next: (recs) => {
+          const mappedFromRecs: Cita[] = (recs || []).map((r: any) => {
+            const fecha = r.fechaRecojo ? new Date(r.fechaRecojo) : null;
+            const dia = fecha ? fecha.toLocaleDateString('es-PE') : '';
+            const hora = fecha ? fecha.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' }) : '';
+            return {
+              id: String(r.id),
+              usuario: { nombre: `Cliente #${r.cliente_id}`, direccion: r.direccion || '' },
+              material: { tipo: r.tipo_material || 'N/A', cantidad: `${r.cantidad_kg ?? 0} kg` },
+              fecha: { dia, hora },
+              estado: r.estado || 'Pendiente',
+              recolector: r.recolector_id ? `#${r.recolector_id}` : 'Sin asignar'
+            } as Cita;
+          });
+          this.citas = [...(adminCitas || []), ...mappedFromRecs];
+        },
+        error: () => {
+          // Si falla recolecciones, al menos mostramos las citas admin
+          this.citas = adminCitas || [];
+        }
+      });
+    });
     
     this.adminApi.getPuntosReciclaje().subscribe(data => this.puntosReciclaje = data);
     this.adminApi.getMateriales().subscribe(data => this.materiales = data);

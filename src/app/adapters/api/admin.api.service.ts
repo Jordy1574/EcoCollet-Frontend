@@ -226,7 +226,8 @@ export class AdminApiService {
             direccion: p.direccion ?? '',
             horario: p.horario ?? '',
             materiales: (p.materialesAceptados || []).map((mat: any) => mat?.nombre ?? '').filter((n: string) => !!n),
-            estado: this.capitalizeEstado(p.estado)
+            estado: this.capitalizeEstado(p.estado),
+            googleMapsUrl: p.googleMapsUrl ?? ''
         };
     }
 
@@ -361,7 +362,8 @@ export class AdminApiService {
             telefono: undefined,
             horario: punto.horario ?? '',
             estado: this.toApiEstado(punto.estado),
-            materialesAceptadosIds
+            materialesAceptadosIds,
+            googleMapsUrl: (punto.googleMapsUrl || '').toString()
         };
     }
 
