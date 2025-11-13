@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import { BaseHttpService } from '../../core/services/base-http.service';
 import { Recoleccion } from '../../core/models/recoleccion.model';
 
@@ -12,7 +12,18 @@ export class RecoleccionApiService {
     return this.baseHttp.get<Recoleccion[]>('recolecciones').pipe(
       map(response => response.data!)
     );
+
   }
+  cancelarRecoleccion(id: number): Observable<void> {
+        return this.baseHttp.patch<void>(`recolecciones/${id}/cancelar`, null)
+            .pipe(
+                map(() => void 0),
+                catchError(err => {
+                    console.error('Error al cancelar cita:', err);
+                    throw err;
+                })
+            );
+    }
 
   getRecoleccionById(id: string): Observable<Recoleccion> {
     return this.baseHttp.get<Recoleccion>(`recolecciones/${id}`).pipe(
@@ -43,4 +54,5 @@ export class RecoleccionApiService {
         map(response => response.data || [])
       );
     }
+    
 }

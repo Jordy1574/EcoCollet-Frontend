@@ -66,10 +66,6 @@ export class UserCitasApiService {
             );
     }
 
-    /**
-     * Obtener detalle de una cita
-     * GET /api/citas/{id}
-     */
     getCitaDetalle(id: number): Observable<CitaUsuario> {
         return this.http.get<any>(`citas/${id}`)
             .pipe(
@@ -81,22 +77,6 @@ export class UserCitasApiService {
             );
     }
 
-    /**
-     * Cancelar cita (solo PENDIENTE o ASIGNADA)
-     * PATCH /api/recolecciones/{id}/cancelar
-     */
-    cancelarCita(id: number): Observable<void> {
-        return this.http.patch<void>(`recolecciones/${id}/cancelar`, null)
-            .pipe(
-                map(() => void 0),
-                catchError(err => {
-                    console.error('Error al cancelar cita:', err);
-                    throw err;
-                })
-            );
-    }
-
-    // Mapper: Backend -> UI
     private mapBackendCita(c: any): CitaUsuario {
         return {
             id: c.id ?? 0,

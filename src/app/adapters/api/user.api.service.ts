@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
+import { BaseHttpService } from '../../core/services/base-http.service';
 
 // Importar los modelos específicos del usuario
 import {
@@ -22,6 +23,8 @@ import {
   providedIn: 'root'
 })
 export class UserApiService {
+
+  constructor(private baseHttp: BaseHttpService) { }
 
   // ====================================================================
   // 1. DATOS MOCK PARA EL USUARIO
@@ -172,8 +175,6 @@ export class UserApiService {
       leida: true
     }
   ];
-
-  constructor() { }
 
   // ====================================================================
   // 2. MÉTODOS DE API PARA EL DASHBOARD
@@ -352,5 +353,12 @@ export class UserApiService {
       .sort((a, b) => parseFloat(a.distancia) - parseFloat(b.distancia));
     
     return of(puntosCercanos[0] || null).pipe(delay(200));
+  }
+
+  // Actualizar perfil del usuario
+  actualizarPerfil(userId: string, datosActualizados: any): Observable<any> {
+    console.log('📤 Enviando actualización de perfil al backend para usuario:', userId, datosActualizados);
+    // El backend identifica al usuario a través del token JWT, no necesita ID en la URL
+    return this.baseHttp.put('usuario/perfil', datosActualizados);
   }
 }
